@@ -1,0 +1,36 @@
+#!/bin/sh
+
+message_file=$1
+
+if [ ! -r "$message_file" ]; then
+  echo "commit-msg: não foi possível ler o arquivo de mensagem do commit." >&2
+  exit 1
+fi
+
+spec_pattern='^Spec-Ref: SPEC-[0-9][0-9][0-9](-v[0-9][0-9]*)?$'
+task_pattern='^Task-Ref: TASK-[0-9][0-9][0-9]-[0-9][0-9]$'
+has_spec=$(grep -Ec '^Spec-Ref:' "$message_file")
+has_task=$(grep -Ec '^Task-Ref:' "$message_file")
+
+if [ "$has_spec" -eq 0 ] && [ "$has_task" -eq 0 ]; then
+  exit 0
+fi
+
+if [ "$has_spec" -ne 1 ] || [ "$has_task" -ne 1 ]; then
+  echo "commit-msg: inclua exatamente um trailer Spec-Ref e um Task-Ref juntos." >&2
+  exit 1
+fi
+
+spec_val=$(grep -E '^Spec-Ref:' "$message_file")
+if ! echo "$spec_val" | grep -Eq "$spec_pattern"; then
+  echo "commit-msg: formato de SPEC inválido. Use Spec-Ref: SPEC-NNN ou SPEC-NNN-vN" >&2
+  exit 1
+fi
+
+task_val=$(grep -E '^Task-Ref:' "$message_file")
+if ! echo "$task_val" | grep -Eq "$task_pattern"; then
+  echo "commit-msg: formato de TASK inválido. Use Task-Ref: TASK-NNN-XX" >&2
+  exit 1
+fi
+
+exit 0

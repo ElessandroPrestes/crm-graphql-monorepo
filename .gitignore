@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+
+# Node / monorepo
+node_modules/
+dist/
+build/
+coverage/
+.turbo/
+.next/
+.nuxt/
+.cache/
+*.tsbuildinfo
+
+# Ambiente e segredos
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Editores e sistema
+.DS_Store
+.idea/
+.vscode/
+*.log
