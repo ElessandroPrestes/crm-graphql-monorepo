@@ -93,7 +93,8 @@ def git_commits(root: Path) -> list[Commit]:
 
     commits = []
     for record in completed.stdout.split("\x1e"):
-        if not record.strip():
+        record = record.strip()
+        if not record:
             continue
         sha, subject, body = record.split("\x1f", maxsplit=2)
         references = tuple(sorted(set(SPEC_PATTERN.findall(body) + TASK_PATTERN.findall(body))))
