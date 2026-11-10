@@ -1,134 +1,159 @@
-# CRM GraphQL Monorepo
+# Nexo CRM
 
-> **Status:** Discovery / Bootstrap — nenhuma funcionalidade implementada.
+> **Status:** Fase 0 concluída — fundação técnica pronta; domínio e GraphQL
+> entram na Fase 1.
 > **Governança:** Universal SDD (Spec-Driven Development).
-> **Repositório:** `crm-graphql-monorepo`.
+> **Stack:** Node.js 26 LTS · pnpm · Turborepo · NestJS · React · Vite ·
+> TypeScript · Tailwind CSS.
 
 ---
 
 ## Sobre o projeto
 
-Repositório destinado a um CRM (Customer Relationship Management) organizado como
-monorepo e exposto por uma API GraphQL. O escopo de produto, a arquitetura e a
-stack ainda não foram aprovados: este repositório encontra-se na fase de
-adoção do Universal SDD e de discovery.
+O **Nexo CRM** é um mini CRM para times pequenos de vendas, construído como
+monorepo de demonstração técnica. O objetivo é mostrar GraphQL onde ele faz
+sentido: visão 360° do contato em uma única query, API como BFF tipado por
+codegen, subscriptions em tempo real e desempenho consciente (DataLoader,
+cache e limites de complexidade).
 
-Os fatos, inferências e lacunas conhecidos estão registrados em
-[`PROJECT.md`](PROJECT.md). Nenhuma decisão de produto ou arquitetura deve ser
-tratada como aprovada antes de uma SPEC formal.
+Fluxos de webhook, upload e pagamento permanecem em REST, conforme
+[ADR-002](adr/ADR-002-stack-api-graphql.md).
 
----
-
-## Governança Universal SDD
-
-Este projeto adota o Universal SDD. As três fontes complementares de verdade são:
-
-- a **SPEC aprovada** define o comportamento desejado de uma mudança;
-- o **PROJECT.md** registra o estado canônico do projeto;
-- o **código e as evidências de QA** demonstram o comportamento implementado.
-
-Divergências entre essas fontes são tratadas como defeito, mudança de escopo ou
-dívida documental — nunca resolvidas silenciosamente.
-
-### Fluxo oficial
-
-```text
-Ideia
-   ↓
-Discovery de Produto e UX
-   ↓
-Arquitetura
-   ↓
-UX/UI Design
-   ↓
-Aprovação do Design
-   ↓
-SPEC técnica e funcional
-   ↓
-Aprovação Humana
-   ↓
-TASK
-   ↓
-Implementação
-   ↓
-QA automatizado e manual
-   ↓
-Design Review e Code Review
-   ↓
-Refatoração (se necessário)
-   ↓
-Documentação
-   ↓
-Release
-```
-
-Consulte [`workflows/feature.md`](workflows/feature.md) e
-[`workflows/verification.md`](workflows/verification.md).
+> **Demo:** espaço reservado para o GIF do fluxo completo (Fase 4).
 
 ---
 
-## Estrutura do repositório
+## Fases
 
-```text
-crm-graphql-monorepo/
-├── AGENTS.md                  # Protocolo comum para pessoas e agentes de IA
-├── CLAUDE.md                  # Entrada para Claude
-├── GEMINI.md                  # Entrada para Gemini
-├── COPILOT.md                 # Entrada para GitHub Copilot
-├── PROJECT.md                 # Estado canônico atual do projeto
-├── UNIVERSAL_SDD_FRAMEWORK.md # Definição normativa do núcleo
-├── README.md                  # Este arquivo
-├── ROADMAP.md                 # Direção e fases planejadas
-├── CHANGELOG.md               # Histórico de versões
-├── agents/                    # Contratos dos papéis do ciclo SDD
-├── workflows/                 # Fluxos oficiais (feature, verification)
-├── profiles/                  # Perfis de adoção reutilizáveis
-├── knowledge/                 # Base de conhecimento modular
-├── standards/                 # Padrões normativos (UX, testes, segurança, etc.)
-├── templates/                 # Artefatos executáveis de SPEC, TASK, ADR, review
-├── specs/                     # Especificações aprovadas
-├── tasks/                     # Tarefas vinculadas a SPECs
-├── reviews/                   # Registros de revisão formal
-├── adr/                       # Registros de Decisão Arquitetural
-├── docs/                      # Guias, governança e matriz de rastreabilidade
-└── scripts/                   # Automação de rastreabilidade
+| Fase | Escopo                                                           | Status    |
+| ---- | ---------------------------------------------------------------- | --------- |
+| 0    | Fundação: monorepo, tooling, esqueletos, Docker, CI e docs       | Concluída |
+| 1    | Domínio e API núcleo: Prisma, auth, RBAC, GraphQL, DataLoader    | Pendente  |
+| 2    | Funil e dashboard: negócios, concorrência, subscriptions, cache  | Pendente  |
+| 3    | WhatsApp e eventos: provider, HMAC, RabbitMQ, worker, DLQ        | Pendente  |
+| 4    | Front-end: login, contatos, visão 360°, kanban, inbox, dashboard | Pendente  |
+| 5    | Endurecimento: persisted queries, k6, e2e, STRIDE e deploy       | Pendente  |
+
+---
+
+## Pré-requisitos
+
+- Node.js **26.13.0** (use `.nvmrc`)
+- pnpm **12.18.0**
+- Docker e Docker Compose
+
+```sh
+nvm install
+nvm use
+npm install -g pnpm@12.18.0
 ```
 
 ---
 
-## Primeiros passos
+## Como rodar
 
-1. Leia [`PROJECT.md`](PROJECT.md) e [`AGENTS.md`](AGENTS.md).
-2. Execute o discovery do produto e da arquitetura antes de qualquer implementação.
-3. Registre uma SPEC a partir de [`templates/spec.md`](templates/spec.md).
-4. Obtenha aprovação humana explícita.
-5. Divida o escopo em TASKs com [`templates/task.md`](templates/task.md).
-6. Implemente apenas as TASKs aprovadas.
-7. Registre evidências, revisão e documentação final.
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
+```
 
-Checklist completo em [`docs/getting-started.md`](docs/getting-started.md).
+`pnpm dev` sobe Postgres, Redis e RabbitMQ via Docker Compose e inicia as três
+aplicações em paralelo.
+
+| Serviço                   | URL local                          |
+| ------------------------- | ---------------------------------- |
+| Web                       | http://localhost:5217              |
+| API — liveness            | http://localhost:3202/health/live  |
+| API — readiness           | http://localhost:3202/health/ready |
+| Worker — health (interna) | http://localhost:3203/health/live  |
+| RabbitMQ Management       | http://localhost:8205              |
+
+Credenciais locais do RabbitMQ: `nexo` / `nexo`. Não use em produção.
+
+### Stack completo em containers
+
+```sh
+pnpm infra:full
+```
+
+### Comandos de qualidade
+
+```sh
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm format:check
+```
+
+### Infraestrutura
+
+```sh
+pnpm infra:up    # postgres, redis e rabbitmq
+pnpm infra:down
+```
+
+---
+
+## Estrutura
+
+```text
+nexo-crm/
+├─ apps/
+│  ├─ api/                NestJS + health checks
+│  ├─ worker/             Worker NestJS + health check
+│  └─ web/                React + Vite + Tailwind
+├─ packages/
+│  ├─ graphql-schema/     Schema gerado e documents (Fase 1)
+│  ├─ shared/             Schemas zod e utilidades puras
+│  ├─ eslint-config/      ESLint flat compartilhado
+│  └─ tsconfig/           TypeScript compartilhado
+├─ infra/                 Compose, Dockerfiles e Nginx
+├─ specs/ tasks/ reviews/ Rastreabilidade SDD
+├─ adr/                   Decisões arquiteturais
+├─ docs/                  Arquitetura, segurança, a11y e guias
+└─ .github/               CI, segurança e automação
+```
+
+---
+
+## Decisões principais
+
+- [ADR-001](adr/ADR-001-monorepo-pnpm-turborepo.md): pnpm workspaces + Turborepo.
+- [ADR-002](adr/ADR-002-stack-api-graphql.md): NestJS + Apollo, Prisma,
+  Redis, RabbitMQ, React.
+- [ADR-003](adr/ADR-003-versoes-e-compatibilidade.md): versões fixadas e
+  compatibilidade de peers.
+
+---
+
+## Segurança e acessibilidade
+
+- Segurança: [docs/security.md](docs/security.md) e [SECURITY.md](SECURITY.md).
+- Acessibilidade: [docs/a11y.md](docs/a11y.md), alvo WCAG 2.2 AA.
+- Nenhum segredo real é versionado; use `.env.example` como referência.
 
 ---
 
 ## Rastreabilidade
 
-Toda implementação vinculada a uma TASK aprovada registra no commit:
+Commits de implementação registram:
 
 ```text
 Spec-Ref: SPEC-NNN
 Task-Ref: TASK-NNN-XX
 ```
 
-Gere a matriz a partir da raiz do repositório:
+Matriz de rastreabilidade:
 
 ```sh
 python3 scripts/generate_traceability.py
 ```
 
-Consulte [`docs/ids-and-traceability.md`](docs/ids-and-traceability.md).
+Consulte [docs/ids-and-traceability.md](docs/ids-and-traceability.md).
 
 ---
 
 ## Licença
 
-[MIT License](LICENSE).
+[MIT](LICENSE).

@@ -1,0 +1,136 @@
+name: nexo-crm
+
+services:
+  postgres:
+    image: postgres:18.6-alpine
+    environment:
+      POSTGRES_USER: nexo
+      POSTGRES_PASSWORD: nexo
+      POSTGRES_DB: nexo
+    ports:
+      - '5402:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nexo -d nexo']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+
+  redis:
+    image: redis:8.8.4-alpine
+    command: ['redis-server', '--appendonly', 'yes']
+    ports:
+      - '8203:6379'
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    security_opt:
+      - no-new-privileges:true
+
+  rabbitmq:
+    image: rabbitmq:4.4.0-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: nexo
+      RABBITMQ_DEFAULT_PASS: nexo
+    ports:
+      - '8204:5672'
+      - '8205:15672'
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', '-q', 'ping']
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    security_opt:
+      - no-new-privileges:true
+
+  api:
+    profiles: ['full']
+    build:
+      context: ..
+      dockerfile: infra/api.Dockerfile
+    environment:
+      NODE_ENV: production
+      API_PORT: 3202
+      DATABASE_URL: postgresql://nexo:nexo@postgres:5432/nexo?schema=public
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://nexo:nexo@rabbitmq:5672
+      CORS_ORIGINS: http://localhost:5217,http://nexo.localhost
+    ports:
+      - '3202:3202'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1:3202/health/live >/dev/null || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    security_opt:
+      - no-new-privileges:true
+
+  worker:
+    profiles: ['full']
+    build:
+      context: ..
+      dockerfile: infra/worker.Dockerfile
+    environment:
+      NODE_ENV: production
+      WORKER_PORT: 3203
+      DATABASE_URL: postgresql://nexo:nexo@postgres:5432/nexo?schema=public
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://nexo:nexo@rabbitmq:5672
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1:3203/health/live >/dev/null || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    security_opt:
+      - no-new-privileges:true
+
+  web:
+    profiles: ['full']
+    build:
+      context: ..
+      dockerfile: infra/web.Dockerfile
+    ports:
+      - '5217:8080'
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1:8080/healthz >/dev/null || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  postgres-data:
+  redis-data:
+  rabbitmq-data:

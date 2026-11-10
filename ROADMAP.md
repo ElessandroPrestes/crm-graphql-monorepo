@@ -1,65 +1,72 @@
-# Roadmap — CRM GraphQL Monorepo
+# Roadmap — Nexo CRM
 
 > **Framework de Governança**: Universal SDD (Spec-Driven Development)
-> **Status vigente**: Fase 0 — Bootstrap e adoção do SDD concluídos.
+> **Status vigente**: Fase 0 concluída; Fase 1 pendente de discovery e SPEC.
 
 O roadmap comunica direção, não compromisso de prazo. Nenhuma funcionalidade é
-implementada antes da aprovação formal de sua respectiva SPEC e TASK.
+implementada antes da aprovação formal de sua SPEC e TASK.
 
 ---
 
-## Fase 0 — Bootstrap e adoção do Universal SDD (concluída)
+## Fase 0 — Fundação (concluída)
 
-- [x] Estrutura do Universal SDD copiada para o repositório.
-- [x] Pontos de entrada de IA configurados (`AGENTS.md`, `CLAUDE.md`,
-      `GEMINI.md`, `COPILOT.md`).
-- [x] Definição normativa do núcleo (`UNIVERSAL_SDD_FRAMEWORK.md`).
-- [x] Estado canônico inicial registrado em [`PROJECT.md`](PROJECT.md).
-- [x] Base de conhecimento inicial e índice de contexto.
-- [x] Script e convenção de rastreabilidade (`scripts/generate_traceability.py`).
+- [x] pnpm workspaces + Turborepo.
+- [x] TypeScript strict, ESLint, Prettier, Husky, lint-staged e commitlint.
+- [x] Esqueletos de API, worker e web.
+- [x] Validação de ambiente, health checks e segurança básica.
+- [x] Docker Compose e Dockerfiles multi-stage non-root.
+- [x] CI com quality gates, auditoria, gitleaks, Trivy e CodeQL.
+- [x] ADRs de stack, arquitetura, segurança e acessibilidade iniciais.
+- [x] SPEC-001 / TASK-001-01 com rastreabilidade.
 
-## Fase 1 — Discovery de produto e UX
+## Fase 1 — Domínio e API núcleo
 
-- [ ] Definir problema, público, jobs-to-be-done e métricas de sucesso do CRM.
-- [ ] Levantar entidades e fluxos de domínio (contas, contatos, leads,
-      oportunidades, atividades) como hipóteses.
-- [ ] Mapear jornadas e requisitos de interface.
-- [ ] Identificar requisitos regulatórios e de privacidade (LGPD).
-- [ ] Validar e aprovar o discovery.
+- [ ] Discovery de produto/UX e base legal de dados pessoais (LGPD).
+- [ ] Modelo Prisma, migrations e seed fictício.
+- [ ] Autenticação com argon2id, JWT curto e refresh rotativo.
+- [ ] RBAC com checagem de propriedade e testes negativos entre usuários.
+- [ ] CRUD de contatos e empresas com paginação por cursor.
+- [ ] Schema GraphQL code-first, codegen e verificação de drift.
+- [ ] DataLoader e teste que afirma o número de queries da visão 360°.
+- [ ] Limites de profundidade, complexidade e aliases.
 
-## Fase 2 — Arquitetura
+## Fase 2 — Funil e dashboard
 
-- [ ] Escolher stack e ferramentas do monorepo.
-- [ ] Definir limites de pacotes/serviços e estratégia de build.
-- [ ] Definir modelo de dados, persistência e migrações.
-- [ ] Definir contrato GraphQL (schema, autorização por campo, versionamento).
-- [ ] Definir autenticação, autorização e modelo de ameaças.
-- [ ] Registrar ADRs das decisões estruturantes.
+- [ ] Negociações com etapas e concorrência otimista (`version`).
+- [ ] Linha do tempo de atividades.
+- [ ] Subscription `dealMoved` via Redis pub/sub e autorização.
+- [ ] `dashboardMetrics` com cache Redis e invalidação por evento.
 
-## Fase 3 — UX/UI e Design System
+## Fase 3 — WhatsApp e eventos
 
-- [ ] Definir princípios de design e design tokens.
-- [ ] Especificar componentes e estados.
-- [ ] Validar acessibilidade e aprovar o design antes de codar interface.
+- [ ] Porta `WhatsAppProvider` com Mock e Cloud API.
+- [ ] Webhook REST com HMAC-SHA256 e limite de corpo.
+- [ ] Publicação no RabbitMQ e worker com idempotência.
+- [ ] Retentativas com backoff e dead-letter queue.
+- [ ] Subscription `messageReceived` e mutation `sendMessage`.
+- [ ] Exportação/exclusão de dados de contato.
 
-## Fase 4 — Especificação e implementação
+## Fase 4 — Front-end
 
-- [ ] Registrar a primeira SPEC aprovada.
-- [ ] Decompor em TASKs rastreáveis.
-- [ ] Implementar somente o escopo aprovado.
-- [ ] Configurar comandos de build, lint e teste e os quality gates.
+- [ ] Login e sessão em memória com refresh em cookie HttpOnly.
+- [ ] Lista de contatos com busca e filtros.
+- [ ] Visão 360° do contato.
+- [ ] Kanban acessível com alternativa ao arrastar e soltar.
+- [ ] Inbox em tempo real com anúncios `aria-live`.
+- [ ] Dashboard, i18n pt-BR e temas claro/escuro.
 
-## Fase 5 — QA e release
+## Fase 5 — Endurecimento e entrega
 
-- [ ] Executar testes automatizados e manuais.
-- [ ] Executar auditoria de acessibilidade quando houver interface.
-- [ ] Gerar a matriz de rastreabilidade (`make` ou
-      `python3 scripts/generate_traceability.py`).
-- [ ] Publicar a primeira release com notas em [`CHANGELOG.md`](CHANGELOG.md).
+- [ ] Persisted queries e ajuste de limites/rate limits.
+- [ ] Benchmark k6 antes/depois do DataLoader com números no README.
+- [ ] E2E Playwright + axe e testes de segurança finais.
+- [ ] Modelo STRIDE finalizado e docs/a11y.md completo.
+- [ ] SBOM, Dependabot/Renovate e guia de deploy.
+- [ ] README final com GIF e resultados.
 
 ---
 
 ## Fora de compromisso atual
 
-Datas, escolha de stack, provedor de nuvem e integrações específicas não estão
-comprometidos sem uma decisão registrada em ADR ou SPEC aprovada.
+Datas, provedor de deploy e integrações específicas não estão comprometidos sem
+decisão registrada em ADR ou SPEC aprovada.

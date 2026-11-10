@@ -1,0 +1,6 @@
+{
+  "name": "@nexo/graphql-schema",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Generated GraphQL schema and typed operations (owned by Phase 1)"
+}

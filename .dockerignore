@@ -1,0 +1,16 @@
+.git
+.gitignore
+.github
+node_modules
+dist
+build
+coverage
+.turbo
+**/node_modules
+**/dist
+**/coverage
+**/.turbo
+*.log
+.env
+.env.*
+!.env.example

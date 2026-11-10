@@ -1,0 +1,20 @@
+node_modules
+dist
+build
+coverage
+.turbo
+pnpm-lock.yaml
+*.log
+
+# Documentos herdados do framework SDD, fora do escopo de formatação desta fase
+docs/agents.md
+docs/ids-and-traceability.md
+docs/knowledge-base.md
+docs/traceability-matrix.md
+docs/workflows.md
+standards/
+templates/
+knowledge/INDEX.md
+knowledge/modules/delivery-and-quality.md
+knowledge/modules/framework-overview.md
+knowledge/modules/governance-and-structure.md

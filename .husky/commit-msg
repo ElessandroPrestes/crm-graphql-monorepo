@@ -1,0 +1,2 @@
+pnpm exec commitlint --edit "$1"
+sh templates/hooks/commit-msg "$1"

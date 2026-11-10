@@ -2,44 +2,37 @@
 
 ## Metadados
 
-| Campo | Valor |
-|---|---|
-| Domínio | Produto, usuários e regras de negócio |
-| Responsável | Produto (a designar) |
-| Revisado em | 2026-11-09 |
-| Aplicabilidade | Discovery de produto/UX e especificação de funcionalidades do CRM |
-| Fonte da verdade | `PROJECT.md` e SPECs aprovadas |
+| Campo            | Valor                                                             |
+| ---------------- | ----------------------------------------------------------------- |
+| Domínio          | Produto, usuários e regras de negócio                             |
+| Responsável      | Produto (a designar)                                              |
+| Revisado em      | 2026-11-09                                                        |
+| Aplicabilidade   | Discovery de produto/UX e especificação de funcionalidades do CRM |
+| Fonte da verdade | `PROJECT.md` e SPECs aprovadas                                    |
 
 ## Estado atual
 
-Discovery não iniciado. Este módulo registra apenas o que é observável e as
-lacunas a resolver. Nenhuma entidade, regra ou requisito abaixo está aprovado.
-
-## Fatos observáveis
-
-- O repositório se chama `crm-graphql-monorepo`.
-- Não há código, schema GraphQL, banco de dados, testes ou documentação de
-  produto anteriores no repositório.
+Discovery de produto não iniciado. O briefing define o produto como um mini CRM
+para times pequenos de vendas (contatos/empresas, funil, inbox de WhatsApp e
+dashboard), mas entidades, regras e permissões ainda não foram aprovadas em
+SPEC.
 
 ## Hipóteses a validar (não aprovadas)
 
-As hipóteses abaixo servem apenas para orientar o discovery. Elas não autorizam
-implementação e devem ser confirmadas, refinadas ou descartadas por uma SPEC.
-
-- Um CRM normalmente organiza contas, contatos, leads, oportunidades e
-  atividades.
-- Um monorepo normalmente agrupa aplicações e pacotes compartilhados.
-- Uma API GraphQL normalmente expõe um schema tipado e consultas/mutações.
+- Um CRM organiza contas/empresas, contatos, leads/negócios, atividades e
+  conversas.
+- Um funil kanban exige etapas e regras de transição.
+- Um inbox de WhatsApp exige idempotência por id externo e histórico por
+  contato.
 
 ## Perguntas em aberto
 
-1. Qual problema de negócio o CRM resolve e para qual segmento?
-2. Quem são os usuários (perfis, permissões, multiusuário/multitenancy)?
-3. Quais entidades e ciclos de vida compõem o domínio?
-4. Quais integrações são necessárias (e-mail, calendário, telefonia, marketing)?
-5. Quais requisitos de privacidade e retenção (LGPD) se aplicam?
-6. Quais métricas definem sucesso do produto?
+1. Qual segmento e tamanho de time são o alvo do demo?
+2. Quais entidades e ciclos de vida compõem o domínio mínimo?
+3. Quais permissões separam ADMIN e SELLER na prática?
+4. Quais requisitos de LGPD se aplicam a contatos e mensagens?
+5. Quais métricas definem sucesso do produto?
 
 ## Fronteiras
 
-A definir após o discovery. Não presuma escopo, entidades ou integrações.
+A definir no discovery da Fase 1. Não presuma escopo, entidades ou integrações.

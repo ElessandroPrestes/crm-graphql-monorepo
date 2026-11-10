@@ -11,6 +11,8 @@ coverage/
 .nuxt/
 .cache/
 *.tsbuildinfo
+pnpm-debug.log*
+.husky/_/
 
 # Ambiente e segredos
 .env

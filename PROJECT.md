@@ -1,145 +1,179 @@
-# PROJECT: CRM GraphQL Monorepo
+# PROJECT: Nexo CRM
 
 ## Metadados
 
-| Campo | Valor |
-|---|---|
-| Nome do Projeto | CRM GraphQL Monorepo (`crm-graphql-monorepo`) |
-| Responsável | A definir (produto, engenharia e arquitetura) |
-| Estado | Discovery / Bootstrap — nenhuma funcionalidade implementada |
-| Versão ou release | `0.1.0-alpha` (adoção inicial do Universal SDD) |
-| Última revisão | 2026-11-09 |
-| Revisores | Pendente de validação humana |
-| Framework de Governança | Universal SDD (Spec-Driven Development) |
-
-> Este documento registra o estado **real** do repositório. As seções marcadas
-> como "a definir" são lacunas de discovery, não requisitos aprovados.
+| Campo                   | Valor                                                    |
+| ----------------------- | -------------------------------------------------------- |
+| Nome do Projeto         | Nexo CRM (`crm-graphql-monorepo`)                        |
+| Organização             | Portfólio pessoal                                        |
+| Responsável             | Engenharia (a designar por área)                         |
+| Estado                  | Ativo — Fase 0 (Fundação) implementada; domínio pendente |
+| Versão ou release       | `0.2.0-alpha`                                            |
+| Última revisão          | 2026-11-09                                               |
+| Revisores               | Produto / Engenharia / QA / Segurança                    |
+| Framework de Governança | Universal SDD (Spec-Driven Development)                  |
 
 ---
 
 ## 1. Visão geral e domínio
 
-- **Problema e resultado principal**: construir um CRM (Customer Relationship
-  Management) organizado como monorepo. O problema de negócio, o público e o
-  resultado esperado ainda não foram descobertos nem aprovados.
-- **Usuários e partes interessadas**: a definir no discovery de produto/UX.
-- **Termos importantes do domínio**: "CRM", "monorepo" e "GraphQL" aparecem no
-  nome do repositório; o significado de cada um no escopo do produto ainda não
-  foi validado. Nenhuma entidade de domínio (lead, conta, oportunidade, funil,
-  atividade etc.) deve ser tratada como aprovada antes de uma SPEC.
-- **Limites do sistema**: a definir. Não há integrações, contratos ou fronteiras
-  arquiteturais acordados.
+- **Problema e resultado principal**: fornecer um mini CRM para times pequenos
+  de vendas, com contatos e empresas, funil de negociações (kanban), caixa de
+  entrada de conversas de WhatsApp em tempo real e dashboard simples. O projeto
+  é também uma demonstração técnica de GraphQL como BFF tipado.
+- **Usuários e partes interessadas**: vendedores (`SELLER`) e administradores
+  (`ADMIN`). O discovery formal de personas e jornadas pertence à Fase 1.
+- **Termos importantes do domínio**: `Contact`, `Company`, `Deal`, `Activity`,
+  `Conversation`, `Message`, `User`. Os detalhes de cada entidade serão
+  aprovados em SPEC própria antes da implementação.
+- **Limites do sistema**: web, API GraphQL, worker assíncrono, PostgreSQL,
+  Redis e RabbitMQ. Webhooks, uploads e pagamentos usam REST, não GraphQL
+  ([ADR-002](adr/ADR-002-stack-api-graphql.md)).
 
 ## 2. Arquitetura
 
-- **Estilo e componentes**: não definido. Requer discovery e ADR antes de
-  qualquer implementação.
-- **Fluxos de dados**: não definidos.
-- **Integrações e contratos**: nenhum contrato GraphQL ou integração definidos.
-- **ADRs vigentes**: nenhum. Consulte `adr/` e use `templates/adr.md`.
+- **Estilo e componentes**: monorepo pnpm + Turborepo; API e worker NestJS;
+  web React + Vite; portas e adaptadores para WhatsApp, fila e cache;
+  camadas resolver → service → repository no domínio.
+- **Fluxos de dados**: web → API GraphQL; WhatsApp → webhook REST → RabbitMQ →
+  worker → PostgreSQL; API ↔ Redis para pub/sub e cache.
+- **Integrações e contratos**: GraphQL code-first (Fase 1), REST de webhook
+  (Fase 3), HMAC-SHA256 e idempotência por id externo.
+- **ADRs vigentes**: [ADR-001](adr/ADR-001-monorepo-pnpm-turborepo.md),
+  [ADR-002](adr/ADR-002-stack-api-graphql.md),
+  [ADR-003](adr/ADR-003-versoes-e-compatibilidade.md).
+- Detalhes em [`docs/architecture.md`](docs/architecture.md).
 
 ## 3. Stack e dependências
 
-| Tecnologia/dependência | Versão | Finalidade | Fonte canônica |
-|---|---|---|---|
-| A definir | — | Stack de aplicação, runtime e banco de dados | Discovery pendente |
+| Tecnologia/dependência | Versão                  | Finalidade                           | Fonte canônica             |
+| ---------------------- | ----------------------- | ------------------------------------ | -------------------------- |
+| Node.js                | 26.13.0 LTS             | Runtime                              | `.nvmrc`, `package.json`   |
+| pnpm                   | 12.18.0                 | Workspaces e lockfile                | `packageManager`           |
+| Turborepo              | 2.11.10                 | Orquestração de tarefas              | `turbo.json`               |
+| TypeScript             | 6.0.3                   | Tipagem strict                       | `packages/tsconfig`        |
+| NestJS                 | 12.4.2                  | API e worker                         | `apps/api`, `apps/worker`  |
+| React                  | 19.3.1                  | Front-end                            | `apps/web`                 |
+| Vite                   | 8.3.7                   | Build do front-end                   | `apps/web/vite.config.ts`  |
+| Tailwind CSS           | 4.3.5                   | Estilização                          | `apps/web`                 |
+| PostgreSQL             | 18.6-alpine             | Persistência (Fase 1)                | `infra/docker-compose.yml` |
+| Redis                  | 8.8.4-alpine            | Pub/sub, cache e rate limit (Fase 2) | `infra/docker-compose.yml` |
+| RabbitMQ               | 4.4.0-management-alpine | Fila de eventos (Fase 3)             | `infra/docker-compose.yml` |
 
-Nenhuma dependência de aplicação foi instalada. O repositório contém apenas a
-estrutura documental do Universal SDD e um script auxiliar em Python 3.
+Versões e justificativas de compatibilidade: [ADR-003](adr/ADR-003-versoes-e-compatibilidade.md).
 
 ## 4. Estrutura do repositório
 
-| Caminho | Responsabilidade |
-|---|---|
-| `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `COPILOT.md` | Protocolo e pontos de entrada para pessoas e agentes de IA |
-| `PROJECT.md` | Estado canônico atual do projeto (este arquivo) |
-| `UNIVERSAL_SDD_FRAMEWORK.md` | Definição normativa do núcleo |
-| `agents/` | Contratos dos papéis do ciclo SDD |
-| `workflows/` | Fluxos oficiais de feature e verificação |
-| `standards/` | Padrões normativos de código, API, dados, testes, segurança e UX |
-| `templates/` | Modelos de SPEC, TASK, ADR, revisão, QA e conhecimento |
-| `specs/` | Especificações aprovadas (atualmente vazio) |
-| `tasks/` | Tarefas vinculadas a SPECs (atualmente vazio) |
-| `reviews/` | Registros de revisão formal (atualmente vazio) |
-| `adr/` | Registros de Decisão Arquitetural (atualmente vazio) |
-| `knowledge/` | Base de conhecimento modular |
-| `profiles/` | Perfis de adoção reutilizáveis |
-| `docs/` | Guias, governança e matriz de rastreabilidade |
-| `scripts/generate_traceability.py` | Geração da matriz de rastreabilidade |
+| Caminho                        | Responsabilidade                                                |
+| ------------------------------ | --------------------------------------------------------------- |
+| `apps/api/`                    | API NestJS; health checks na Fase 0; GraphQL a partir da Fase 1 |
+| `apps/worker/`                 | Worker NestJS; health check na Fase 0; consumer na Fase 3       |
+| `apps/web/`                    | SPA React/Vite; shell acessível na Fase 0                       |
+| `packages/shared/`             | Schemas zod de ambiente e utilidades puras                      |
+| `packages/graphql-schema/`     | Schema gerado e documents (Fase 1)                              |
+| `packages/eslint-config/`      | Configuração ESLint compartilhada                               |
+| `packages/tsconfig/`           | Configurações TypeScript compartilhadas                         |
+| `infra/`                       | Docker Compose, Dockerfiles e configuração do Nginx             |
+| `specs/`, `tasks/`, `reviews/` | Rastreabilidade SDD                                             |
+| `adr/`                         | Decisões arquiteturais                                          |
+| `docs/`                        | Arquitetura, segurança, acessibilidade e guias                  |
+| `scripts/`                     | Automação de rastreabilidade                                    |
 
 ## 5. Runtime e configuração
 
-- **Pré-requisitos**: Python 3 (para `scripts/generate_traceability.py`) e Git.
-- **Instalação**: não aplicável — não há aplicação a instalar.
-- **Execução local**: não aplicável.
-- **Build**: não aplicável.
-- **Variáveis de ambiente**: nenhuma definida. Nunca registre valores secretos
-  neste documento.
+- **Pré-requisitos**: Node.js 26 LTS, pnpm 12, Docker e Docker Compose.
+- **Instalação**: `pnpm install --frozen-lockfile`.
+- **Execução local**: `pnpm dev` (sobe Postgres, Redis e RabbitMQ e inicia api,
+  worker e web). O arquivo `.env` é opcional; os defaults apontam para
+  `localhost`.
+- **Build**: `pnpm build`.
+- **Testes**: `pnpm test`.
+- **Lint/typecheck**: `pnpm lint` e `pnpm typecheck`.
+- **Infraestrutura**: `pnpm infra:up`, `pnpm infra:down` e `pnpm infra:full`
+  para o stack completo em containers.
+- **Variáveis de ambiente**: ver `.env.example`. Nenhum valor secreto real é
+  versionado.
 
 ## 6. APIs, dados e integrações
 
-- **Interfaces públicas**: nenhuma. A API GraphQL será definida por SPEC após
-  discovery e arquitetura.
-- **Persistência e migrações**: não definidas.
-- **Serviços externos**: nenhum.
-- **Compatibilidade e versionamento**: a definir.
+- **Interfaces públicas (Fase 0)**: `GET /health/live` e `GET /health/ready` na
+  API e no worker (porta interna).
+- **GraphQL**: ainda não exposto; schema e operações pertencem à Fase 1.
+- **Persistência e migrações**: não implementadas; Prisma entra na Fase 1.
+- **Serviços externos**: WhatsApp Cloud API via porta `WhatsAppProvider` na
+  Fase 3; `MockProvider` será o padrão local.
+- **Compatibilidade e versionamento**: schema GraphQL com verificação de
+  breaking changes a partir da Fase 1.
 
 ## 7. Segurança e privacidade
 
-- **Modelo de autenticação e autorização**: não definido.
-- **Classificação e retenção de dados**: não definidas. Um CRM tende a lidar com
-  dados pessoais; a classificação e a base legal (LGPD) devem ser tratadas em
-  SPEC e ADR próprios antes de qualquer coleta.
-- **Gestão de segredos**: nenhum segredo deve ser versionado. Uso previsto de
-  variáveis de ambiente ou cofre a definir.
-- **Threat model**: não elaborado.
+- **Implementado na Fase 0**: validação de ambiente com zod, helmet, CORS com
+  allowlist, `ValidationPipe` restritivo, logs pino com redação, correlation id,
+  containers non-root e CI com auditoria/varreduras.
+- **Modelo de autenticação**: JWT curto + refresh rotativo em cookie HttpOnly
+  (Fase 1).
+- **Autorização**: ADMIN vê tudo; SELLER vê apenas o que é seu, com testes
+  negativos de IDOR/BOLA (Fase 1).
+- **LGPD**: classificação, base legal, retenção e exportação/exclusão serão
+  especificadas antes de armazenar dados pessoais.
+- Riscos e mapeamento OWASP: [`docs/security.md`](docs/security.md).
 
 ## 8. Experiência, design e acessibilidade
 
-- **Plataformas e usuários**: não definidos.
-- **Design system e revisão**: não definidos. Interfaces exigem discovery,
-  design aprovado e Design Review antes de implementação.
-- **Baseline de acessibilidade**: alvo a declarar (recomendação do framework:
-  WCAG 2.2 AA para web).
-- **Compatibilidade, localização e conteúdo**: a definir.
+- **Plataformas e usuários**: web responsiva para times de vendas.
+- **Design system**: ainda não definido; Tailwind é a base técnica.
+- **Baseline de acessibilidade**: WCAG 2.2 AA.
+- **Fase 0**: shell semântico, skip link, landmarks, foco visível, anúncio de
+  rota e respeito a `prefers-reduced-motion`.
+- Detalhes e pendências: [`docs/a11y.md`](docs/a11y.md).
 
 ## 9. Testes e quality gates
 
-- **Comandos verificáveis**: `python3 scripts/generate_traceability.py` (matriz
-  de rastreabilidade). Comandos de build, lint e teste ainda não existem.
-- **Níveis e estratégia**: a definir em `standards/testing.md` quando houver
-  stack escolhida.
-- **Ambientes e dados**: nenhum ambiente configurado.
-- **Gates, thresholds e responsáveis**: usar `standards/quality-gates.md` como
-  referência e registrar adaptações aprovadas.
+- **Comandos verificáveis**: `pnpm lint`, `pnpm typecheck`, `pnpm test`,
+  `pnpm build`, `python3 scripts/generate_traceability.py`.
+- **Níveis**: unitários (Vitest) na Fase 0; integração com Testcontainers,
+  e2e GraphQL, componentes, e2e Playwright e testes de segurança nas fases
+  seguintes.
+- **Ambientes e dados**: Docker Compose local; seeds fictícios a partir da
+  Fase 1.
+- **Gates e responsáveis**: ver `standards/quality-gates.md`; CI em
+  `.github/workflows/ci.yml`.
 
 ## 10. CI/CD, deploy e operação
 
-- **Pipelines e artefatos**: nenhum pipeline configurado.
-- **Ambientes e promoção**: nenhum ambiente configurado.
-- **Migração e rollback**: não aplicáveis até existir aplicação.
-- **Logs, métricas, tracing e alertas**: não definidos.
+- **Pipelines**: GitHub Actions com quality gates, auditoria, gitleaks, Trivy e
+  CodeQL. Actions fixadas por SHA.
+- **Ambientes**: local via Docker Compose. Deploy será documentado na Fase 5.
+- **Migração e rollback**: não aplicáveis até existir persistência.
+- **Observabilidade**: health checks e logs estruturados na Fase 0;
+  OpenTelemetry e métricas nas fases seguintes.
 
 ## 11. Padrões de desenvolvimento
 
-- **Convenções de código**: `standards/coding.md` é a referência; a stack ainda
-  não foi escolhida.
-- **Branches, commits e revisão**: `standards/commits.md`. Commits de
-  implementação usam `Spec-Ref:` e `Task-Ref:`.
-- **Workflow e perfil SDD ativos**: `workflows/feature.md`; perfil específico de
-  tecnologia ainda não definido em `profiles/`.
+- **Convenções**: `standards/coding.md`, TypeScript strict com
+  `noUncheckedIndexedAccess`, ESLint flat e Prettier.
+- **Branches e commits**: `develop` para integração; Conventional Commits;
+  `Spec-Ref:` e `Task-Ref:` em commits de implementação.
+- **Workflow e perfil SDD**: `workflows/feature.md`; sem perfil de tecnologia
+  específico.
+- **Rastreabilidade**: [`docs/traceability-matrix.md`](docs/traceability-matrix.md).
 
 ## 12. Limitações e riscos conhecidos
 
-| Item | Impacto | Mitigação | Responsável |
-|---|---|---|---|
-| Escopo de produto não descoberto | Alto — risco de construir a solução errada | Concluir discovery e aprovar SPEC antes de codar | Produto / Engenharia |
-| Stack e arquitetura indefinidas | Alto — decisões precoces viram dívida | Registrar ADRs antes da implementação | Arquitetura |
-| Tratamento de dados pessoais (LGPD) não definido | Alto — risco legal e de segurança | Definir classificação, base legal e retenção em SPEC/ADR | Segurança / Produto |
-| Repositório sem código nem testes | Médio — não há baseline verificável | Tratar o bootstrap como Fase 0 e validar a primeira mudança | Engenharia |
+| Item                                              | Impacto | Mitigação                                      | Responsável          |
+| ------------------------------------------------- | ------- | ---------------------------------------------- | -------------------- |
+| Domínio e regras de negócio ainda não descobertos | Alto    | Discovery e SPEC antes da Fase 1               | Produto              |
+| Sem autenticação, autorização e rate limit        | Alto    | Implementar e testar na Fase 1                 | Engenharia/Segurança |
+| Health checks não verificam dependências          | Médio   | Adicionar checks reais por fase                | Engenharia           |
+| Deploy não documentado                            | Médio   | Guia de deploy na Fase 5                       | Engenharia           |
+| Cobertura de testes ainda inicial                 | Médio   | Ampliar pirâmide por fase e definir thresholds | QA                   |
+| LGPD não implementada                             | Alto    | Especificar antes de dados pessoais            | Produto/Segurança    |
 
 ## 13. Tecnologias e abordagens intencionalmente não usadas
 
-| Item | Motivo | Reavaliar quando |
-|---|---|---|
-| A definir | Nenhuma decisão técnica foi tomada ainda | Durante o discovery de arquitetura |
+| Item                                     | Motivo                                                  | Reavaliar quando                                      |
+| ---------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------- |
+| GraphQL para webhooks/uploads/pagamentos | Semântica inadequada; HMAC e resposta rápida pedem REST | Se o fluxo deixar de ser orientado a eventos/arquivos |
+| Nx                                       | Complexidade além do escopo atual                       | Se o monorepo crescer muito e exigir grafo avançado   |
+| Jest na API                              | Vitest uniformiza o tooling e atende ao NestJS          | Se algum recurso do NestJS exigir Jest                |
+| Dados reais em seeds                     | Privacidade e segurança                                 | Nunca para este projeto de demonstração               |
