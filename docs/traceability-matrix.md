@@ -4,8 +4,8 @@ Gerado por `scripts/generate_traceability.py`. Não edite manualmente; execute n
 
 | SPEC | Status | Tarefas (Tasks) | Commits | QA/revisão |
 |---|---|---|---|---|
-| [SPEC-001](../specs/SPEC-001-fase-0-fundacao.md) | Approved | [TASK-001-01](../tasks/TASK-001-01-fase-0-fundacao.md) (Done) | — | — |
+| [SPEC-001](../specs/SPEC-001-fase-0-fundacao.md) | Approved | [TASK-001-01](../tasks/TASK-001-01-fase-0-fundacao.md) (Done) | `9c4066ed` feat: implementa fundação do Nexo CRM | — |
 
 ## Lacunas de rastreabilidade (Traceability gaps)
 
-- `TASK-001-01` não possui commit com `Task-Ref: TASK-001-01`.
+- Nenhuma detectada nos artefatos verificados.
