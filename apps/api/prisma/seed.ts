@@ -29,7 +29,18 @@ const ids = {
   sellerOneActivityMeeting: 'dddddddd-dddd-4ddd-8ddd-ddddddddddd3',
   sellerTwoActivityEmail: 'dddddddd-dddd-4ddd-8ddd-ddddddddddd4',
   sellerTwoActivityCall: 'dddddddd-dddd-4ddd-8ddd-ddddddddddd5',
+  sellerOneAccount: 'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeee1',
+  sellerTwoAccount: 'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeee2',
+  sellerOneConversation: 'abababab-abab-4bab-8bab-abababababa1',
+  sellerTwoConversation: 'abababab-abab-4bab-8bab-abababababa2',
+  sellerOneMessageInbound: 'f1f1f1f1-f1f1-4f1f-8f1f-f1f1f1f1f1f1',
+  sellerOneMessageOutbound: 'f2f2f2f2-f2f2-4f2f-8f2f-f2f2f2f2f2f2',
+  sellerTwoMessageInbound: 'f3f3f3f3-f3f3-4f3f-8f3f-f3f3f3f3f3f3',
 } as const;
+
+function normalizePhone(value: string): string {
+  return value.replace(/\D/g, '');
+}
 
 async function main(): Promise<void> {
   const prisma = createPrismaClient(databaseUrl);
@@ -151,6 +162,7 @@ async function main(): Promise<void> {
         lastName: 'Exemplo',
         email: 'alice@acme.example.com',
         phone: '+55 11 90000-0001',
+        phoneNormalized: normalizePhone('+55 11 90000-0001'),
         jobTitle: 'Diretora de Compras',
         companyId: acme.id,
         ownerId: admin.id,
@@ -161,6 +173,7 @@ async function main(): Promise<void> {
         lastName: 'Exemplo',
         email: 'alice@acme.example.com',
         phone: '+55 11 90000-0001',
+        phoneNormalized: normalizePhone('+55 11 90000-0001'),
         jobTitle: 'Diretora de Compras',
         companyId: acme.id,
         ownerId: admin.id,
@@ -174,6 +187,7 @@ async function main(): Promise<void> {
         lastName: 'Exemplo',
         email: 'bruno@acme.example.com',
         phone: '+55 11 90000-0002',
+        phoneNormalized: normalizePhone('+55 11 90000-0002'),
         jobTitle: 'Gerente de TI',
         companyId: acme.id,
         ownerId: admin.id,
@@ -184,6 +198,7 @@ async function main(): Promise<void> {
         lastName: 'Exemplo',
         email: 'bruno@acme.example.com',
         phone: '+55 11 90000-0002',
+        phoneNormalized: normalizePhone('+55 11 90000-0002'),
         jobTitle: 'Gerente de TI',
         companyId: acme.id,
         ownerId: admin.id,
@@ -197,6 +212,7 @@ async function main(): Promise<void> {
         lastName: 'Exemplo',
         email: 'carla@globex.example.com',
         phone: '+55 11 90000-0003',
+        phoneNormalized: normalizePhone('+55 11 90000-0003'),
         jobTitle: 'Head de Operações',
         companyId: globex.id,
         ownerId: sellerOne.id,
@@ -207,6 +223,7 @@ async function main(): Promise<void> {
         lastName: 'Exemplo',
         email: 'carla@globex.example.com',
         phone: '+55 11 90000-0003',
+        phoneNormalized: normalizePhone('+55 11 90000-0003'),
         jobTitle: 'Head de Operações',
         companyId: globex.id,
         ownerId: sellerOne.id,
@@ -220,6 +237,7 @@ async function main(): Promise<void> {
         lastName: 'Exemplo',
         email: 'diego@globex.example.com',
         phone: '+55 11 90000-0004',
+        phoneNormalized: normalizePhone('+55 11 90000-0004'),
         jobTitle: 'Analista de Compras',
         companyId: globex.id,
         ownerId: sellerOne.id,
@@ -230,6 +248,7 @@ async function main(): Promise<void> {
         lastName: 'Exemplo',
         email: 'diego@globex.example.com',
         phone: '+55 11 90000-0004',
+        phoneNormalized: normalizePhone('+55 11 90000-0004'),
         jobTitle: 'Analista de Compras',
         companyId: globex.id,
         ownerId: sellerOne.id,
@@ -243,6 +262,7 @@ async function main(): Promise<void> {
         lastName: 'Exemplo',
         email: 'elisa@initech.example.com',
         phone: '+55 11 90000-0005',
+        phoneNormalized: normalizePhone('+55 11 90000-0005'),
         jobTitle: 'COO',
         companyId: initech.id,
         ownerId: sellerTwo.id,
@@ -253,6 +273,7 @@ async function main(): Promise<void> {
         lastName: 'Exemplo',
         email: 'elisa@initech.example.com',
         phone: '+55 11 90000-0005',
+        phoneNormalized: normalizePhone('+55 11 90000-0005'),
         jobTitle: 'COO',
         companyId: initech.id,
         ownerId: sellerTwo.id,
@@ -495,7 +516,140 @@ async function main(): Promise<void> {
       },
     });
 
-    console.log('Seed da Fase 2 concluído com dados fictícios.');
+    const sellerOneAccount = await prisma.whatsAppAccount.upsert({
+      where: { id: ids.sellerOneAccount },
+      update: {
+        phoneNumberId: 'seed-phone-seller-1',
+        displayPhoneNumber: '+55 11 80000-0001',
+        ownerId: sellerOne.id,
+      },
+      create: {
+        id: ids.sellerOneAccount,
+        phoneNumberId: 'seed-phone-seller-1',
+        displayPhoneNumber: '+55 11 80000-0001',
+        ownerId: sellerOne.id,
+      },
+    });
+
+    const sellerTwoAccount = await prisma.whatsAppAccount.upsert({
+      where: { id: ids.sellerTwoAccount },
+      update: {
+        phoneNumberId: 'seed-phone-seller-2',
+        displayPhoneNumber: '+55 11 80000-0002',
+        ownerId: sellerTwo.id,
+      },
+      create: {
+        id: ids.sellerTwoAccount,
+        phoneNumberId: 'seed-phone-seller-2',
+        displayPhoneNumber: '+55 11 80000-0002',
+        ownerId: sellerTwo.id,
+      },
+    });
+
+    await prisma.conversation.upsert({
+      where: { id: ids.sellerOneConversation },
+      update: {
+        channel: 'WHATSAPP',
+        contactId: ids.globexContactOne,
+        accountId: sellerOneAccount.id,
+        ownerId: sellerOne.id,
+        lastMessageAt: new Date('2026-11-10T14:30:00.000Z'),
+      },
+      create: {
+        id: ids.sellerOneConversation,
+        channel: 'WHATSAPP',
+        contactId: ids.globexContactOne,
+        accountId: sellerOneAccount.id,
+        ownerId: sellerOne.id,
+        lastMessageAt: new Date('2026-11-10T14:30:00.000Z'),
+      },
+    });
+
+    await prisma.conversation.upsert({
+      where: { id: ids.sellerTwoConversation },
+      update: {
+        channel: 'WHATSAPP',
+        contactId: ids.initechContactOne,
+        accountId: sellerTwoAccount.id,
+        ownerId: sellerTwo.id,
+        lastMessageAt: new Date('2026-11-10T15:00:00.000Z'),
+      },
+      create: {
+        id: ids.sellerTwoConversation,
+        channel: 'WHATSAPP',
+        contactId: ids.initechContactOne,
+        accountId: sellerTwoAccount.id,
+        ownerId: sellerTwo.id,
+        lastMessageAt: new Date('2026-11-10T15:00:00.000Z'),
+      },
+    });
+
+    await prisma.message.upsert({
+      where: { id: ids.sellerOneMessageInbound },
+      update: {
+        conversationId: ids.sellerOneConversation,
+        direction: 'INBOUND',
+        status: 'RECEIVED',
+        body: 'Olá, poderia enviar a proposta revisada?',
+        externalId: 'wamid.seed.seller1.inbound.1',
+        sentAt: new Date('2026-11-10T14:25:00.000Z'),
+      },
+      create: {
+        id: ids.sellerOneMessageInbound,
+        conversationId: ids.sellerOneConversation,
+        direction: 'INBOUND',
+        status: 'RECEIVED',
+        body: 'Olá, poderia enviar a proposta revisada?',
+        externalId: 'wamid.seed.seller1.inbound.1',
+        sentAt: new Date('2026-11-10T14:25:00.000Z'),
+      },
+    });
+
+    await prisma.message.upsert({
+      where: { id: ids.sellerOneMessageOutbound },
+      update: {
+        conversationId: ids.sellerOneConversation,
+        direction: 'OUTBOUND',
+        status: 'SENT',
+        body: 'Claro, envio ainda hoje.',
+        externalId: 'wamid.seed.seller1.outbound.1',
+        clientMessageId: 'seed-outbound-1',
+        sentAt: new Date('2026-11-10T14:30:00.000Z'),
+      },
+      create: {
+        id: ids.sellerOneMessageOutbound,
+        conversationId: ids.sellerOneConversation,
+        direction: 'OUTBOUND',
+        status: 'SENT',
+        body: 'Claro, envio ainda hoje.',
+        externalId: 'wamid.seed.seller1.outbound.1',
+        clientMessageId: 'seed-outbound-1',
+        sentAt: new Date('2026-11-10T14:30:00.000Z'),
+      },
+    });
+
+    await prisma.message.upsert({
+      where: { id: ids.sellerTwoMessageInbound },
+      update: {
+        conversationId: ids.sellerTwoConversation,
+        direction: 'INBOUND',
+        status: 'RECEIVED',
+        body: 'Podemos revisar o contrato amanhã?',
+        externalId: 'wamid.seed.seller2.inbound.1',
+        sentAt: new Date('2026-11-10T15:00:00.000Z'),
+      },
+      create: {
+        id: ids.sellerTwoMessageInbound,
+        conversationId: ids.sellerTwoConversation,
+        direction: 'INBOUND',
+        status: 'RECEIVED',
+        body: 'Podemos revisar o contrato amanhã?',
+        externalId: 'wamid.seed.seller2.inbound.1',
+        sentAt: new Date('2026-11-10T15:00:00.000Z'),
+      },
+    });
+
+    console.log('Seed da Fase 3 concluído com dados fictícios.');
     console.log('Credenciais de desenvolvimento: admin@nexo.local / NexoDemo!2026');
   } finally {
     await prisma.$disconnect();

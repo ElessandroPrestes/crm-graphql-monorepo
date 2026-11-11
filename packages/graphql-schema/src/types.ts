@@ -74,7 +74,7 @@ export type Contact = {
   readonly company?: Maybe<Company>;
   readonly companyId?: Maybe<Scalars['ID']['output']>;
   readonly createdAt: Scalars['DateTime']['output'];
-  readonly email: Scalars['String']['output'];
+  readonly email?: Maybe<Scalars['String']['output']>;
   readonly firstName: Scalars['String']['output'];
   readonly id: Scalars['ID']['output'];
   readonly jobTitle?: Maybe<Scalars['String']['output']>;
@@ -90,10 +90,51 @@ export type ContactConnection = {
   readonly pageInfo: PageInfoType;
 };
 
+export type ContactDataExport = {
+  readonly __typename?: 'ContactDataExport';
+  readonly activities: ReadonlyArray<Activity>;
+  readonly company?: Maybe<Company>;
+  readonly contact: Contact;
+  readonly conversations: ReadonlyArray<ConversationExportItem>;
+  readonly deals: ReadonlyArray<Deal>;
+  readonly exportedAt: Scalars['DateTime']['output'];
+};
+
 export type ContactEdge = {
   readonly __typename?: 'ContactEdge';
   readonly cursor: Scalars['String']['output'];
   readonly node: Contact;
+};
+
+export type Conversation = {
+  readonly __typename?: 'Conversation';
+  readonly accountId: Scalars['ID']['output'];
+  readonly channel: WhatsAppChannel;
+  readonly contact: Contact;
+  readonly contactId: Scalars['ID']['output'];
+  readonly createdAt: Scalars['DateTime']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly lastMessageAt: Scalars['DateTime']['output'];
+  readonly ownerId: Scalars['ID']['output'];
+  readonly updatedAt: Scalars['DateTime']['output'];
+};
+
+export type ConversationConnection = {
+  readonly __typename?: 'ConversationConnection';
+  readonly edges: ReadonlyArray<ConversationEdge>;
+  readonly pageInfo: PageInfoType;
+};
+
+export type ConversationEdge = {
+  readonly __typename?: 'ConversationEdge';
+  readonly cursor: Scalars['String']['output'];
+  readonly node: Conversation;
+};
+
+export type ConversationExportItem = {
+  readonly __typename?: 'ConversationExportItem';
+  readonly conversation: Conversation;
+  readonly messages: ReadonlyArray<Message>;
 };
 
 export type CreateActivityInput = {
@@ -113,7 +154,7 @@ export type CreateCompanyInput = {
 
 export type CreateContactInput = {
   readonly companyId?: InputMaybe<Scalars['ID']['input']>;
-  readonly email: Scalars['String']['input'];
+  readonly email?: InputMaybe<Scalars['String']['input']>;
   readonly firstName: Scalars['String']['input'];
   readonly jobTitle?: InputMaybe<Scalars['String']['input']>;
   readonly lastName: Scalars['String']['input'];
@@ -188,6 +229,46 @@ export type DealStageMetricType = {
   readonly valueCents: Scalars['Int']['output'];
 };
 
+export type Message = {
+  readonly __typename?: 'Message';
+  readonly body: Scalars['String']['output'];
+  readonly clientMessageId?: Maybe<Scalars['String']['output']>;
+  readonly conversationId: Scalars['ID']['output'];
+  readonly createdAt: Scalars['DateTime']['output'];
+  readonly direction: MessageDirection;
+  readonly errorCode?: Maybe<Scalars['String']['output']>;
+  readonly externalId?: Maybe<Scalars['String']['output']>;
+  readonly id: Scalars['ID']['output'];
+  readonly sentAt: Scalars['DateTime']['output'];
+  readonly status: MessageStatus;
+};
+
+export type MessageConnection = {
+  readonly __typename?: 'MessageConnection';
+  readonly edges: ReadonlyArray<MessageEdge>;
+  readonly pageInfo: PageInfoType;
+};
+
+/** Direção da mensagem na conversa. */
+export enum MessageDirection {
+  Inbound = 'INBOUND',
+  Outbound = 'OUTBOUND'
+}
+
+export type MessageEdge = {
+  readonly __typename?: 'MessageEdge';
+  readonly cursor: Scalars['String']['output'];
+  readonly node: Message;
+};
+
+/** Estado de processamento ou envio da mensagem. */
+export enum MessageStatus {
+  Failed = 'FAILED',
+  Queued = 'QUEUED',
+  Received = 'RECEIVED',
+  Sent = 'SENT'
+}
+
 export type Mutation = {
   readonly __typename?: 'Mutation';
   readonly createActivity: Activity;
@@ -197,6 +278,8 @@ export type Mutation = {
   readonly deleteCompany: Scalars['Boolean']['output'];
   readonly deleteContact: Scalars['Boolean']['output'];
   readonly deleteDeal: Scalars['Boolean']['output'];
+  readonly exportContactData: ContactDataExport;
+  readonly sendMessage: Message;
   readonly updateCompany: Company;
   readonly updateContact: Contact;
   readonly updateDeal: Deal;
@@ -238,6 +321,16 @@ export type MutationDeleteDealArgs = {
 };
 
 
+export type MutationExportContactDataArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationSendMessageArgs = {
+  input: SendMessageInput;
+};
+
+
 export type MutationUpdateCompanyArgs = {
   id: Scalars['ID']['input'];
   input: UpdateCompanyInput;
@@ -268,10 +361,13 @@ export type Query = {
   readonly company: Company;
   readonly contact: Contact;
   readonly contacts: ContactConnection;
+  readonly conversation: Conversation;
+  readonly conversations: ConversationConnection;
   readonly dashboardMetrics: DashboardMetrics;
   readonly deal: Deal;
   readonly deals: DealConnection;
   readonly me: User;
+  readonly messages: MessageConnection;
 };
 
 
@@ -305,6 +401,17 @@ export type QueryContactsArgs = {
 };
 
 
+export type QueryConversationArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryConversationsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type QueryDashboardMetricsArgs = {
   periodEnd?: InputMaybe<Scalars['DateTime']['input']>;
   periodStart?: InputMaybe<Scalars['DateTime']['input']>;
@@ -321,14 +428,33 @@ export type QueryDealsArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
 };
 
+
+export type QueryMessagesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  conversationId: Scalars['ID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type SendMessageInput = {
+  readonly clientMessageId?: InputMaybe<Scalars['String']['input']>;
+  readonly conversationId: Scalars['ID']['input'];
+  readonly text: Scalars['String']['input'];
+};
+
 export type Subscription = {
   readonly __typename?: 'Subscription';
   readonly dealMoved: Deal;
+  readonly messageReceived: Message;
 };
 
 
 export type SubscriptionDealMovedArgs = {
   dealId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+
+export type SubscriptionMessageReceivedArgs = {
+  conversationId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type UpdateCompanyInput = {
@@ -369,4 +495,9 @@ export type User = {
 export enum UserRole {
   Admin = 'ADMIN',
   Seller = 'SELLER'
+}
+
+/** Canais de conversa suportados. */
+export enum WhatsAppChannel {
+  Whatsapp = 'WHATSAPP'
 }

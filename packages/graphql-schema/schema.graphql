@@ -58,7 +58,7 @@ type Contact {
   company: Company
   companyId: ID
   createdAt: DateTime!
-  email: String!
+  email: String
   firstName: String!
   id: ID!
   jobTitle: String
@@ -73,9 +73,45 @@ type ContactConnection {
   pageInfo: PageInfoType!
 }
 
+type ContactDataExport {
+  activities: [Activity!]!
+  company: Company
+  contact: Contact!
+  conversations: [ConversationExportItem!]!
+  deals: [Deal!]!
+  exportedAt: DateTime!
+}
+
 type ContactEdge {
   cursor: String!
   node: Contact!
+}
+
+type Conversation {
+  accountId: ID!
+  channel: WhatsAppChannel!
+  contact: Contact!
+  contactId: ID!
+  createdAt: DateTime!
+  id: ID!
+  lastMessageAt: DateTime!
+  ownerId: ID!
+  updatedAt: DateTime!
+}
+
+type ConversationConnection {
+  edges: [ConversationEdge!]!
+  pageInfo: PageInfoType!
+}
+
+type ConversationEdge {
+  cursor: String!
+  node: Conversation!
+}
+
+type ConversationExportItem {
+  conversation: Conversation!
+  messages: [Message!]!
 }
 
 input CreateActivityInput {
@@ -95,7 +131,7 @@ input CreateCompanyInput {
 
 input CreateContactInput {
   companyId: ID
-  email: String!
+  email: String
   firstName: String!
   jobTitle: String
   lastName: String!
@@ -170,6 +206,43 @@ type DealStageMetricType {
   valueCents: Int!
 }
 
+type Message {
+  body: String!
+  clientMessageId: String
+  conversationId: ID!
+  createdAt: DateTime!
+  direction: MessageDirection!
+  errorCode: String
+  externalId: String
+  id: ID!
+  sentAt: DateTime!
+  status: MessageStatus!
+}
+
+type MessageConnection {
+  edges: [MessageEdge!]!
+  pageInfo: PageInfoType!
+}
+
+"""Direção da mensagem na conversa."""
+enum MessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+type MessageEdge {
+  cursor: String!
+  node: Message!
+}
+
+"""Estado de processamento ou envio da mensagem."""
+enum MessageStatus {
+  FAILED
+  QUEUED
+  RECEIVED
+  SENT
+}
+
 type Mutation {
   createActivity(input: CreateActivityInput!): Activity!
   createCompany(input: CreateCompanyInput!): Company!
@@ -178,6 +251,8 @@ type Mutation {
   deleteCompany(id: ID!): Boolean!
   deleteContact(id: ID!): Boolean!
   deleteDeal(id: ID!): Boolean!
+  exportContactData(id: ID!): ContactDataExport!
+  sendMessage(input: SendMessageInput!): Message!
   updateCompany(id: ID!, input: UpdateCompanyInput!): Company!
   updateContact(id: ID!, input: UpdateContactInput!): Contact!
   updateDeal(id: ID!, input: UpdateDealInput!): Deal!
@@ -194,14 +269,24 @@ type Query {
   company(id: ID!): Company!
   contact(id: ID!): Contact!
   contacts(after: String, first: Int = 20): ContactConnection!
+  conversation(id: ID!): Conversation!
+  conversations(after: String, first: Int = 20): ConversationConnection!
   dashboardMetrics(periodEnd: DateTime, periodStart: DateTime): DashboardMetrics!
   deal(id: ID!): Deal!
   deals(after: String, first: Int = 20): DealConnection!
   me: User!
+  messages(after: String, conversationId: ID!, first: Int = 20): MessageConnection!
+}
+
+input SendMessageInput {
+  clientMessageId: String
+  conversationId: ID!
+  text: String!
 }
 
 type Subscription {
   dealMoved(dealId: ID): Deal!
+  messageReceived(conversationId: ID): Message!
 }
 
 input UpdateCompanyInput {
@@ -241,4 +326,9 @@ type User {
 enum UserRole {
   ADMIN
   SELLER
+}
+
+"""Canais de conversa suportados."""
+enum WhatsAppChannel {
+  WHATSAPP
 }

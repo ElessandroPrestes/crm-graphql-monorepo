@@ -11,8 +11,8 @@ export class ContactType {
   @Field()
   lastName!: string;
 
-  @Field()
-  email!: string;
+  @Field(() => String, { nullable: true })
+  email!: string | null;
 
   @Field(() => String, { nullable: true })
   phone!: string | null;

@@ -18,13 +18,13 @@ domínio atual cobre `User` (ADMIN/SELLER), `Company`, `Contact`, `RefreshToken`
 SELLER vê apenas os próprios registros. Negócios percorrem
 `LEAD → QUALIFIED → PROPOSAL → WON|LOST`, com `WON`/`LOST` terminais,
 concorrência otimista por `version` e timeline de atividades imutáveis.
-Conversas e mensagens continuam fora do escopo e dependem da Fase 3.
+Conversas e mensagens foram implementadas na Fase 3 (SPEC-004).
 
 ## Hipóteses a validar (não aprovadas)
 
 - Um CRM organiza contas/empresas, contatos, negócios, atividades e conversas.
-- Um inbox de WhatsApp exige idempotência por id externo e histórico por
-  contato. _(Hipótese da Fase 3.)_
+- Inbox de WhatsApp usa idempotência por id externo, histórico por contato e
+  eventos em tempo real best-effort. _(Implementado na Fase 3.)_
 
 ## Perguntas em aberto
 
@@ -35,5 +35,5 @@ Conversas e mensagens continuam fora do escopo e dependem da Fase 3.
 ## Fronteiras
 
 As Fases 1 e 2 cobrem contatos, empresas, autenticação, autorização, negócios,
-atividades e dashboard. Inbox de WhatsApp, worker, interface web e dados reais
+atividades, dashboard, inbox de WhatsApp e worker. Interface web e dados reais
 ainda não foram especificados; não presuma escopo, entidades ou integrações.

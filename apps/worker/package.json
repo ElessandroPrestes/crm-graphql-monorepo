@@ -9,7 +9,13 @@
     "build": "nest build",
     "start": "node dist/main.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "db:generate": "pnpm --filter @nexo/api db:generate",
+    "prebuild": "pnpm db:generate",
+    "pretypecheck": "pnpm db:generate",
+    "pretest": "pnpm db:generate",
+    "test:integration": "vitest run -c vitest.integration.config.ts",
+    "pretest:integration": "pnpm db:generate"
   },
   "dependencies": {
     "@nestjs/common": "12.4.2",
@@ -17,7 +23,11 @@
     "@nestjs/core": "12.4.2",
     "@nestjs/platform-express": "12.4.2",
     "@nexo/shared": "workspace:*",
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1",
+    "amqplib": "2.3.1",
     "helmet": "8.3.0",
+    "ioredis": "5.8.2",
     "pino": "10.4.0",
     "pino-http": "11.0.0",
     "reflect-metadata": "0.2.2",
@@ -27,8 +37,12 @@
   "devDependencies": {
     "@nestjs/cli": "12.0.12",
     "@nexo/tsconfig": "workspace:*",
+    "@testcontainers/postgresql": "12.2.1",
     "@types/express": "5.0.6",
     "@types/node": "26.6.6",
+    "dotenv": "18.0.10",
+    "prisma": "7.10.1",
+    "testcontainers": "12.2.1",
     "typescript": "6.0.3",
     "vitest": "5.1.0"
   }

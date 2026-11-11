@@ -1,8 +1,9 @@
 # Arquitetura
 
-Status: Fases 0, 1 e 2 concluídas. A Fase 2 adicionou negócios, atividades,
-subscriptions em tempo real e cache de dashboard; WhatsApp, worker e interface
-web entram nas fases seguintes.
+Status: Fases 0, 1, 2 e 3 concluídas. A Fase 3 adicionou webhook de WhatsApp,
+fila durável com retry/DLQ, worker idempotente, conversas/mensagens,
+subscription `messageReceived` e exportação/exclusão LGPD. A interface web
+entra na Fase 4.
 
 ## Contexto
 
@@ -25,12 +26,12 @@ flowchart LR
 | ------------- | -------------------------------------------- | ------------------------------------------------------------------------- |
 | `apps/web`    | SPA React, Apollo Client na Fase 4           | Shell acessível com Vite e Tailwind                                       |
 | `apps/api`    | GraphQL BFF, REST de webhook, autenticação   | Auth, contatos, empresas, negócios, atividades, dashboard e subscriptions |
-| `apps/worker` | Consumo de eventos do WhatsApp               | Esqueleto NestJS com health check (consumer na Fase 3)                    |
-| PostgreSQL    | Persistência principal                       | Migrations e seed das Fases 1 e 2                                         |
-| Redis         | Pub/sub de subscriptions, cache e rate limit | Pub/sub de `dealMoved` e cache do dashboard (Fase 2)                      |
-| RabbitMQ      | Fila durável de webhooks                     | Serviço no Docker Compose (uso na Fase 3)                                 |
+| `apps/worker` | Consumo de eventos do WhatsApp               | Health check, consumer, retry/DLQ e publicação Redis                      |
+| PostgreSQL    | Persistência principal                       | Migrations e seed das Fases 1, 2 e 3                                      |
+| Redis         | Pub/sub de subscriptions, cache e rate limit | Pub/sub de `dealMoved`/`messageReceived` e cache do dashboard             |
+| RabbitMQ      | Fila durável de webhooks                     | Exchange, fila inbound, retries 5s/30s/5m e DLQ                           |
 
-## Fluxo do webhook (planejado para a Fase 3)
+## Fluxo do webhook
 
 ```mermaid
 sequenceDiagram
@@ -42,11 +43,12 @@ sequenceDiagram
 
   Meta->>API: POST /webhooks/whatsapp (corpo bruto + assinatura)
   API->>API: valida HMAC-SHA256 em tempo constante e limite de tamanho
-  API->>MQ: publica evento (resposta rápida)
+  API->>MQ: publica evento persistente com confirm
   API-->>Meta: 200 OK
-  MQ->>Worker: entrega evento
+  MQ->>Worker: entrega evento (at-least-once)
   Worker->>DB: grava mensagem com id externo único (idempotência)
-  Worker->>DB: publica atualização / dispara subscription messageReceived
+  Worker->>Redis: publica evento mínimo para messageReceived
+  Redis-->>API: entrega IDs para a subscription
 ```
 
 ## Camadas da API
@@ -68,6 +70,8 @@ Dependências apontam para o domínio; integrações externas ficam em adaptador
 - Versões e compatibilidade: [ADR-003](../adr/ADR-003-versoes-e-compatibilidade.md).
 - Autenticação REST e RBAC por propriedade: [ADR-004](../adr/ADR-004-autenticacao-rest-e-rbac.md).
 - Subscriptions via `graphql-ws` e cache Redis: [ADR-005](../adr/ADR-005-subscriptions-graphql-redis.md).
+- WhatsApp, RabbitMQ e idempotência: [ADR-006](../adr/ADR-006-whatsapp-rabbitmq-idempotencia.md).
+- Exportação e exclusão LGPD: [ADR-007](../adr/ADR-007-lgpd-exportacao-exclusao.md).
 
 ## Portas locais
 
@@ -83,8 +87,10 @@ Dependências apontam para o domínio; integrações externas ficam em adaptador
 
 ## Limitações atuais
 
-- WhatsApp, RabbitMQ, worker consumidor e interface web ainda não existem.
-- Subscriptions são best-effort e não reassinam o canal após queda do Redis
-  durante a inicialização.
+- A interface web ainda não existe.
+- Subscriptions e eventos são best-effort; não há outbox transacional nem
+  exactly-once.
+- O worker reconecta ao broker, mas replay de DLQ é manual.
+- Mídia e webhooks de status do WhatsApp ficam fora do escopo.
 - Os health checks verificam apenas o processo, não dependências externas.
 - Rate limit, persisted queries e benchmark k6 ficam para a Fase 5.

@@ -3,6 +3,7 @@ __pycache__/
 
 # Node / monorepo
 apps/api/src/generated/
+apps/worker/src/generated/
 node_modules/
 dist/
 build/

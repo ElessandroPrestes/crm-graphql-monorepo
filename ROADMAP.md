@@ -1,7 +1,7 @@
 # Roadmap — Nexo CRM
 
 > **Framework de Governança**: Universal SDD (Spec-Driven Development)
-> **Status vigente**: Fases 0, 1 e 2 concluídas; Fase 3 pendente de discovery e SPEC.
+> **Status vigente**: Fases 0, 1, 2 e 3 concluídas; Fase 4 pendente.
 
 O roadmap comunica direção, não compromisso de prazo. Nenhuma funcionalidade é
 implementada antes da aprovação formal de sua SPEC e TASK.
@@ -47,14 +47,21 @@ implementada antes da aprovação formal de sua SPEC e TASK.
 > `adr/ADR-005-subscriptions-graphql-redis.md` e testes em
 > `apps/api/test/fase-2.e2e.test.ts`.
 
-## Fase 3 — WhatsApp e eventos
+## Fase 3 — WhatsApp e eventos (concluída)
 
-- [ ] Porta `WhatsAppProvider` com Mock e Cloud API.
-- [ ] Webhook REST com HMAC-SHA256 e limite de corpo.
-- [ ] Publicação no RabbitMQ e worker com idempotência.
-- [ ] Retentativas com backoff e dead-letter queue.
-- [ ] Subscription `messageReceived` e mutation `sendMessage`.
-- [ ] Exportação/exclusão de dados de contato.
+- [x] Porta `WhatsAppProvider` com Mock e Cloud API.
+- [x] Webhook REST com HMAC-SHA256 e limite de corpo.
+- [x] Publicação no RabbitMQ e worker com idempotência.
+- [x] Retentativas com backoff e dead-letter queue.
+- [x] Subscription `messageReceived` e mutation `sendMessage`.
+- [x] Exportação/exclusão de dados de contato.
+
+> Evidências: `specs/SPEC-004-fase-3-whatsapp-eventos.md`,
+> `tasks/TASK-004-01-fase-3-whatsapp-eventos.md`,
+> `adr/ADR-006-whatsapp-rabbitmq-idempotencia.md`,
+> `adr/ADR-007-lgpd-exportacao-exclusao.md`,
+> `apps/api/test/fase-3.e2e.test.ts` e
+> `apps/worker/test/whatsapp-inbound.integration.test.ts`.
 
 ## Fase 4 — Front-end
 

@@ -5,13 +5,16 @@ import { AuthModule } from './auth/auth.module.js';
 import { CompaniesModule } from './companies/companies.module.js';
 import { validateApiEnv } from './config/env.js';
 import { ContactsModule } from './contacts/contacts.module.js';
+import { ConversationsModule } from './conversations/conversations.module.js';
 import { DashboardModule } from './dashboard/dashboard.module.js';
 import { DealsModule } from './deals/deals.module.js';
 import { GraphQLApiModule } from './graphql/graphql.module.js';
 import { HealthModule } from './health/health.module.js';
+import { MessagesModule } from './messages/messages.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { RealtimeModule } from './realtime/realtime.module.js';
 import { RedisModule } from './redis/redis.module.js';
+import { WhatsAppModule } from './whatsapp/whatsapp.module.js';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { RedisModule } from './redis/redis.module.js';
     DashboardModule,
     DealsModule,
     ActivitiesModule,
+    ConversationsModule,
+    MessagesModule,
+    WhatsAppModule,
     HealthModule,
   ],
 })

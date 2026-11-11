@@ -20,6 +20,7 @@ function contact(id: string, ownerId: string): Contact {
     lastName: 'Exemplo',
     email: `${id}@example.com`,
     phone: null,
+    phoneNormalized: null,
     jobTitle: null,
     companyId: null,
     ownerId,

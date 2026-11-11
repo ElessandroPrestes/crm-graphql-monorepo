@@ -1,4 +1,5 @@
-import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { normalizePhone } from '@nexo/shared';
 import type { AuthenticatedUser } from '../auth/auth.types.js';
 import {
   decodeCursor,
@@ -7,12 +8,31 @@ import {
   type Connection,
   type PaginationArgs,
 } from '../common/pagination.js';
-import { Prisma, type Contact } from '../generated/prisma/client.js';
+import {
+  Prisma,
+  type Activity,
+  type Company,
+  type Contact,
+  type Conversation,
+  type Deal,
+  type Message,
+} from '../generated/prisma/client.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import type { CreateContactInput, UpdateContactInput } from './contact.input.js';
 
+export interface ContactExportData {
+  exportedAt: Date;
+  contact: Contact;
+  company: Company | null;
+  deals: Deal[];
+  activities: Activity[];
+  conversations: Array<{ conversation: Conversation; messages: Message[] }>;
+}
+
 @Injectable()
 export class ContactsService {
+  private readonly logger = new Logger(ContactsService.name);
+
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async list(user: AuthenticatedUser, args: PaginationArgs): Promise<Connection<Contact>> {
@@ -60,8 +80,9 @@ export class ContactsService {
         data: {
           firstName: input.firstName,
           lastName: input.lastName,
-          email: normalizeEmail(input.email),
+          email: input.email ? normalizeEmail(input.email) : null,
           phone: normalizeOptional(input.phone),
+          phoneNormalized: normalizePhoneOrNull(input.phone),
           jobTitle: normalizeOptional(input.jobTitle),
           companyId,
           ownerId: user.id,
@@ -85,11 +106,14 @@ export class ContactsService {
     }
 
     if (input.email !== undefined) {
-      data.email = normalizeEmail(input.email);
+      data.email = input.email ? normalizeEmail(input.email) : null;
     }
 
     if (input.phone !== undefined) {
-      data.phone = normalizeOptional(input.phone);
+      const phone = normalizeOptional(input.phone);
+
+      data.phone = phone;
+      data.phoneNormalized = phone ? normalizePhone(phone) : null;
     }
 
     if (input.jobTitle !== undefined) {
@@ -113,9 +137,72 @@ export class ContactsService {
     }
   }
 
-  async delete(user: AuthenticatedUser, id: string): Promise<void> {
+  async delete(user: AuthenticatedUser, id: string, requestId?: string): Promise<void> {
     await this.findById(user, id);
+    this.audit('contact.delete', user.id, id, requestId);
     await this.prisma.contact.delete({ where: { id } });
+  }
+
+  async exportData(
+    user: AuthenticatedUser,
+    id: string,
+    requestId?: string,
+  ): Promise<ContactExportData> {
+    const contact = await this.findById(user, id);
+    const ownerScope = user.role === 'ADMIN' ? {} : { ownerId: user.id };
+
+    const [company, deals, activities, conversations] = await Promise.all([
+      contact.companyId
+        ? this.prisma.company.findFirst({
+            where: { id: contact.companyId, ...ownerScope },
+          })
+        : Promise.resolve(null),
+      this.prisma.deal.findMany({
+        where: { contactId: contact.id, ...ownerScope },
+        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      }),
+      this.prisma.activity.findMany({
+        where: { contactId: contact.id, ...ownerScope },
+        orderBy: [{ occurredAt: 'desc' }, { id: 'desc' }],
+      }),
+      this.prisma.conversation.findMany({
+        where: { contactId: contact.id, ...ownerScope },
+        orderBy: [{ lastMessageAt: 'desc' }, { id: 'desc' }],
+        include: {
+          messages: { orderBy: [{ sentAt: 'desc' }, { id: 'desc' }] },
+        },
+      }),
+    ]);
+
+    this.audit('contact.export', user.id, contact.id, requestId);
+
+    return {
+      exportedAt: new Date(),
+      contact,
+      company,
+      deals,
+      activities,
+      conversations: conversations.map((conversation) => ({
+        conversation,
+        messages: conversation.messages,
+      })),
+    };
+  }
+
+  private audit(
+    event: 'contact.export' | 'contact.delete',
+    actorId: string,
+    contactId: string,
+    requestId?: string,
+  ): void {
+    this.logger.log(
+      JSON.stringify({
+        event,
+        actorId,
+        contactId,
+        ...(requestId ? { requestId } : {}),
+      }),
+    );
   }
 
   private async resolveCompanyId(
@@ -155,9 +242,15 @@ function normalizeOptional(value: string | null | undefined): string | null {
   return trimmed.length === 0 ? null : trimmed;
 }
 
+function normalizePhoneOrNull(value: string | null | undefined): string | null {
+  const phone = normalizeOptional(value);
+
+  return phone ? normalizePhone(phone) : null;
+}
+
 function mapUniqueConstraint(error: unknown): unknown {
   if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-    return new BadRequestException('E-mail já cadastrado para este vendedor');
+    return new BadRequestException('E-mail ou telefone já cadastrado para este vendedor');
   }
 
   return error;

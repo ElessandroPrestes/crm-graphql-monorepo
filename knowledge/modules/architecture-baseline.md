@@ -15,7 +15,7 @@
 Fases 0, 1 e 2 concluídas: monorepo pnpm + Turborepo; API NestJS com REST de
 auth, GraphQL (contatos, empresas, negócios, atividades e dashboard),
 subscriptions `graphql-ws` com Redis pub/sub e DataLoaders. Worker e web ainda
-são esqueletos; WhatsApp e RabbitMQ entram na Fase 3.
+estão implementados, incluindo consumer do WhatsApp e RabbitMQ.
 
 ## Decisões tomadas
 
@@ -34,8 +34,8 @@ são esqueletos; WhatsApp e RabbitMQ entram na Fase 3.
 
 ## Decisões pendentes (exigem ADR/SPEC)
 
-1. Fila RabbitMQ, idempotência, retentativas e DLQ (Fase 3).
-2. Contrato de webhook do WhatsApp e provider de integração (Fase 3).
+1. Fila RabbitMQ, idempotência, retentativas e DLQ (Fase 3, implementado).
+2. Webhook do WhatsApp, provider, conversas/mensagens e LGPD (Fase 3, implementado).
 3. Interface web, kanban, i18n e temas (Fase 4).
 4. Rate limit, persisted queries, build/deploy, observabilidade completa e
    thresholds de cobertura (Fase 5).

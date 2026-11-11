@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { validateWorkerEnv } from './config/env.js';
 import { HealthModule } from './health/health.module.js';
+import { WhatsAppModule } from './whatsapp/whatsapp.module.js';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { HealthModule } from './health/health.module.js';
       validate: validateWorkerEnv,
     }),
     HealthModule,
+    WhatsAppModule,
   ],
 })
 export class AppModule {}

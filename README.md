@@ -1,7 +1,8 @@
 # Nexo CRM
 
-> **Status:** Fases 0 e 1 concluídas — fundação, domínio, autenticação e API
-> GraphQL prontos; funil e dashboard entram na Fase 2.
+> **Status:** Fases 0, 1, 2 e 3 concluídas — fundação, domínio, autenticação,
+> funil, dashboard, WhatsApp, worker idempotente e LGPD; front-end entra na
+> Fase 4.
 > **Governança:** Universal SDD (Spec-Driven Development).
 > **Stack:** Node.js 26 LTS · pnpm · Turborepo · NestJS · React · Vite ·
 > TypeScript · Tailwind CSS.
@@ -29,8 +30,8 @@ Fluxos de webhook, upload e pagamento permanecem em REST, conforme
 | ---- | ---------------------------------------------------------------- | --------- |
 | 0    | Fundação: monorepo, tooling, esqueletos, Docker, CI e docs       | Concluída |
 | 1    | Domínio e API núcleo: Prisma, auth, RBAC, GraphQL, DataLoader    | Concluída |
-| 2    | Funil e dashboard: negócios, concorrência, subscriptions, cache  | Pendente  |
-| 3    | WhatsApp e eventos: provider, HMAC, RabbitMQ, worker, DLQ        | Pendente  |
+| 2    | Funil e dashboard: negócios, concorrência, subscriptions, cache  | Concluída |
+| 3    | WhatsApp e eventos: provider, HMAC, RabbitMQ, worker, DLQ, LGPD  | Concluída |
 | 4    | Front-end: login, contatos, visão 360°, kanban, inbox, dashboard | Pendente  |
 | 5    | Endurecimento: persisted queries, k6, e2e, STRIDE e deploy       | Pendente  |
 
@@ -64,15 +65,16 @@ pnpm dev
 inicia as três aplicações em paralelo. Migrations e seed só precisam rodar na
 primeira execução ou após mudanças de schema.
 
-| Serviço                   | URL local                          |
-| ------------------------- | ---------------------------------- |
-| Web                       | http://localhost:5217              |
-| API — liveness            | http://localhost:3202/health/live  |
-| API — readiness           | http://localhost:3202/health/ready |
-| API — GraphQL             | http://localhost:3202/graphql      |
-| API — auth                | http://localhost:3202/auth/*       |
-| Worker — health (interna) | http://localhost:3203/health/live  |
-| RabbitMQ Management       | http://localhost:8205              |
+| Serviço                   | URL local                               |
+| ------------------------- | --------------------------------------- |
+| Web                       | http://localhost:5217                   |
+| API — liveness            | http://localhost:3202/health/live       |
+| API — readiness           | http://localhost:3202/health/ready      |
+| API — GraphQL             | http://localhost:3202/graphql           |
+| API — auth                | http://localhost:3202/auth/*            |
+| API — webhook WhatsApp    | http://localhost:3202/webhooks/whatsapp |
+| Worker — health (interna) | http://localhost:3203/health/live       |
+| RabbitMQ Management       | http://localhost:8205                   |
 
 Credenciais locais do RabbitMQ: `nexo` / `nexo`. Não use em produção.
 
@@ -99,6 +101,7 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm --filter @nexo/api test:integration
+pnpm --filter @nexo/worker test:integration
 pnpm build
 pnpm format:check
 pnpm --filter @nexo/api schema:check
@@ -119,7 +122,7 @@ pnpm infra:down
 nexo-crm/
 ├─ apps/
 │  ├─ api/                NestJS + auth REST + GraphQL + Prisma
-│  ├─ worker/             Worker NestJS + health check
+│  ├─ worker/             Worker NestJS + consumer WhatsApp
 │  └─ web/                React + Vite + Tailwind
 ├─ packages/
 │  ├─ graphql-schema/     Schema gerado, types e documents
@@ -144,6 +147,12 @@ nexo-crm/
   compatibilidade de peers.
 - [ADR-004](adr/ADR-004-autenticacao-rest-e-rbac.md): autenticação REST,
   refresh rotativo e RBAC por propriedade.
+- [ADR-005](adr/ADR-005-subscriptions-graphql-redis.md): subscriptions e cache
+  via Redis.
+- [ADR-006](adr/ADR-006-whatsapp-rabbitmq-idempotencia.md): WhatsApp, RabbitMQ
+  e idempotência.
+- [ADR-007](adr/ADR-007-lgpd-exportacao-exclusao.md): exportação e exclusão
+  LGPD.
 
 ---
 

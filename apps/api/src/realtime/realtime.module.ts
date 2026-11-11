@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { DealEventsService } from './deal-events.service.js';
+import { MessageEventsService } from './message-events.service.js';
 
 @Module({
-  providers: [DealEventsService],
-  exports: [DealEventsService],
+  providers: [DealEventsService, MessageEventsService],
+  exports: [DealEventsService, MessageEventsService],
 })
 export class RealtimeModule {}

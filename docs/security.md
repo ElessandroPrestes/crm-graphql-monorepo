@@ -28,7 +28,7 @@ marcados como **planejado**; não os trate como existentes.
 | A07 Identification and Authentication Failures | Política de senha, bloqueio progressivo, rate limit, rotação de refresh com detecção de reuso                      | Parcial (argon2id, rotação e reuso; rate limit/política pendentes)        |
 | A08 Software and Data Integrity Failures       | Actions fixadas por SHA, permissões mínimas, HMAC de webhook, builds com lockfile                                  | Parcial (Actions por SHA e lockfile na Fase 0)                            |
 | A09 Security Logging and Monitoring Failures   | pino com redação, correlation id, auditoria de eventos de segurança                                                | Parcial (pino e correlation id na Fase 0)                                 |
-| A10 Server-Side Request Forgery                | Apenas hosts fixos e configurados; nenhuma URL fornecida pelo usuário é buscada                                    | Planejado (Fase 3)                                                        |
+| A10 Server-Side Request Forgery                | Apenas hosts fixos e configurados; Cloud API usa URL base não fornecida pelo usuário                               | Parcial (Fase 3)                                                          |
 
 ## GraphQL (OWASP API Security)
 
@@ -85,22 +85,23 @@ limite explícito de corpo e desativação de field suggestions em produção.
 
 ## Riscos pendentes
 
-| Risco                                                      | Impacto | Fase alvo      |
-| ---------------------------------------------------------- | ------- | -------------- |
-| Sem rate limit de login/GraphQL                            | Alto    | Fase 5         |
-| Sem política de senha e bloqueio progressivo               | Médio   | Fase 4/5       |
-| Tokens expirados não têm job de limpeza                    | Baixo   | Fase 5         |
-| Logs ainda não possuem trilha de auditoria de segurança    | Médio   | Fase 5         |
-| Pub/sub de `dealMoved` é best-effort (sem entrega durável) | Médio   | Fase 3/5       |
-| SBOM e Dependabot ainda não configurados                   | Médio   | Fase 5         |
-| Webhook HMAC e idempotência ainda não existem              | Alto    | Fase 3         |
-| Sem TLS local obrigatório; produção depende do provedor    | Médio   | Fase 5         |
-| Retenção/exportação LGPD ainda não implementadas           | Alto    | Fase 3/5       |
-| CI das Fases 1 e 2 ainda não executada no GitHub           | Médio   | Antes do merge |
+| Risco                                                        | Impacto | Fase alvo      |
+| ------------------------------------------------------------ | ------- | -------------- |
+| Sem rate limit de login/GraphQL                              | Alto    | Fase 5         |
+| Sem política de senha e bloqueio progressivo                 | Médio   | Fase 4/5       |
+| Tokens expirados não têm job de limpeza                      | Baixo   | Fase 5         |
+| Logs ainda não possuem trilha de auditoria de segurança      | Médio   | Fase 5         |
+| Pub/sub de subscriptions é best-effort (sem entrega durável) | Médio   | Fase 5         |
+| SBOM e Dependabot ainda não configurados                     | Médio   | Fase 5         |
+| Sem TLS local obrigatório; produção depende do provedor      | Médio   | Fase 5         |
+| Política de retenção/base legal ainda não aprovada           | Alto    | Fase 5         |
+| Sem outbox/exactly-once; DLQ exige replay manual             | Médio   | Fase 5         |
+| CI das Fases 1 e 2 ainda não executada no GitHub             | Médio   | Antes do merge |
 
 ## LGPD
 
-O domínio de CRM lida com dados pessoais. As Fases 1 e 2 usam apenas dados
-fictícios em seed e testes. Antes de qualquer dado real, ainda é necessário registrar
-base legal, minimização, retenção, exportação e exclusão. Nenhum dado real é
-usado em seeds ou testes.
+O domínio de CRM lida com dados pessoais. A Fase 3 implementou exportação
+tipada (`exportContactData`) e exclusão física com cascata (`deleteContact`),
+preservando negócios com `contactId` nulo e registrando auditoria sem PII. Ainda
+é necessário aprovar base legal, minimização e retenção antes de usar dados
+reais; seeds e testes continuam exclusivamente fictícios.

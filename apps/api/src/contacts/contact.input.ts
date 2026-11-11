@@ -15,10 +15,11 @@ export class CreateContactInput {
   @MaxLength(80)
   lastName!: string;
 
-  @Field()
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   @IsEmail()
   @MaxLength(254)
-  email!: string;
+  email?: string | null;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -58,7 +59,7 @@ export class UpdateContactInput {
   @IsOptional()
   @IsEmail()
   @MaxLength(254)
-  email?: string;
+  email?: string | null;
 
   @Field(() => String, { nullable: true })
   @IsOptional()

@@ -10,6 +10,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import type { Request } from 'express';
 import type { AuthenticatedUser, GqlContext } from '../auth/auth.types.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
@@ -18,6 +19,7 @@ import type { Company, Contact } from '../generated/prisma/client.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CompanyType } from '../companies/company.type.js';
 import { ContactConnection } from './contact.connection.js';
+import { ContactDataExportType } from './contact-export.type.js';
 import { CreateContactInput, UpdateContactInput } from './contact.input.js';
 import { ContactType } from './contact.type.js';
 import { createCompanyLoader } from './company.loader.js';
@@ -71,10 +73,20 @@ export class ContactsResolver {
   async deleteContact(
     @CurrentUser() user: AuthenticatedUser,
     @Args('id', { type: () => ID }) id: string,
+    @Context() context: GqlContext,
   ): Promise<boolean> {
-    await this.contactsService.delete(user, id);
+    await this.contactsService.delete(user, id, requestIdOf(context));
 
     return true;
+  }
+
+  @Mutation(() => ContactDataExportType)
+  exportContactData(
+    @CurrentUser() user: AuthenticatedUser,
+    @Args('id', { type: () => ID }) id: string,
+    @Context() context: GqlContext,
+  ) {
+    return this.contactsService.exportData(user, id, requestIdOf(context));
   }
 
   @ResolveField(() => CompanyType, { nullable: true })
@@ -90,4 +102,10 @@ export class ContactsResolver {
 
     return context.companyLoader.load(contact.companyId);
   }
+}
+
+function requestIdOf(context: GqlContext): string | undefined {
+  const value = (context.req as (Request & { id?: unknown }) | undefined)?.id;
+
+  return typeof value === 'string' ? value : undefined;
 }

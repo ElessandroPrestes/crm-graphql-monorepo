@@ -5,6 +5,13 @@ generator client {
   importFileExtension = "js"
 }
 
+generator workerClient {
+  provider            = "prisma-client"
+  output              = "../../worker/src/generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "js"
+}
+
 datasource db {
   provider = "postgresql"
 }
@@ -30,6 +37,22 @@ enum ActivityType {
   NOTE
 }
 
+enum WhatsAppChannel {
+  WHATSAPP
+}
+
+enum MessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum MessageStatus {
+  RECEIVED
+  QUEUED
+  SENT
+  FAILED
+}
+
 model User {
   id            String         @id @default(uuid()) @db.Uuid
   name          String
@@ -43,6 +66,8 @@ model User {
   contacts      Contact[]
   deals         Deal[]
   activities    Activity[]
+  whatsappAccounts WhatsAppAccount[]
+  conversations Conversation[]
 }
 
 model RefreshToken {
@@ -83,10 +108,11 @@ model Contact {
   id         String     @id @default(uuid()) @db.Uuid
   firstName  String
   lastName   String
-  email      String
-  phone      String?
-  jobTitle   String?
-  companyId  String?    @db.Uuid
+  email          String?
+  phone          String?
+  phoneNormalized String?
+  jobTitle       String?
+  companyId      String?    @db.Uuid
   ownerId    String     @db.Uuid
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
@@ -94,8 +120,10 @@ model Contact {
   company    Company?   @relation(fields: [companyId], references: [id], onDelete: Restrict)
   deals      Deal[]
   activities Activity[]
+  conversations Conversation[]
 
   @@unique([ownerId, email])
+  @@unique([ownerId, phoneNormalized])
   @@index([ownerId, createdAt, id])
   @@index([companyId])
 }
@@ -143,4 +171,53 @@ model Activity {
   @@index([contactId, occurredAt, id])
   @@index([dealId, occurredAt, id])
   @@index([occurredAt, id])
+}
+
+model WhatsAppAccount {
+  id                 String         @id @default(uuid()) @db.Uuid
+  phoneNumberId      String         @unique
+  displayPhoneNumber String?
+  ownerId            String         @db.Uuid
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  owner              User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  conversations      Conversation[]
+
+  @@index([ownerId])
+}
+
+model Conversation {
+  id            String           @id @default(uuid()) @db.Uuid
+  channel       WhatsAppChannel  @default(WHATSAPP)
+  contactId     String           @db.Uuid
+  accountId     String           @db.Uuid
+  ownerId       String           @db.Uuid
+  lastMessageAt DateTime         @default(now())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  contact       Contact          @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  account       WhatsAppAccount  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  owner         User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  messages      Message[]
+
+  @@unique([contactId, channel])
+  @@index([ownerId, lastMessageAt, id])
+  @@index([accountId])
+}
+
+model Message {
+  id              String           @id @default(uuid()) @db.Uuid
+  conversationId  String           @db.Uuid
+  direction       MessageDirection
+  status          MessageStatus
+  body            String
+  externalId      String?          @unique
+  clientMessageId String?
+  sentAt          DateTime
+  errorCode       String?
+  createdAt       DateTime         @default(now())
+  conversation    Conversation     @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, clientMessageId])
+  @@index([conversationId, sentAt, id])
 }
