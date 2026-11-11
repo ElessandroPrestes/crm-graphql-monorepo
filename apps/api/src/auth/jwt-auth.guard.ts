@@ -17,6 +17,19 @@ export class JwtAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     if (context.getType<string>() === 'graphql') {
       const gqlContext = GqlExecutionContext.create(context).getContext<GqlContext>();
+
+      if (gqlContext.user) {
+        if (gqlContext.req) {
+          gqlContext.req.user = gqlContext.user;
+        }
+
+        return true;
+      }
+
+      if (!gqlContext.req) {
+        throw new UnauthorizedException('Sessão inválida');
+      }
+
       const user = await this.authenticate(gqlContext.req);
 
       gqlContext.user = user;

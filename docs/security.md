@@ -1,7 +1,7 @@
 # Segurança
 
-Status: Fases 0 e 1 implementadas. Este documento lista o mapeamento OWASP, o
-modelo de ameaças resumido e os riscos ainda abertos. Controles não implementados estão
+Status: Fases 0, 1 e 2 implementadas. Este documento lista o mapeamento OWASP,
+o modelo de ameaças resumido e os riscos ainda abertos. Controles não implementados estão
 marcados como **planejado**; não os trate como existentes.
 
 ## Modelo de ameaças (STRIDE resumido)
@@ -19,9 +19,9 @@ marcados como **planejado**; não os trate como existentes.
 
 | Categoria                                      | Controle no projeto                                                                                                | Status                                                                    |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
-| A01 Broken Access Control                      | Autorização em resolver/service com checagem de propriedade; negar por padrão; testes entre usuários               | Implementado (Fase 1)                                                     |
+| A01 Broken Access Control                      | Autorização em resolver/service com checagem de propriedade; negar por padrão; testes entre usuários               | Implementado (Fases 1 e 2, inclui subscriptions)                          |
 | A02 Cryptographic Failures                     | argon2id, TLS fora do local, refresh armazenado como hash, segredos fora do código                                 | Parcial (argon2id e hash de refresh; TLS produção pendente)               |
-| A03 Injection                                  | Prisma parametrizado, proibição de `$queryRawUnsafe`, validação com zod/class-validator, saída escapada pelo React | Implementado (Prisma e class-validator na Fase 1)                         |
+| A03 Injection                                  | Prisma parametrizado, proibição de `$queryRawUnsafe`, validação com zod/class-validator, saída escapada pelo React | Implementado (Fases 1 e 2)                                                |
 | A04 Insecure Design                            | ADRs, modelo de ameaças e limites definidos antes do código                                                        | Em andamento                                                              |
 | A05 Security Misconfiguration                  | helmet, CORS com allowlist, validação de env, erros genéricos, introspection off em produção                       | Parcial (helmet, CORS, env e introspection off; headers finais pendentes) |
 | A06 Vulnerable and Outdated Components         | lockfile, `pnpm audit`, Dependabot, Trivy e SBOM                                                                   | Parcial (audit e Trivy na CI; Dependabot/SBOM pendentes)                  |
@@ -32,14 +32,32 @@ marcados como **planejado**; não os trate como existentes.
 
 ## GraphQL (OWASP API Security)
 
-Implementado na Fase 1: autenticação em todas as operações, limite de
-profundidade 10, complexidade 1000, 10 aliases, paginação máxima de 100,
-introspection desativada em produção e mensagens internas genéricas. O refresh
-em cookie exige `Origin` permitida e usa `SameSite=Strict`.
+Implementado nas Fases 1 e 2: autenticação em todas as operações, limite de
+profundidade 10, complexidade 1000 (incluindo `deals` e `activities`), 10
+aliases, paginação máxima de 100, introspection desativada em produção e
+mensagens internas genéricas. O refresh em cookie exige `Origin` permitida e
+usa `SameSite=Strict`.
+
+Subscriptions: `graphql-ws` exige Bearer JWT no `connection_init`; a conexão é
+rejeitada sem token válido e cada evento `dealMoved` é filtrado por `ownerId`
+(ADMIN recebe todos). Testes negativos cobrem conexão sem token e isolamento
+entre vendedores.
 
 Pendente para fases seguintes: persisted queries, rate limit por usuário/IP,
-limite explícito de corpo, autenticação em `connection_init` e desativação de
-field suggestions em produção.
+limite explícito de corpo e desativação de field suggestions em produção.
+
+## Implementado na Fase 2
+
+- Autorização por propriedade em negócios, atividades, timeline e dashboard,
+  com testes negativos entre SELLER A e SELLER B.
+- Concorrência otimista com `version`/`expectedVersion` e conflito explícito,
+  reduzindo lost updates.
+- Subscription autenticada no `connection_init` e eventos filtrados por dono.
+- Cache do dashboard com chaves escopadas por dono/ADMIN, TTL de 30 s e
+  invalidação por versão; sem Redis, o cálculo ocorre direto no banco.
+- Validação de enums, UUIDs, limites de paginação e campos desconhecidos nos
+  inputs de negócios e atividades.
+- Seed e testes apenas com dados fictícios.
 
 ## Implementado na Fase 1
 
@@ -67,21 +85,22 @@ field suggestions em produção.
 
 ## Riscos pendentes
 
-| Risco                                                   | Impacto | Fase alvo      |
-| ------------------------------------------------------- | ------- | -------------- |
-| Sem rate limit de login/GraphQL                         | Alto    | Fase 5         |
-| Sem política de senha e bloqueio progressivo            | Médio   | Fase 4/5       |
-| Tokens expirados não têm job de limpeza                 | Baixo   | Fase 2         |
-| Logs ainda não possuem trilha de auditoria de segurança | Médio   | Fase 2         |
-| SBOM e Dependabot ainda não configurados                | Médio   | Fase 5         |
-| Webhook HMAC e idempotência ainda não existem           | Alto    | Fase 3         |
-| Sem TLS local obrigatório; produção depende do provedor | Médio   | Fase 5         |
-| Retenção/exportação LGPD ainda não implementadas        | Alto    | Fase 3/5       |
-| CI da Fase 1 ainda não executada no GitHub              | Médio   | Antes do merge |
+| Risco                                                      | Impacto | Fase alvo      |
+| ---------------------------------------------------------- | ------- | -------------- |
+| Sem rate limit de login/GraphQL                            | Alto    | Fase 5         |
+| Sem política de senha e bloqueio progressivo               | Médio   | Fase 4/5       |
+| Tokens expirados não têm job de limpeza                    | Baixo   | Fase 5         |
+| Logs ainda não possuem trilha de auditoria de segurança    | Médio   | Fase 5         |
+| Pub/sub de `dealMoved` é best-effort (sem entrega durável) | Médio   | Fase 3/5       |
+| SBOM e Dependabot ainda não configurados                   | Médio   | Fase 5         |
+| Webhook HMAC e idempotência ainda não existem              | Alto    | Fase 3         |
+| Sem TLS local obrigatório; produção depende do provedor    | Médio   | Fase 5         |
+| Retenção/exportação LGPD ainda não implementadas           | Alto    | Fase 3/5       |
+| CI das Fases 1 e 2 ainda não executada no GitHub           | Médio   | Antes do merge |
 
 ## LGPD
 
-O domínio de CRM lida com dados pessoais. A Fase 1 usa apenas dados fictícios
-em seed e testes. Antes de qualquer dado real, ainda é necessário registrar
+O domínio de CRM lida com dados pessoais. As Fases 1 e 2 usam apenas dados
+fictícios em seed e testes. Antes de qualquer dado real, ainda é necessário registrar
 base legal, minimização, retenção, exportação e exclusão. Nenhum dado real é
 usado em seeds ou testes.

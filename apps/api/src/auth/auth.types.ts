@@ -1,6 +1,6 @@
 import type DataLoader from 'dataloader';
 import type { Request } from 'express';
-import type { Company, UserRole } from '../generated/prisma/client.js';
+import type { Company, Contact, Deal, UserRole } from '../generated/prisma/client.js';
 
 export interface AuthenticatedUser {
   id: string;
@@ -17,9 +17,11 @@ export interface AccessTokenPayload {
 }
 
 export interface GqlContext {
-  req: Request;
+  req?: Request;
   user?: AuthenticatedUser;
   companyLoader?: DataLoader<string, Company | null>;
+  contactLoader?: DataLoader<string, Contact | null>;
+  dealLoader?: DataLoader<string, Deal | null>;
 }
 
 export type PublicUser = AuthenticatedUser;

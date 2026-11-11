@@ -14,6 +14,22 @@ enum UserRole {
   SELLER
 }
 
+enum DealStage {
+  LEAD
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+}
+
+enum ActivityType {
+  CALL
+  EMAIL
+  MEETING
+  NOTE
+}
+
 model User {
   id            String         @id @default(uuid()) @db.Uuid
   name          String
@@ -25,6 +41,8 @@ model User {
   refreshTokens RefreshToken[]
   companies     Company[]
   contacts      Contact[]
+  deals         Deal[]
+  activities    Activity[]
 }
 
 model RefreshToken {
@@ -55,26 +73,74 @@ model Company {
   updatedAt DateTime  @updatedAt
   owner     User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   contacts  Contact[]
+  deals     Deal[]
 
   @@index([ownerId, createdAt, id])
   @@index([createdAt, id])
 }
 
 model Contact {
-  id        String   @id @default(uuid()) @db.Uuid
-  firstName String
-  lastName  String
-  email     String
-  phone     String?
-  jobTitle  String?
-  companyId String?  @db.Uuid
-  ownerId   String   @db.Uuid
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  company   Company? @relation(fields: [companyId], references: [id], onDelete: Restrict)
+  id         String     @id @default(uuid()) @db.Uuid
+  firstName  String
+  lastName   String
+  email      String
+  phone      String?
+  jobTitle   String?
+  companyId  String?    @db.Uuid
+  ownerId    String     @db.Uuid
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  owner      User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  company    Company?   @relation(fields: [companyId], references: [id], onDelete: Restrict)
+  deals      Deal[]
+  activities Activity[]
 
   @@unique([ownerId, email])
   @@index([ownerId, createdAt, id])
   @@index([companyId])
+}
+
+model Deal {
+  id                String     @id @default(uuid()) @db.Uuid
+  title             String
+  valueCents        Int        @default(0)
+  stage             DealStage  @default(LEAD)
+  version           Int        @default(1)
+  expectedCloseDate DateTime?
+  closedAt          DateTime?
+  contactId         String?    @db.Uuid
+  companyId         String?    @db.Uuid
+  ownerId           String     @db.Uuid
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  owner             User       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  contact           Contact?   @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  company           Company?   @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  activities        Activity[]
+
+  @@index([ownerId, createdAt, id])
+  @@index([ownerId, stage, createdAt, id])
+  @@index([contactId])
+  @@index([companyId])
+  @@index([createdAt, id])
+}
+
+model Activity {
+  id         String       @id @default(uuid()) @db.Uuid
+  type       ActivityType
+  subject    String
+  notes      String?
+  occurredAt DateTime
+  contactId  String?      @db.Uuid
+  dealId     String?      @db.Uuid
+  ownerId    String       @db.Uuid
+  createdAt  DateTime     @default(now())
+  owner      User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  contact    Contact?     @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  deal       Deal?        @relation(fields: [dealId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId, occurredAt, id])
+  @@index([contactId, occurredAt, id])
+  @@index([dealId, occurredAt, id])
+  @@index([occurredAt, id])
 }

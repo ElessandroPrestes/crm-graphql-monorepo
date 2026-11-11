@@ -2,6 +2,38 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Activity {
+  contact: Contact
+  contactId: ID
+  createdAt: DateTime!
+  deal: Deal
+  dealId: ID
+  id: ID!
+  notes: String
+  occurredAt: DateTime!
+  ownerId: ID!
+  subject: String!
+  type: ActivityType!
+}
+
+type ActivityConnection {
+  edges: [ActivityEdge!]!
+  pageInfo: PageInfoType!
+}
+
+type ActivityEdge {
+  cursor: String!
+  node: Activity!
+}
+
+"""Tipos de interação registrados na linha do tempo."""
+enum ActivityType {
+  CALL
+  EMAIL
+  MEETING
+  NOTE
+}
+
 type Company {
   createdAt: DateTime!
   domain: String
@@ -46,6 +78,15 @@ type ContactEdge {
   node: Contact!
 }
 
+input CreateActivityInput {
+  contactId: ID
+  dealId: ID
+  notes: String
+  occurredAt: DateTime!
+  subject: String!
+  type: ActivityType!
+}
+
 input CreateCompanyInput {
   domain: String
   industry: String
@@ -61,18 +102,85 @@ input CreateContactInput {
   phone: String
 }
 
+input CreateDealInput {
+  companyId: ID
+  contactId: ID
+  expectedCloseDate: DateTime
+  stage: DealStage = LEAD
+  title: String!
+  valueCents: Int = 0
+}
+
+type DashboardMetrics {
+  generatedAt: DateTime!
+  lostDeals: Int!
+  lostValueCents: Int!
+  openDeals: Int!
+  openValueCents: Int!
+  stages: [DealStageMetricType!]!
+  wonDeals: Int!
+  wonValueCents: Int!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
 
+type Deal {
+  closedAt: DateTime
+  company: Company
+  companyId: ID
+  contact: Contact
+  contactId: ID
+  createdAt: DateTime!
+  expectedCloseDate: DateTime
+  id: ID!
+  ownerId: ID!
+  stage: DealStage!
+  title: String!
+  updatedAt: DateTime!
+  valueCents: Int!
+  version: Int!
+}
+
+type DealConnection {
+  edges: [DealEdge!]!
+  pageInfo: PageInfoType!
+}
+
+type DealEdge {
+  cursor: String!
+  node: Deal!
+}
+
+"""Etapas do funil de negociações."""
+enum DealStage {
+  LEAD
+  LOST
+  NEGOTIATION
+  PROPOSAL
+  QUALIFIED
+  WON
+}
+
+type DealStageMetricType {
+  count: Int!
+  stage: DealStage!
+  valueCents: Int!
+}
+
 type Mutation {
+  createActivity(input: CreateActivityInput!): Activity!
   createCompany(input: CreateCompanyInput!): Company!
   createContact(input: CreateContactInput!): Contact!
+  createDeal(input: CreateDealInput!): Deal!
   deleteCompany(id: ID!): Boolean!
   deleteContact(id: ID!): Boolean!
+  deleteDeal(id: ID!): Boolean!
   updateCompany(id: ID!, input: UpdateCompanyInput!): Company!
   updateContact(id: ID!, input: UpdateContactInput!): Contact!
+  updateDeal(id: ID!, input: UpdateDealInput!): Deal!
 }
 
 type PageInfoType {
@@ -81,11 +189,19 @@ type PageInfoType {
 }
 
 type Query {
+  activities(after: String, contactId: ID, dealId: ID, first: Int = 20): ActivityConnection!
   companies(after: String, first: Int = 20): CompanyConnection!
   company(id: ID!): Company!
   contact(id: ID!): Contact!
   contacts(after: String, first: Int = 20): ContactConnection!
+  dashboardMetrics(periodEnd: DateTime, periodStart: DateTime): DashboardMetrics!
+  deal(id: ID!): Deal!
+  deals(after: String, first: Int = 20): DealConnection!
   me: User!
+}
+
+type Subscription {
+  dealMoved(dealId: ID): Deal!
 }
 
 input UpdateCompanyInput {
@@ -101,6 +217,16 @@ input UpdateContactInput {
   jobTitle: String
   lastName: String
   phone: String
+}
+
+input UpdateDealInput {
+  companyId: ID
+  contactId: ID
+  expectedCloseDate: DateTime
+  expectedVersion: Int!
+  stage: DealStage
+  title: String
+  valueCents: Int
 }
 
 type User {

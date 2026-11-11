@@ -2,16 +2,16 @@
 
 ## Metadados
 
-| Campo                   | Valor                                                  |
-| ----------------------- | ------------------------------------------------------ |
-| Nome do Projeto         | Nexo CRM (`crm-graphql-monorepo`)                      |
-| Organização             | Portfólio pessoal                                      |
-| Responsável             | Engenharia (a designar por área)                       |
-| Estado                  | Ativo — Fase 0 e Fase 1 implementadas; Fase 2 pendente |
-| Versão ou release       | `0.2.0-alpha`                                          |
-| Última revisão          | 2026-11-09                                             |
-| Revisores               | Produto / Engenharia / QA / Segurança                  |
-| Framework de Governança | Universal SDD (Spec-Driven Development)                |
+| Campo                   | Valor                                                 |
+| ----------------------- | ----------------------------------------------------- |
+| Nome do Projeto         | Nexo CRM (`crm-graphql-monorepo`)                     |
+| Organização             | Portfólio pessoal                                     |
+| Responsável             | Engenharia (a designar por área)                      |
+| Estado                  | Ativo — Fases 0, 1 e 2 implementadas; Fase 3 pendente |
+| Versão ou release       | `0.2.0-alpha`                                         |
+| Última revisão          | 2026-11-11                                            |
+| Revisores               | Produto / Engenharia / QA / Segurança                 |
+| Framework de Governança | Universal SDD (Spec-Driven Development)               |
 
 ---
 
@@ -25,8 +25,9 @@
   (`ADMIN`). O discovery formal de personas e jornadas da Fase 1 foi
   concluído em [`docs/discovery-fase-1.md`](docs/discovery-fase-1.md).
 - **Termos importantes do domínio**: `Contact`, `Company`, `Deal`, `Activity`,
-  `Conversation`, `Message`, `User`. Os detalhes de cada entidade serão
-  aprovados em SPEC própria antes da implementação.
+  `Conversation`, `Message`, `User`. `Contact`, `Company`, `Deal` e `Activity`
+  estão implementados (SPEC-002 e SPEC-003); as demais entidades serão
+  aprovadas em SPEC própria antes da implementação.
 - **Limites do sistema**: web, API GraphQL, worker assíncrono, PostgreSQL,
   Redis e RabbitMQ. Webhooks, uploads e pagamentos usam REST, não GraphQL
   ([ADR-002](adr/ADR-002-stack-api-graphql.md)).
@@ -48,22 +49,22 @@
 
 ## 3. Stack e dependências
 
-| Tecnologia/dependência | Versão                  | Finalidade                           | Fonte canônica             |
-| ---------------------- | ----------------------- | ------------------------------------ | -------------------------- |
-| Node.js                | 26.13.0 LTS             | Runtime                              | `.nvmrc`, `package.json`   |
-| pnpm                   | 12.18.0                 | Workspaces e lockfile                | `packageManager`           |
-| Turborepo              | 2.11.10                 | Orquestração de tarefas              | `turbo.json`               |
-| TypeScript             | 6.0.3                   | Tipagem strict                       | `packages/tsconfig`        |
-| NestJS                 | 12.4.2                  | API e worker                         | `apps/api`, `apps/worker`  |
-| React                  | 19.3.1                  | Front-end                            | `apps/web`                 |
-| Vite                   | 8.3.7                   | Build do front-end                   | `apps/web/vite.config.ts`  |
-| Tailwind CSS           | 4.3.5                   | Estilização                          | `apps/web`                 |
-| PostgreSQL             | 18.6-alpine             | Persistência                         | `infra/docker-compose.yml` |
-| Prisma                 | 7.10.1                  | ORM, migrations e seed               | `apps/api/prisma`          |
-| GraphQL / Apollo       | 16.15.0 / 5.5.1         | API tipada e execução do schema      | `apps/api/src/graphql`     |
-| argon2                 | 0.45.2                  | Hash de senha (argon2id)             | `apps/api/src/auth`        |
-| Redis                  | 8.8.4-alpine            | Pub/sub, cache e rate limit (Fase 2) | `infra/docker-compose.yml` |
-| RabbitMQ               | 4.4.0-management-alpine | Fila de eventos (Fase 3)             | `infra/docker-compose.yml` |
+| Tecnologia/dependência | Versão                  | Finalidade                                    | Fonte canônica             |
+| ---------------------- | ----------------------- | --------------------------------------------- | -------------------------- |
+| Node.js                | 26.13.0 LTS             | Runtime                                       | `.nvmrc`, `package.json`   |
+| pnpm                   | 12.18.0                 | Workspaces e lockfile                         | `packageManager`           |
+| Turborepo              | 2.11.10                 | Orquestração de tarefas                       | `turbo.json`               |
+| TypeScript             | 6.0.3                   | Tipagem strict                                | `packages/tsconfig`        |
+| NestJS                 | 12.4.2                  | API e worker                                  | `apps/api`, `apps/worker`  |
+| React                  | 19.3.1                  | Front-end                                     | `apps/web`                 |
+| Vite                   | 8.3.7                   | Build do front-end                            | `apps/web/vite.config.ts`  |
+| Tailwind CSS           | 4.3.5                   | Estilização                                   | `apps/web`                 |
+| PostgreSQL             | 18.6-alpine             | Persistência                                  | `infra/docker-compose.yml` |
+| Prisma                 | 7.10.1                  | ORM, migrations e seed                        | `apps/api/prisma`          |
+| GraphQL / Apollo       | 16.15.0 / 5.5.1         | API tipada e execução do schema               | `apps/api/src/graphql`     |
+| argon2                 | 0.45.2                  | Hash de senha (argon2id)                      | `apps/api/src/auth`        |
+| Redis                  | 8.8.4-alpine            | Pub/sub e cache (Fase 2); rate limit (Fase 5) | `infra/docker-compose.yml` |
+| RabbitMQ               | 4.4.0-management-alpine | Fila de eventos (Fase 3)                      | `infra/docker-compose.yml` |
 
 Versões e justificativas de compatibilidade: [ADR-003](adr/ADR-003-versoes-e-compatibilidade.md).
 
@@ -110,9 +111,12 @@ Versões e justificativas de compatibilidade: [ADR-003](adr/ADR-003-versoes-e-co
   `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout`,
   `GET /auth/me` e `POST /graphql`.
 - **GraphQL**: schema code-first em `packages/graphql-schema/schema.graphql`,
-  com `me`, CRUD de empresas/contatos, paginação por cursor e DataLoader.
-- **Persistência e migrações**: Prisma 7 com migration inicial e seed fictício
-  (`apps/api/prisma`).
+  com `me`, CRUD de empresas/contatos/negócios, timeline de atividades,
+  `dashboardMetrics`, subscription `dealMoved`, paginação por cursor e
+  DataLoaders.
+- **Persistência e migrações**: Prisma 7 com migrations de `User`,
+  `RefreshToken`, `Company`, `Contact`, `Deal` e `Activity`, além de seed
+  fictício (`apps/api/prisma`).
 - **Serviços externos**: WhatsApp Cloud API via porta `WhatsAppProvider` na
   Fase 3; `MockProvider` será o padrão local.
 - **Compatibilidade e versionamento**: schema GraphQL versionado com drift
@@ -129,7 +133,8 @@ Versões e justificativas de compatibilidade: [ADR-003](adr/ADR-003-versoes-e-co
 - **Autorização implementada**: ADMIN vê tudo; SELLER vê apenas o que é seu,
   com testes negativos de IDOR/BOLA. Acesso negado não revela existência.
 - **GraphQL**: profundidade, complexidade e aliases limitados; introspection
-  desativada em produção; erros internos genéricos.
+  desativada em produção; erros internos genéricos; subscriptions exigem JWT
+  no `connection_init` e filtram eventos por propriedade.
 - **LGPD**: classificação, base legal, retenção e exportação/exclusão serão
   especificadas antes de armazenar dados reais; apenas dados fictícios são
   usados no momento.
@@ -150,9 +155,9 @@ Versões e justificativas de compatibilidade: [ADR-003](adr/ADR-003-versoes-e-co
   `pnpm build`, `pnpm format:check`,
   `pnpm --filter @nexo/api test:integration`, `schema:check` e
   `python3 scripts/generate_traceability.py`.
-- **Níveis**: unitários (Vitest), integração GraphQL/REST com Testcontainers
-  e testes de componentes. e2e Playwright e testes de segurança ampliados
-  entram nas fases seguintes.
+- **Níveis**: unitários (Vitest), integração GraphQL/REST/WebSocket com
+  Testcontainers (PostgreSQL e Redis) e testes de componentes. e2e Playwright
+  e testes de segurança ampliados entram nas fases seguintes.
 - **Ambientes e dados**: Docker Compose local e Testcontainers; seeds
   exclusivamente fictícios.
 - **Gates e responsáveis**: ver `standards/quality-gates.md`; CI em
@@ -180,14 +185,15 @@ Versões e justificativas de compatibilidade: [ADR-003](adr/ADR-003-versoes-e-co
 
 ## 12. Limitações e riscos conhecidos
 
-| Item                                            | Impacto | Mitigação                                      | Responsável          |
-| ----------------------------------------------- | ------- | ---------------------------------------------- | -------------------- |
-| Rate limit de login/GraphQL ainda ausente       | Alto    | Implementar na Fase 5 com Redis                | Engenharia/Segurança |
-| CI da Fase 1 ainda não executada no GitHub      | Médio   | Rodar pipeline em PR antes do merge            | Engenharia           |
-| Retenção/exportação LGPD ainda não implementada | Alto    | Especificar antes de dados reais               | Produto/Segurança    |
-| Health checks não verificam dependências        | Médio   | Adicionar checks reais por fase                | Engenharia           |
-| Deploy não documentado                          | Médio   | Guia de deploy na Fase 5                       | Engenharia           |
-| Cobertura de testes ainda inicial               | Médio   | Ampliar pirâmide por fase e definir thresholds | QA                   |
+| Item                                             | Impacto | Mitigação                                      | Responsável          |
+| ------------------------------------------------ | ------- | ---------------------------------------------- | -------------------- |
+| Rate limit de login/GraphQL ainda ausente        | Alto    | Implementar na Fase 5 com Redis                | Engenharia/Segurança |
+| CI das Fases 1 e 2 ainda não executada no GitHub | Médio   | Rodar pipeline em PR antes do merge            | Engenharia           |
+| Pub/sub de `dealMoved` é best-effort             | Médio   | Entrega durável de eventos fica fora do escopo | Engenharia           |
+| Retenção/exportação LGPD ainda não implementada  | Alto    | Especificar antes de dados reais               | Produto/Segurança    |
+| Health checks não verificam dependências         | Médio   | Adicionar checks reais por fase                | Engenharia           |
+| Deploy não documentado                           | Médio   | Guia de deploy na Fase 5                       | Engenharia           |
+| Cobertura de testes ainda inicial                | Médio   | Ampliar pirâmide por fase e definir thresholds | QA                   |
 
 ## 13. Tecnologias e abordagens intencionalmente não usadas
 

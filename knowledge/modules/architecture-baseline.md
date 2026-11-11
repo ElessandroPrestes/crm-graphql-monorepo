@@ -6,14 +6,16 @@
 | ---------------- | ------------------------------------------------------------------ |
 | Domínio          | Engenharia e arquitetura                                           |
 | Responsável      | Arquitetura (a designar)                                           |
-| Revisado em      | 2026-11-09                                                         |
+| Revisado em      | 2026-11-11                                                         |
 | Aplicabilidade   | Escolha de stack, limites do monorepo, contrato GraphQL e operação |
 | Fonte da verdade | `PROJECT.md`, ADRs aceitos e SPECs aprovadas                       |
 
 ## Estado atual
 
-Fase 0 concluída: monorepo pnpm + Turborepo com esqueletos NestJS (API e
-worker) e React/Vite (web). Sem domínio, persistência, autenticação ou GraphQL.
+Fases 0, 1 e 2 concluídas: monorepo pnpm + Turborepo; API NestJS com REST de
+auth, GraphQL (contatos, empresas, negócios, atividades e dashboard),
+subscriptions `graphql-ws` com Redis pub/sub e DataLoaders. Worker e web ainda
+são esqueletos; WhatsApp e RabbitMQ entram na Fase 3.
 
 ## Decisões tomadas
 
@@ -23,15 +25,20 @@ worker) e React/Vite (web). Sem domínio, persistência, autenticação ou Graph
 - Node 26 LTS, TypeScript 6.0.3, GraphQL 16, Prisma 7.10.1 (ADR-003).
 - Portas locais: web 5217, API 3202, worker 3203, Postgres 5402, Redis 8203,
   RabbitMQ 8204/8205.
+- Prisma com modelos de auth, contatos, empresas, negócios e atividades
+  (ADR-003 e SPEC-002/SPEC-003).
+- Apollo code-first com schema versionado e drift check (ADR-002).
+- Auth JWT curto + refresh rotativo e RBAC por propriedade (ADR-004).
+- Subscriptions `graphql-ws` autenticadas e cache do dashboard em Redis
+  (ADR-005).
 
 ## Decisões pendentes (exigem ADR/SPEC)
 
-1. Modelo Prisma, migrations e seed.
-2. Framework de servidor GraphQL (Apollo code-first) e estratégia de schema.
-3. Autenticação, autorização e autorização por campo no GraphQL.
-4. Estratégia de subscriptions (Redis pub/sub) e rate limit.
-5. Fila RabbitMQ, idempotência, retentativas e DLQ.
-6. Build/deploy, observabilidade completa e thresholds de cobertura.
+1. Fila RabbitMQ, idempotência, retentativas e DLQ (Fase 3).
+2. Contrato de webhook do WhatsApp e provider de integração (Fase 3).
+3. Interface web, kanban, i18n e temas (Fase 4).
+4. Rate limit, persisted queries, build/deploy, observabilidade completa e
+   thresholds de cobertura (Fase 5).
 
 ## Restrições conhecidas
 

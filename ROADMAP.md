@@ -1,7 +1,7 @@
 # Roadmap — Nexo CRM
 
 > **Framework de Governança**: Universal SDD (Spec-Driven Development)
-> **Status vigente**: Fases 0 e 1 concluídas; Fase 2 pendente de discovery e SPEC.
+> **Status vigente**: Fases 0, 1 e 2 concluídas; Fase 3 pendente de discovery e SPEC.
 
 O roadmap comunica direção, não compromisso de prazo. Nenhuma funcionalidade é
 implementada antes da aprovação formal de sua SPEC e TASK.
@@ -35,12 +35,17 @@ implementada antes da aprovação formal de sua SPEC e TASK.
 > `tasks/TASK-002-01-fase-1-dominio-auth-graphql.md` e testes em
 > `apps/api/test/fase-1.e2e.test.ts`.
 
-## Fase 2 — Funil e dashboard
+## Fase 2 — Funil e dashboard (concluída)
 
-- [ ] Negociações com etapas e concorrência otimista (`version`).
-- [ ] Linha do tempo de atividades.
-- [ ] Subscription `dealMoved` via Redis pub/sub e autorização.
-- [ ] `dashboardMetrics` com cache Redis e invalidação por evento.
+- [x] Negociações com etapas e concorrência otimista (`version`).
+- [x] Linha do tempo de atividades.
+- [x] Subscription `dealMoved` via Redis pub/sub e autorização.
+- [x] `dashboardMetrics` com cache Redis e invalidação por evento.
+
+> Evidências: `specs/SPEC-003-fase-2-funil-dashboard.md`,
+> `tasks/TASK-003-01-fase-2-funil-dashboard.md`,
+> `adr/ADR-005-subscriptions-graphql-redis.md` e testes em
+> `apps/api/test/fase-2.e2e.test.ts`.
 
 ## Fase 3 — WhatsApp e eventos
 

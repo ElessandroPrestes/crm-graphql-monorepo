@@ -1,7 +1,8 @@
 # Arquitetura
 
-Status: Fase 0 (fundação). O domínio, o schema GraphQL e as integrações serão
-adicionados nas fases seguintes.
+Status: Fases 0, 1 e 2 concluídas. A Fase 2 adicionou negócios, atividades,
+subscriptions em tempo real e cache de dashboard; WhatsApp, worker e interface
+web entram nas fases seguintes.
 
 ## Contexto
 
@@ -20,14 +21,14 @@ flowchart LR
 
 ## Contêineres
 
-| Contêiner     | Responsabilidade                             | Estado na Fase 0                                      |
-| ------------- | -------------------------------------------- | ----------------------------------------------------- |
-| `apps/web`    | SPA React, Apollo Client na Fase 4           | Shell acessível com Vite e Tailwind                   |
-| `apps/api`    | GraphQL BFF, REST de webhook, autenticação   | Esqueleto NestJS com health checks e segurança básica |
-| `apps/worker` | Consumo de eventos do WhatsApp               | Esqueleto NestJS com health check                     |
-| PostgreSQL    | Persistência principal                       | Serviço no Docker Compose                             |
-| Redis         | Pub/sub de subscriptions, cache e rate limit | Serviço no Docker Compose                             |
-| RabbitMQ      | Fila durável de webhooks                     | Serviço no Docker Compose                             |
+| Contêiner     | Responsabilidade                             | Estado na Fase 0                                                          |
+| ------------- | -------------------------------------------- | ------------------------------------------------------------------------- |
+| `apps/web`    | SPA React, Apollo Client na Fase 4           | Shell acessível com Vite e Tailwind                                       |
+| `apps/api`    | GraphQL BFF, REST de webhook, autenticação   | Auth, contatos, empresas, negócios, atividades, dashboard e subscriptions |
+| `apps/worker` | Consumo de eventos do WhatsApp               | Esqueleto NestJS com health check (consumer na Fase 3)                    |
+| PostgreSQL    | Persistência principal                       | Migrations e seed das Fases 1 e 2                                         |
+| Redis         | Pub/sub de subscriptions, cache e rate limit | Pub/sub de `dealMoved` e cache do dashboard (Fase 2)                      |
+| RabbitMQ      | Fila durável de webhooks                     | Serviço no Docker Compose (uso na Fase 3)                                 |
 
 ## Fluxo do webhook (planejado para a Fase 3)
 
@@ -65,6 +66,8 @@ Dependências apontam para o domínio; integrações externas ficam em adaptador
 - Monorepo e orquestração: [ADR-001](../adr/ADR-001-monorepo-pnpm-turborepo.md).
 - Stack da API, mensageria e front-end: [ADR-002](../adr/ADR-002-stack-api-graphql.md).
 - Versões e compatibilidade: [ADR-003](../adr/ADR-003-versoes-e-compatibilidade.md).
+- Autenticação REST e RBAC por propriedade: [ADR-004](../adr/ADR-004-autenticacao-rest-e-rbac.md).
+- Subscriptions via `graphql-ws` e cache Redis: [ADR-005](../adr/ADR-005-subscriptions-graphql-redis.md).
 
 ## Portas locais
 
@@ -80,6 +83,8 @@ Dependências apontam para o domínio; integrações externas ficam em adaptador
 
 ## Limitações atuais
 
-- A API ainda não expõe GraphQL.
-- Não há persistência, autenticação, subscriptions ou processamento de fila.
+- WhatsApp, RabbitMQ, worker consumidor e interface web ainda não existem.
+- Subscriptions são best-effort e não reassinam o canal após queda do Redis
+  durante a inicialização.
 - Os health checks verificam apenas o processo, não dependências externas.
+- Rate limit, persisted queries e benchmark k6 ficam para a Fase 5.

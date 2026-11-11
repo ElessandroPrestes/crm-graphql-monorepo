@@ -12,8 +12,10 @@ export const MAX_QUERY_DEPTH = 10;
 export const MAX_QUERY_COMPLEXITY = 1000;
 export const MAX_QUERY_ALIASES = 10;
 
+const LIST_FIELDS = new Set(['contacts', 'companies', 'deals', 'activities']);
+
 function fieldCost(node: FieldNode): number {
-  if (node.name.value === 'contacts' || node.name.value === 'companies') {
+  if (LIST_FIELDS.has(node.name.value)) {
     const firstArgument = node.arguments?.find((argument) => argument.name.value === 'first');
 
     if (firstArgument?.value.kind === Kind.INT) {

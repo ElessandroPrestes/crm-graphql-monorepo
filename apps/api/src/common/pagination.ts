@@ -91,6 +91,62 @@ export function toConnection<T extends { id: string; createdAt: Date }>(
   };
 }
 
+const timestampCursorSchema = z.object({
+  timestamp: z.string().datetime(),
+  id: z.string().uuid(),
+});
+
+export interface TimestampCursor {
+  timestamp: string;
+  id: string;
+}
+
+export function encodeTimestampCursor(timestamp: Date, id: string): string {
+  return Buffer.from(JSON.stringify({ timestamp: timestamp.toISOString(), id }), 'utf8').toString(
+    'base64url',
+  );
+}
+
+export function decodeTimestampCursor(cursor: string): TimestampCursor {
+  try {
+    const decoded = JSON.parse(Buffer.from(cursor, 'base64url').toString('utf8'));
+    const parsed = timestampCursorSchema.safeParse(decoded);
+
+    if (!parsed.success) {
+      throw new BadRequestException('Cursor inválido');
+    }
+
+    return parsed.data;
+  } catch (error) {
+    if (error instanceof BadRequestException) {
+      throw error;
+    }
+
+    throw new BadRequestException('Cursor inválido');
+  }
+}
+
+export function toTimestampConnection<T extends { id: string }>(
+  rows: T[],
+  size: number,
+  timestamp: (row: T) => Date,
+): Connection<T> {
+  const hasNextPage = rows.length > size;
+  const items = hasNextPage ? rows.slice(0, size) : rows;
+  const edges = items.map((node) => ({
+    node,
+    cursor: encodeTimestampCursor(timestamp(node), node.id),
+  }));
+
+  return {
+    edges,
+    pageInfo: {
+      hasNextPage,
+      endCursor: edges.at(-1)?.cursor ?? null,
+    },
+  };
+}
+
 export interface PaginationArgs {
   first?: number;
   after?: string;
