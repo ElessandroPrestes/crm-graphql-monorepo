@@ -1,7 +1,7 @@
 # Nexo CRM
 
-> **Status:** Fase 0 concluída — fundação técnica pronta; domínio e GraphQL
-> entram na Fase 1.
+> **Status:** Fases 0 e 1 concluídas — fundação, domínio, autenticação e API
+> GraphQL prontos; funil e dashboard entram na Fase 2.
 > **Governança:** Universal SDD (Spec-Driven Development).
 > **Stack:** Node.js 26 LTS · pnpm · Turborepo · NestJS · React · Vite ·
 > TypeScript · Tailwind CSS.
@@ -28,7 +28,7 @@ Fluxos de webhook, upload e pagamento permanecem em REST, conforme
 | Fase | Escopo                                                           | Status    |
 | ---- | ---------------------------------------------------------------- | --------- |
 | 0    | Fundação: monorepo, tooling, esqueletos, Docker, CI e docs       | Concluída |
-| 1    | Domínio e API núcleo: Prisma, auth, RBAC, GraphQL, DataLoader    | Pendente  |
+| 1    | Domínio e API núcleo: Prisma, auth, RBAC, GraphQL, DataLoader    | Concluída |
 | 2    | Funil e dashboard: negócios, concorrência, subscriptions, cache  | Pendente  |
 | 3    | WhatsApp e eventos: provider, HMAC, RabbitMQ, worker, DLQ        | Pendente  |
 | 4    | Front-end: login, contatos, visão 360°, kanban, inbox, dashboard | Pendente  |
@@ -54,17 +54,23 @@ npm install -g pnpm@12.18.0
 
 ```sh
 pnpm install --frozen-lockfile
+pnpm infra:up
+pnpm --filter @nexo/api db:migrate
+pnpm --filter @nexo/api db:seed
 pnpm dev
 ```
 
-`pnpm dev` sobe Postgres, Redis e RabbitMQ via Docker Compose e inicia as três
-aplicações em paralelo.
+`pnpm dev` sobe Postgres, Redis e RabbitMQ via Docker Compose (idempotente) e
+inicia as três aplicações em paralelo. Migrations e seed só precisam rodar na
+primeira execução ou após mudanças de schema.
 
 | Serviço                   | URL local                          |
 | ------------------------- | ---------------------------------- |
 | Web                       | http://localhost:5217              |
 | API — liveness            | http://localhost:3202/health/live  |
 | API — readiness           | http://localhost:3202/health/ready |
+| API — GraphQL             | http://localhost:3202/graphql      |
+| API — auth                | http://localhost:3202/auth/*       |
 | Worker — health (interna) | http://localhost:3203/health/live  |
 | RabbitMQ Management       | http://localhost:8205              |
 
@@ -76,14 +82,26 @@ Credenciais locais do RabbitMQ: `nexo` / `nexo`. Não use em produção.
 pnpm infra:full
 ```
 
+### Banco e seed
+
+```sh
+pnpm --filter @nexo/api db:migrate
+pnpm --filter @nexo/api db:seed
+```
+
+Seed local (apenas dados fictícios): `admin@nexo.local`,
+`vendedor1@nexo.local` e `vendedor2@nexo.local`, senha `NexoDemo!2026`.
+
 ### Comandos de qualidade
 
 ```sh
 pnpm lint
 pnpm typecheck
 pnpm test
+pnpm --filter @nexo/api test:integration
 pnpm build
 pnpm format:check
+pnpm --filter @nexo/api schema:check
 ```
 
 ### Infraestrutura
@@ -100,11 +118,11 @@ pnpm infra:down
 ```text
 nexo-crm/
 ├─ apps/
-│  ├─ api/                NestJS + health checks
+│  ├─ api/                NestJS + auth REST + GraphQL + Prisma
 │  ├─ worker/             Worker NestJS + health check
 │  └─ web/                React + Vite + Tailwind
 ├─ packages/
-│  ├─ graphql-schema/     Schema gerado e documents (Fase 1)
+│  ├─ graphql-schema/     Schema gerado, types e documents
 │  ├─ shared/             Schemas zod e utilidades puras
 │  ├─ eslint-config/      ESLint flat compartilhado
 │  └─ tsconfig/           TypeScript compartilhado
@@ -124,6 +142,8 @@ nexo-crm/
   Redis, RabbitMQ, React.
 - [ADR-003](adr/ADR-003-versoes-e-compatibilidade.md): versões fixadas e
   compatibilidade de peers.
+- [ADR-004](adr/ADR-004-autenticacao-rest-e-rbac.md): autenticação REST,
+  refresh rotativo e RBAC por propriedade.
 
 ---
 

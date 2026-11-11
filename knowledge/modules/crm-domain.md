@@ -12,10 +12,11 @@
 
 ## Estado atual
 
-Discovery de produto não iniciado. O briefing define o produto como um mini CRM
-para times pequenos de vendas (contatos/empresas, funil, inbox de WhatsApp e
-dashboard), mas entidades, regras e permissões ainda não foram aprovadas em
-SPEC.
+A Fase 1 foi implementada e aprovada em `SPEC-002`. O domínio atual cobre
+`User` (ADMIN/SELLER), `Company`, `Contact` e `RefreshToken`, com RBAC por
+propriedade (`ownerId`): ADMIN vê tudo e SELLER vê apenas os próprios registros.
+Negócios, atividades, conversas e mensagens continuam fora do escopo implementado
+e dependem de SPEC das fases seguintes.
 
 ## Hipóteses a validar (não aprovadas)
 
@@ -28,11 +29,12 @@ SPEC.
 ## Perguntas em aberto
 
 1. Qual segmento e tamanho de time são o alvo do demo?
-2. Quais entidades e ciclos de vida compõem o domínio mínimo?
-3. Quais permissões separam ADMIN e SELLER na prática?
-4. Quais requisitos de LGPD se aplicam a contatos e mensagens?
-5. Quais métricas definem sucesso do produto?
+2. Quais ciclos de vida e regras de transição o funil de negócios exige?
+3. Quais requisitos de LGPD se aplicam a dados reais de contatos e mensagens?
+4. Quais métricas definem sucesso do produto?
 
 ## Fronteiras
 
-A definir no discovery da Fase 1. Não presuma escopo, entidades ou integrações.
+A Fase 1 cobre contatos, empresas, autenticação e autorização. Negócios,
+atividades, inbox de WhatsApp, dashboard e dados reais ainda não foram
+especificados; não presuma escopo, entidades ou integrações.

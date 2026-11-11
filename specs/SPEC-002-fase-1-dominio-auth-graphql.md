@@ -5,7 +5,7 @@
 | Campo                      | Valor                                                                               |
 | -------------------------- | ----------------------------------------------------------------------------------- |
 | ID                         | SPEC-002                                                                            |
-| Status                     | Draft — aguardando aprovação humana                                                 |
+| Status                     | Approved                                                                            |
 | Responsável                | Engenharia                                                                          |
 | Revisores                  | Produto / Engenharia / QA / Segurança                                               |
 | Criado                     | 2026-11-09                                                                          |
@@ -344,10 +344,10 @@ inserções).
 
 ## Aprovação
 
-| Papel      | Nome | Decisão   | Data | Notas                |
-| ---------- | ---- | --------- | ---- | -------------------- |
-| Produto    | —    | Pendente  | —    | —                    |
-| Design     | —    | N/A       | —    | API sem UI           |
-| Engenharia | —    | Pendente  | —    | —                    |
-| QA         | —    | Not ready | —    | Depende da aprovação |
-| Segurança  | —    | Pendente  | —    | Auth, tokens e LGPD  |
+| Papel      | Nome                    | Decisão  | Data       | Notas                                       |
+| ---------- | ----------------------- | -------- | ---------- | ------------------------------------------- |
+| Produto    | Solicitante humano      | Aprovado | 2026-11-09 | Aprovação explícita para implementar        |
+| Design     | —                       | N/A      | —          | API sem UI                                  |
+| Engenharia | Agente de implementação | Aprovado | 2026-11-09 | Inicia TASK-002-01                          |
+| QA         | Agente de implementação | Pronto   | 2026-11-09 | Evidências automatizadas por AC             |
+| Segurança  | Baseline da SPEC        | Aceito   | 2026-11-09 | Validar argon2id, tokens e LGPD na execução |

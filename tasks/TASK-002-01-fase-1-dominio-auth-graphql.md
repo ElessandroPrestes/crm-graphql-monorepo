@@ -5,11 +5,11 @@
 | Campo        | Valor                                                                                                                  |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------- |
 | ID           | TASK-002-01                                                                                                            |
-| Status       | Planned — bloqueada até aprovação da SPEC-002                                                                          |
+| Status       | Done                                                                                                                   |
 | Responsável  | Engenharia                                                                                                             |
 | SPEC         | SPEC-002                                                                                                               |
 | Critérios    | AC-101, AC-102, AC-103, AC-104, AC-105, AC-106, AC-107, AC-108, AC-109, AC-110, AC-111, AC-112, AC-113, AC-114, AC-115 |
-| Dependências | Aprovação de SPEC-002 e do discovery da Fase 1; ADR-004 aceito                                                         |
+| Dependências | SPEC-002 aprovada; discovery da Fase 1 aceito; ADR-004 aceito                                                          |
 
 ## Objetivo
 
@@ -50,18 +50,18 @@ contatos e empresas, com isolamento entre usuários e evidências automatizadas.
 
 ## Passos
 
-- [ ] Aprovar SPEC-002 e ADR-004.
-- [ ] Validar Prisma 7 com Node 26 e PostgreSQL 18.
-- [ ] Criar schema, migration e seed.
-- [ ] Implementar auth REST, cookie e rotação de refresh.
-- [ ] Implementar guard GraphQL e RBAC por propriedade.
-- [ ] Implementar CRUD de empresas e contatos com cursor.
-- [ ] Implementar DataLoader e teste de contagem de queries.
-- [ ] Gerar schema/types e configurar drift check.
-- [ ] Configurar limites de consulta e introspection.
-- [ ] Adicionar testes unitários e de integração.
-- [ ] Rodar lint, typecheck, test e build.
-- [ ] Atualizar documentação e rastreabilidade.
+- [x] Aprovar SPEC-002 e ADR-004.
+- [x] Validar Prisma 7 com Node 26 e PostgreSQL 18.
+- [x] Criar schema, migration e seed.
+- [x] Implementar auth REST, cookie e rotação de refresh.
+- [x] Implementar guard GraphQL e RBAC por propriedade.
+- [x] Implementar CRUD de empresas e contatos com cursor.
+- [x] Implementar DataLoader e teste de contagem de queries.
+- [x] Gerar schema/types e configurar drift check.
+- [x] Configurar limites de consulta e introspection.
+- [x] Adicionar testes unitários e de integração.
+- [x] Rodar lint, typecheck, test e build.
+- [x] Atualizar documentação e rastreabilidade.
 
 ## Validação
 
@@ -85,13 +85,60 @@ contatos e empresas, com isolamento entre usuários e evidências automatizadas.
 
 ## Condição de conclusão
 
-- [ ] Escopo implementado sem expansão.
-- [ ] Testes e validações aplicáveis passam.
-- [ ] Documentação e rastreabilidade foram atualizadas.
-- [ ] Limitações e desvios estão registrados.
+- [x] Escopo implementado sem expansão.
+- [x] Testes e validações aplicáveis passam.
+- [x] Documentação e rastreabilidade foram atualizadas.
+- [x] Limitações e desvios estão registrados.
 
 ## Resultado
 
-- Mudanças realizadas: pendente de aprovação e implementação.
-- Evidências: pendente.
-- Pendências ou bloqueios: aprovação humana da SPEC-002 e do discovery.
+- Mudanças realizadas: Prisma 7 com `User`, `RefreshToken`, `Company` e
+  `Contact` (migration inicial e seed fictício); auth REST com argon2id, JWT
+  curto e refresh opaco rotativo com detecção de reuso; guard GraphQL e RBAC
+  por propriedade; CRUD GraphQL de empresas/contatos com cursor; DataLoader de
+  empresa; schema code-first, codegen e drift check; limites de profundidade,
+  complexidade e aliases; testes unitários e de integração com Testcontainers;
+  documentação e rastreabilidade atualizadas.
+- Evidências:
+  - `pnpm --filter @nexo/api db:generate`: client Prisma 7.10.1 gerado.
+  - `prisma migrate deploy` + `prisma db seed`: migration e seed aplicados no
+    PostgreSQL 18.6 local e no container de teste.
+  - `pnpm --filter @nexo/api test`: 4 arquivos, 11 testes aprovados.
+  - `pnpm --filter @nexo/api test:integration`: 1 arquivo, 9 testes aprovados
+    (auth, hash de senha/refresh, RBAC/IDOR, CRUD, paginação, limites e
+    DataLoader funcional).
+  - `pnpm lint`: sucesso com `--max-warnings 0`.
+  - `pnpm typecheck`: 6 tarefas aprovadas.
+  - `pnpm test`: 20 testes aprovados (shared 4, api 11, worker 2, web 3).
+  - `pnpm build`: 4 tarefas aprovadas.
+  - `pnpm format:check`: todos os arquivos formatados.
+  - `pnpm --filter @nexo/api schema:check`: schema e types regenerados sem
+    drift.
+- Desvios e decisões de implementação:
+  - A regra de complexidade é própria (custo por campo e multiplicador de
+    `first`), porque `graphql-query-complexity` valida variáveis durante a fase
+    de validação sem os valores da requisição e rejeitava mutations válidas.
+  - `AppModule` é importado dinamicamente no helper de teste para que
+    `DATABASE_URL` e segredos do Testcontainers sejam aplicados antes do
+    `ConfigModule` cachear o ambiente.
+  - Erros HTTP 404/409 são mapeados para `NOT_FOUND`/`CONFLICT` no
+    `formatError`, pois o driver Apollo do NestJS só traduz 400/401/403/422.
+  - `@types/express-serve-static-core` foi adicionado como dependência direta
+    da API para a augmentação de `Request.user`; `@types/node` foi adicionado
+    ao `graphql-schema` para o typecheck.
+  - Construtores Nest usam `@Inject` explícito e a geração de schema roda sobre
+    o build compilado, porque `tsx`/esbuild não emitem metadata de decorators;
+    os testes de integração usam `unplugin-swc`.
+- Limitações e pendências:
+  - Sem rate limit de login/GraphQL, política de senha, verificação de e-mail,
+    recuperação de senha ou limpeza automática de refresh expirado.
+  - A configuração de introspection off em produção foi revisada, mas não
+    exercitada por um app com `NODE_ENV=production` nos testes; o segredo de
+    acesso default é rejeitado nesse ambiente.
+  - O teste de DataLoader cobre batching unitário; contagem de queries da visão
+    360° pertence à fase que criar essa visão.
+  - Testcontainers exige Docker e adiciona ~30 s ao tempo de integração.
+  - CI da Fase 1 ainda não foi executada no GitHub; validar em PR antes do
+    merge.
+  - O commit de implementação com `Spec-Ref`/`Task-Ref` está pendente de
+    solicitação explícita; por isso a matriz registra a lacuna de commit.

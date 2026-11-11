@@ -12,4 +12,8 @@ describe('validateApiEnv', () => {
   it('rejects an invalid port', () => {
     expect(() => validateApiEnv({ API_PORT: '0' })).toThrow(/API_PORT/);
   });
+
+  it('requires an explicit access token secret in production', () => {
+    expect(() => validateApiEnv({ NODE_ENV: 'production' })).toThrow(/ACCESS_TOKEN_SECRET/);
+  });
 });

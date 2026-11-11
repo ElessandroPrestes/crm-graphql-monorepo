@@ -1,0 +1,80 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  SELLER
+}
+
+model User {
+  id            String         @id @default(uuid()) @db.Uuid
+  name          String
+  email         String         @unique
+  passwordHash  String
+  role          UserRole       @default(SELLER)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  refreshTokens RefreshToken[]
+  companies     Company[]
+  contacts      Contact[]
+}
+
+model RefreshToken {
+  id                String        @id @default(uuid()) @db.Uuid
+  userId            String        @db.Uuid
+  tokenHash         String        @unique
+  familyId          String        @db.Uuid
+  expiresAt         DateTime
+  revokedAt         DateTime?
+  replacedByTokenId String?       @unique @db.Uuid
+  createdAt         DateTime      @default(now())
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  replacedBy        RefreshToken? @relation("RefreshRotation", fields: [replacedByTokenId], references: [id], onDelete: SetNull)
+  replaces          RefreshToken? @relation("RefreshRotation")
+
+  @@index([userId])
+  @@index([familyId])
+  @@index([expiresAt])
+}
+
+model Company {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String
+  domain    String?   @unique
+  industry  String?
+  ownerId   String    @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  owner     User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  contacts  Contact[]
+
+  @@index([ownerId, createdAt, id])
+  @@index([createdAt, id])
+}
+
+model Contact {
+  id        String   @id @default(uuid()) @db.Uuid
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  jobTitle  String?
+  companyId String?  @db.Uuid
+  ownerId   String   @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Restrict)
+
+  @@unique([ownerId, email])
+  @@index([ownerId, createdAt, id])
+  @@index([companyId])
+}

@@ -4,7 +4,7 @@
 
 | Campo                     | Valor                  |
 | ------------------------- | ---------------------- |
-| Status                    | Proposed               |
+| Status                    | Accepted               |
 | Data                      | 2026-11-09             |
 | Responsáveis              | Engenharia e Segurança |
 | SPEC relacionada          | SPEC-002               |

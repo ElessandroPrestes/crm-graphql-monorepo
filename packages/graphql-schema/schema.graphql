@@ -1,0 +1,118 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Company {
+  createdAt: DateTime!
+  domain: String
+  id: ID!
+  industry: String
+  name: String!
+  ownerId: ID!
+  updatedAt: DateTime!
+}
+
+type CompanyConnection {
+  edges: [CompanyEdge!]!
+  pageInfo: PageInfoType!
+}
+
+type CompanyEdge {
+  cursor: String!
+  node: Company!
+}
+
+type Contact {
+  company: Company
+  companyId: ID
+  createdAt: DateTime!
+  email: String!
+  firstName: String!
+  id: ID!
+  jobTitle: String
+  lastName: String!
+  ownerId: ID!
+  phone: String
+  updatedAt: DateTime!
+}
+
+type ContactConnection {
+  edges: [ContactEdge!]!
+  pageInfo: PageInfoType!
+}
+
+type ContactEdge {
+  cursor: String!
+  node: Contact!
+}
+
+input CreateCompanyInput {
+  domain: String
+  industry: String
+  name: String!
+}
+
+input CreateContactInput {
+  companyId: ID
+  email: String!
+  firstName: String!
+  jobTitle: String
+  lastName: String!
+  phone: String
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  createCompany(input: CreateCompanyInput!): Company!
+  createContact(input: CreateContactInput!): Contact!
+  deleteCompany(id: ID!): Boolean!
+  deleteContact(id: ID!): Boolean!
+  updateCompany(id: ID!, input: UpdateCompanyInput!): Company!
+  updateContact(id: ID!, input: UpdateContactInput!): Contact!
+}
+
+type PageInfoType {
+  endCursor: String
+  hasNextPage: Boolean!
+}
+
+type Query {
+  companies(after: String, first: Int = 20): CompanyConnection!
+  company(id: ID!): Company!
+  contact(id: ID!): Contact!
+  contacts(after: String, first: Int = 20): ContactConnection!
+  me: User!
+}
+
+input UpdateCompanyInput {
+  domain: String
+  industry: String
+  name: String
+}
+
+input UpdateContactInput {
+  companyId: ID
+  email: String
+  firstName: String
+  jobTitle: String
+  lastName: String
+  phone: String
+}
+
+type User {
+  createdAt: DateTime!
+  email: String!
+  id: ID!
+  name: String!
+  role: UserRole!
+}
+
+"""Papel do usuário no CRM."""
+enum UserRole {
+  ADMIN
+  SELLER
+}

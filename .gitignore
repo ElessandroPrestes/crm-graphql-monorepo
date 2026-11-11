@@ -2,6 +2,7 @@ __pycache__/
 *.py[cod]
 
 # Node / monorepo
+apps/api/src/generated/
 node_modules/
 dist/
 build/

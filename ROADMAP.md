@@ -1,7 +1,7 @@
 # Roadmap — Nexo CRM
 
 > **Framework de Governança**: Universal SDD (Spec-Driven Development)
-> **Status vigente**: Fase 0 concluída; Fase 1 pendente de discovery e SPEC.
+> **Status vigente**: Fases 0 e 1 concluídas; Fase 2 pendente de discovery e SPEC.
 
 O roadmap comunica direção, não compromisso de prazo. Nenhuma funcionalidade é
 implementada antes da aprovação formal de sua SPEC e TASK.
@@ -19,16 +19,21 @@ implementada antes da aprovação formal de sua SPEC e TASK.
 - [x] ADRs de stack, arquitetura, segurança e acessibilidade iniciais.
 - [x] SPEC-001 / TASK-001-01 com rastreabilidade.
 
-## Fase 1 — Domínio e API núcleo
+## Fase 1 — Domínio e API núcleo (concluída)
 
-- [ ] Discovery de produto/UX e base legal de dados pessoais (LGPD).
-- [ ] Modelo Prisma, migrations e seed fictício.
-- [ ] Autenticação com argon2id, JWT curto e refresh rotativo.
-- [ ] RBAC com checagem de propriedade e testes negativos entre usuários.
-- [ ] CRUD de contatos e empresas com paginação por cursor.
-- [ ] Schema GraphQL code-first, codegen e verificação de drift.
-- [ ] DataLoader e teste que afirma o número de queries da visão 360°.
-- [ ] Limites de profundidade, complexidade e aliases.
+- [x] Discovery de produto/UX e premissas de LGPD para dados fictícios.
+- [x] Modelo Prisma, migration inicial e seed fictício.
+- [x] Autenticação com argon2id, JWT curto e refresh rotativo.
+- [x] RBAC com checagem de propriedade e testes negativos entre usuários.
+- [x] CRUD de contatos e empresas com paginação por cursor.
+- [x] Schema GraphQL code-first, codegen e verificação de drift.
+- [x] DataLoader com teste unitário de batching por requisição.
+- [x] Limites de profundidade, complexidade e aliases; introspection off em
+      produção.
+
+> Evidências: `specs/SPEC-002-fase-1-dominio-auth-graphql.md`,
+> `tasks/TASK-002-01-fase-1-dominio-auth-graphql.md` e testes em
+> `apps/api/test/fase-1.e2e.test.ts`.
 
 ## Fase 2 — Funil e dashboard
 

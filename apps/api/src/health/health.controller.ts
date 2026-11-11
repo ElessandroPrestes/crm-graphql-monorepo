@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { ApiEnv } from '../config/env.js';
 
@@ -12,7 +12,7 @@ export interface HealthResponse {
 
 @Controller('health')
 export class HealthController {
-  constructor(private readonly configService: ConfigService<ApiEnv, true>) {}
+  constructor(@Inject(ConfigService) private readonly configService: ConfigService<ApiEnv, true>) {}
 
   @Get('live')
   live(): HealthResponse {

@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import './auth/authenticated-request.js';
 import { randomUUID } from 'node:crypto';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
