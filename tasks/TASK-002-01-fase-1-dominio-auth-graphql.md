@@ -140,5 +140,6 @@ contatos e empresas, com isolamento entre usuários e evidências automatizadas.
   - Testcontainers exige Docker e adiciona ~30 s ao tempo de integração.
   - CI da Fase 1 ainda não foi executada no GitHub; validar em PR antes do
     merge.
-  - O commit de implementação com `Spec-Ref`/`Task-Ref` está pendente de
-    solicitação explícita; por isso a matriz registra a lacuna de commit.
+  - O commit de implementação da Fase 1 foi criado como `58f0e516`, com
+    `Spec-Ref: SPEC-002` e `Task-Ref: TASK-002-01`; a matriz não registra mais
+    lacuna de commit.
