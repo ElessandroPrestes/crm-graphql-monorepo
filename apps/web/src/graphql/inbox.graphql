@@ -1,0 +1,119 @@
+query ConversationsList($first: Int, $after: String, $search: String) {
+  conversations(first: $first, after: $after, search: $search) {
+    edges {
+      cursor
+      node {
+        id
+        contactId
+        lastMessageAt
+        createdAt
+        updatedAt
+        contact {
+          id
+          firstName
+          lastName
+          phone
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query ConversationsByContact($contactId: ID!, $first: Int) {
+  conversations(contactId: $contactId, first: $first) {
+    edges {
+      cursor
+      node {
+        id
+        contactId
+        lastMessageAt
+        createdAt
+        updatedAt
+        contact {
+          id
+          firstName
+          lastName
+          phone
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query ConversationDetail($id: ID!) {
+  conversation(id: $id) {
+    id
+    contactId
+    lastMessageAt
+    createdAt
+    updatedAt
+    contact {
+      id
+      firstName
+      lastName
+      phone
+    }
+  }
+}
+
+query Messages($conversationId: ID!, $first: Int, $after: String) {
+  messages(conversationId: $conversationId, first: $first, after: $after) {
+    edges {
+      cursor
+      node {
+        id
+        conversationId
+        body
+        direction
+        status
+        clientMessageId
+        externalId
+        sentAt
+        createdAt
+        errorCode
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+mutation SendMessage($input: SendMessageInput!) {
+  sendMessage(input: $input) {
+    id
+    conversationId
+    body
+    direction
+    status
+    clientMessageId
+    externalId
+    sentAt
+    createdAt
+    errorCode
+  }
+}
+
+subscription MessageReceived($conversationId: ID) {
+  messageReceived(conversationId: $conversationId) {
+    id
+    conversationId
+    body
+    direction
+    status
+    clientMessageId
+    externalId
+    sentAt
+    createdAt
+    errorCode
+  }
+}

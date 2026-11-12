@@ -22,6 +22,7 @@ import type { Company, Contact, Deal } from '../generated/prisma/client.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { DealEventsService, type DealMovedPayload } from '../realtime/deal-events.service.js';
 import { DealConnection } from './deal.connection.js';
+import { DealStage } from './deal-stage.enum.js';
 import { CreateDealInput, UpdateDealInput } from './deal.input.js';
 import { DealType } from './deal.type.js';
 import { DealsService } from './deals.service.js';
@@ -46,8 +47,12 @@ export class DealsResolver {
     })
     first?: number,
     @Args('after', { type: () => String, nullable: true }) after?: string,
+    @Args('contactId', { type: () => ID, nullable: true }) contactId?: string,
+    @Args('companyId', { type: () => ID, nullable: true }) companyId?: string,
+    @Args('stages', { type: () => [DealStage], nullable: true }) stages?: DealStage[],
+    @Args('search', { type: () => String, nullable: true }) search?: string,
   ) {
-    return this.dealsService.list(user, { first, after });
+    return this.dealsService.list(user, { first, after, contactId, companyId, stages, search });
   }
 
   @Query(() => DealType)

@@ -30,8 +30,10 @@ export class ConversationsResolver {
     })
     first?: number,
     @Args('after', { type: () => String, nullable: true }) after?: string,
+    @Args('contactId', { type: () => ID, nullable: true }) contactId?: string,
+    @Args('search', { type: () => String, nullable: true }) search?: string,
   ) {
-    return this.conversationsService.list(user, { first, after });
+    return this.conversationsService.list(user, { first, after, contactId, search });
   }
 
   @Query(() => ConversationType)

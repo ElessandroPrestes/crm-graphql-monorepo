@@ -2,6 +2,7 @@ node_modules
 **/generated/**
 packages/graphql-schema/schema.graphql
 packages/graphql-schema/src/types.ts
+packages/graphql-schema/src/operations.ts
 dist
 build
 coverage

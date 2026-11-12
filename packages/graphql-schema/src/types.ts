@@ -397,7 +397,9 @@ export type QueryContactArgs = {
 
 export type QueryContactsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
+  companyId?: InputMaybe<Scalars['ID']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -408,7 +410,9 @@ export type QueryConversationArgs = {
 
 export type QueryConversationsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
+  contactId?: InputMaybe<Scalars['ID']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -425,7 +429,11 @@ export type QueryDealArgs = {
 
 export type QueryDealsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
+  companyId?: InputMaybe<Scalars['ID']['input']>;
+  contactId?: InputMaybe<Scalars['ID']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  stages?: InputMaybe<ReadonlyArray<DealStage>>;
 };
 
 

@@ -1,9 +1,9 @@
 # Arquitetura
 
-Status: Fases 0, 1, 2 e 3 concluídas. A Fase 3 adicionou webhook de WhatsApp,
+Status: Fases 0 a 4 implementadas. A Fase 3 adicionou webhook de WhatsApp,
 fila durável com retry/DLQ, worker idempotente, conversas/mensagens,
-subscription `messageReceived` e exportação/exclusão LGPD. A interface web
-entra na Fase 4.
+subscription `messageReceived` e exportação/exclusão LGPD. A Fase 4 entregou
+a SPA React com sessão, contatos, kanban, inbox em tempo real e dashboard.
 
 ## Contexto
 
@@ -22,9 +22,9 @@ flowchart LR
 
 ## Contêineres
 
-| Contêiner     | Responsabilidade                             | Estado na Fase 0                                                          |
+| Contêiner     | Responsabilidade                             | Estado atual                                                              |
 | ------------- | -------------------------------------------- | ------------------------------------------------------------------------- |
-| `apps/web`    | SPA React, Apollo Client na Fase 4           | Shell acessível com Vite e Tailwind                                       |
+| `apps/web`    | SPA React, Apollo Client HTTP/WS             | Sessão, contatos/360°, kanban, inbox e dashboard com tema e i18n          |
 | `apps/api`    | GraphQL BFF, REST de webhook, autenticação   | Auth, contatos, empresas, negócios, atividades, dashboard e subscriptions |
 | `apps/worker` | Consumo de eventos do WhatsApp               | Health check, consumer, retry/DLQ e publicação Redis                      |
 | PostgreSQL    | Persistência principal                       | Migrations e seed das Fases 1, 2 e 3                                      |
@@ -63,6 +63,27 @@ Resolver (GraphQL, fino)
 Resolvers não acessam Prisma diretamente e não concentram regra de negócio.
 Dependências apontam para o domínio; integrações externas ficam em adaptadores.
 
+## Front-end (Fase 4)
+
+```text
+main.tsx
+  → I18nProvider → ThemeProvider → ApolloProvider → AuthProvider
+    → BrowserRouter → App (shell + guards) → páginas
+```
+
+- `SessionStore` guarda o access token apenas em memória; o refresh vive em
+  cookie `HttpOnly`. `AuthProvider` faz bootstrap por `/auth/refresh` e expõe
+  `loading | anonymous | authenticated`.
+- `apolloClient` usa links HTTP e `graphql-ws`; o logout limpa o cache e a
+  conexão. Erros são normalizados em `unauthorized`, `forbidden`, `notFound`,
+  `validation`, `conflict`, `network` e `unknown`.
+- Documentos e tipos vêm de `packages/graphql-schema` (codegen a partir de
+  `apps/web/src/**/*.graphql`); o cliente consome `DocumentNode`.
+- As telas usam React Router 7, react-hook-form + zod, Tailwind 4 e `@dnd-kit`
+  no kanban. A busca é server-side e usa cursor; filtros ficam na URL.
+- Acessibilidade: landmarks, link de salto, foco visível, `aria-live` para
+  rota e mensagens, menu de teclado no kanban e movimento sem arrastar.
+
 ## Decisões
 
 - Monorepo e orquestração: [ADR-001](../adr/ADR-001-monorepo-pnpm-turborepo.md).
@@ -87,10 +108,12 @@ Dependências apontam para o domínio; integrações externas ficam em adaptador
 
 ## Limitações atuais
 
-- A interface web ainda não existe.
+- A SPA cobre os fluxos da Fase 4; E2E Playwright, axe e code splitting
+  ficam para a Fase 5.
 - Subscriptions e eventos são best-effort; não há outbox transacional nem
   exactly-once.
 - O worker reconecta ao broker, mas replay de DLQ é manual.
 - Mídia e webhooks de status do WhatsApp ficam fora do escopo.
 - Os health checks verificam apenas o processo, não dependências externas.
 - Rate limit, persisted queries e benchmark k6 ficam para a Fase 5.
+- O bundle principal tem ~708 kB; code splitting por rota é pendente.

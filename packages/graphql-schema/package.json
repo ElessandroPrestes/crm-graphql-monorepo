@@ -6,7 +6,8 @@
   "description": "Schema e types GraphQL gerados do Nexo CRM",
   "exports": {
     "./schema.graphql": "./schema.graphql",
-    "./types": "./src/types.ts"
+    "./types": "./src/types.ts",
+    "./operations": "./src/operations.ts"
   },
   "scripts": {
     "codegen": "graphql-codegen --config codegen.ts",
@@ -14,10 +15,15 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "8.0.0",
+    "@graphql-codegen/typed-document-node": "^8.0.0",
     "@graphql-codegen/typescript": "7.0.0",
+    "@graphql-codegen/typescript-operations": "^7.0.1",
     "@nexo/tsconfig": "workspace:*",
     "@types/node": "26.6.6",
     "graphql": "16.15.0",
     "typescript": "6.0.3"
+  },
+  "dependencies": {
+    "@graphql-typed-document-node/core": "^3.2.0"
   }
 }

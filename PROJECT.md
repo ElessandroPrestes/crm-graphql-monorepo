@@ -2,16 +2,16 @@
 
 ## Metadados
 
-| Campo                   | Valor                                                    |
-| ----------------------- | -------------------------------------------------------- |
-| Nome do Projeto         | Nexo CRM (`crm-graphql-monorepo`)                        |
-| Organização             | Portfólio pessoal                                        |
-| Responsável             | Engenharia (a designar por área)                         |
-| Estado                  | Ativo — Fases 0, 1, 2 e 3 implementadas; Fase 4 pendente |
-| Versão ou release       | `0.2.0-alpha`                                            |
-| Última revisão          | 2026-11-11                                               |
-| Revisores               | Produto / Engenharia / QA / Segurança                    |
-| Framework de Governança | Universal SDD (Spec-Driven Development)                  |
+| Campo                   | Valor                                                           |
+| ----------------------- | --------------------------------------------------------------- |
+| Nome do Projeto         | Nexo CRM (`crm-graphql-monorepo`)                               |
+| Organização             | Portfólio pessoal                                               |
+| Responsável             | Engenharia (a designar por área)                                |
+| Estado                  | Ativo — Fases 0 a 4 implementadas; revisão e QA final pendentes |
+| Versão ou release       | `0.2.0-alpha`                                                   |
+| Última revisão          | 2026-11-11                                                      |
+| Revisores               | Produto / Engenharia / QA / Segurança                           |
+| Framework de Governança | Universal SDD (Spec-Driven Development)                         |
 
 ---
 
@@ -65,6 +65,7 @@
 | PostgreSQL             | 18.6-alpine             | Persistência                                  | `infra/docker-compose.yml` |
 | Prisma                 | 7.10.1                  | ORM, migrations e seed                        | `apps/api/prisma`          |
 | GraphQL / Apollo       | 16.15.0 / 5.5.1         | API tipada e execução do schema               | `apps/api/src/graphql`     |
+| Apollo Client / WS     | 4.3.8 / 6.0.6           | Cliente GraphQL HTTP/WS no navegador          | `apps/web`                 |
 | argon2                 | 0.45.2                  | Hash de senha (argon2id)                      | `apps/api/src/auth`        |
 | Redis                  | 8.8.4-alpine            | Pub/sub e cache (Fase 2); rate limit (Fase 5) | `infra/docker-compose.yml` |
 | RabbitMQ               | 4.4.0-management-alpine | Fila durável, retry e DLQ (Fase 3)            | `infra/docker-compose.yml` |
@@ -73,20 +74,20 @@ Versões e justificativas de compatibilidade: [ADR-003](adr/ADR-003-versoes-e-co
 
 ## 4. Estrutura do repositório
 
-| Caminho                        | Responsabilidade                                           |
-| ------------------------------ | ---------------------------------------------------------- |
-| `apps/api/`                    | API NestJS; health, auth REST, GraphQL e Prisma            |
-| `apps/worker/`                 | Worker NestJS; health check e consumer WhatsApp            |
-| `apps/web/`                    | SPA React/Vite; shell acessível na Fase 0                  |
-| `packages/shared/`             | Schemas zod de ambiente, contratos de eventos e utilidades |
-| `packages/graphql-schema/`     | Schema gerado, types e documents GraphQL                   |
-| `packages/eslint-config/`      | Configuração ESLint compartilhada                          |
-| `packages/tsconfig/`           | Configurações TypeScript compartilhadas                    |
-| `infra/`                       | Docker Compose, Dockerfiles e configuração do Nginx        |
-| `specs/`, `tasks/`, `reviews/` | Rastreabilidade SDD                                        |
-| `adr/`                         | Decisões arquiteturais                                     |
-| `docs/`                        | Arquitetura, segurança, acessibilidade e guias             |
-| `scripts/`                     | Automação de rastreabilidade                               |
+| Caminho                        | Responsabilidade                                            |
+| ------------------------------ | ----------------------------------------------------------- |
+| `apps/api/`                    | API NestJS; health, auth REST, GraphQL e Prisma             |
+| `apps/worker/`                 | Worker NestJS; health check e consumer WhatsApp             |
+| `apps/web/`                    | SPA React/Vite; sessão, contatos, kanban, inbox e dashboard |
+| `packages/shared/`             | Schemas zod de ambiente, contratos de eventos e utilidades  |
+| `packages/graphql-schema/`     | Schema gerado, types e documents GraphQL                    |
+| `packages/eslint-config/`      | Configuração ESLint compartilhada                           |
+| `packages/tsconfig/`           | Configurações TypeScript compartilhadas                     |
+| `infra/`                       | Docker Compose, Dockerfiles e configuração do Nginx         |
+| `specs/`, `tasks/`, `reviews/` | Rastreabilidade SDD                                         |
+| `adr/`                         | Decisões arquiteturais                                      |
+| `docs/`                        | Arquitetura, segurança, acessibilidade e guias              |
+| `scripts/`                     | Automação de rastreabilidade                                |
 
 ## 5. Runtime e configuração
 

@@ -268,12 +268,12 @@ type Query {
   companies(after: String, first: Int = 20): CompanyConnection!
   company(id: ID!): Company!
   contact(id: ID!): Contact!
-  contacts(after: String, first: Int = 20): ContactConnection!
+  contacts(after: String, companyId: ID, first: Int = 20, search: String): ContactConnection!
   conversation(id: ID!): Conversation!
-  conversations(after: String, first: Int = 20): ConversationConnection!
+  conversations(after: String, contactId: ID, first: Int = 20, search: String): ConversationConnection!
   dashboardMetrics(periodEnd: DateTime, periodStart: DateTime): DashboardMetrics!
   deal(id: ID!): Deal!
-  deals(after: String, first: Int = 20): DealConnection!
+  deals(after: String, companyId: ID, contactId: ID, first: Int = 20, search: String, stages: [DealStage!]): DealConnection!
   me: User!
   messages(after: String, conversationId: ID!, first: Int = 20): MessageConnection!
 }

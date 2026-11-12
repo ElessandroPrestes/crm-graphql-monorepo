@@ -1,0 +1,16 @@
+query DashboardMetrics($periodStart: DateTime, $periodEnd: DateTime) {
+  dashboardMetrics(periodStart: $periodStart, periodEnd: $periodEnd) {
+    generatedAt
+    openDeals
+    openValueCents
+    wonDeals
+    wonValueCents
+    lostDeals
+    lostValueCents
+    stages {
+      stage
+      count
+      valueCents
+    }
+  }
+}

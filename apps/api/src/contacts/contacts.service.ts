@@ -1,6 +1,7 @@
 import { BadRequestException, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { normalizePhone } from '@nexo/shared';
 import type { AuthenticatedUser } from '../auth/auth.types.js';
+import { normalizeSearch, optionalUuid } from '../common/filters.js';
 import {
   decodeCursor,
   pageSize,
@@ -29,23 +30,52 @@ export interface ContactExportData {
   conversations: Array<{ conversation: Conversation; messages: Message[] }>;
 }
 
+export interface ContactListArgs extends PaginationArgs {
+  search?: string;
+  companyId?: string;
+}
+
 @Injectable()
 export class ContactsService {
   private readonly logger = new Logger(ContactsService.name);
 
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
-  async list(user: AuthenticatedUser, args: PaginationArgs): Promise<Connection<Contact>> {
+  async list(user: AuthenticatedUser, args: ContactListArgs): Promise<Connection<Contact>> {
     const size = pageSize(args.first);
     const cursor = args.after ? decodeCursor(args.after) : null;
+    const search = normalizeSearch(args.search);
+    const companyId = optionalUuid(args.companyId, 'companyId');
     const where: Prisma.ContactWhereInput = {
       ...(user.role === 'ADMIN' ? {} : { ownerId: user.id }),
     };
+    const filters: Prisma.ContactWhereInput[] = [];
+
+    if (search) {
+      filters.push({
+        OR: [
+          { firstName: { contains: search, mode: 'insensitive' } },
+          { lastName: { contains: search, mode: 'insensitive' } },
+          { email: { contains: search, mode: 'insensitive' } },
+          { phone: { contains: search, mode: 'insensitive' } },
+        ],
+      });
+    }
+
+    if (companyId) {
+      filters.push({ companyId });
+    }
 
     if (cursor) {
       const createdAt = new Date(cursor.createdAt);
 
-      where.OR = [{ createdAt: { lt: createdAt } }, { createdAt, id: { lt: cursor.id } }];
+      filters.push({
+        OR: [{ createdAt: { lt: createdAt } }, { createdAt, id: { lt: cursor.id } }],
+      });
+    }
+
+    if (filters.length > 0) {
+      where.AND = filters;
     }
 
     const rows = await this.prisma.contact.findMany({

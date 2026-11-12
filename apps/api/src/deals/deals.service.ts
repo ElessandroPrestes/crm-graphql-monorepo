@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import type { AuthenticatedUser } from '../auth/auth.types.js';
 import { DashboardService } from '../dashboard/dashboard.service.js';
+import { normalizeSearch, optionalUuid } from '../common/filters.js';
 import {
   decodeCursor,
   pageSize,
@@ -25,6 +26,13 @@ function isClosed(stage: DealStage): boolean {
   return CLOSED_STAGES.includes(stage);
 }
 
+export interface DealListArgs extends PaginationArgs {
+  contactId?: string;
+  companyId?: string;
+  stages?: DealStage[];
+  search?: string;
+}
+
 @Injectable()
 export class DealsService {
   constructor(
@@ -33,17 +41,43 @@ export class DealsService {
     @Inject(DashboardService) private readonly dashboard: DashboardService,
   ) {}
 
-  async list(user: AuthenticatedUser, args: PaginationArgs): Promise<Connection<Deal>> {
+  async list(user: AuthenticatedUser, args: DealListArgs): Promise<Connection<Deal>> {
     const size = pageSize(args.first);
     const cursor = args.after ? decodeCursor(args.after) : null;
+    const contactId = optionalUuid(args.contactId, 'contactId');
+    const companyId = optionalUuid(args.companyId, 'companyId');
+    const search = normalizeSearch(args.search);
     const where: Prisma.DealWhereInput = {
       ...(user.role === 'ADMIN' ? {} : { ownerId: user.id }),
     };
+    const filters: Prisma.DealWhereInput[] = [];
+
+    if (contactId) {
+      filters.push({ contactId });
+    }
+
+    if (companyId) {
+      filters.push({ companyId });
+    }
+
+    if (args.stages && args.stages.length > 0) {
+      filters.push({ stage: { in: args.stages } });
+    }
+
+    if (search) {
+      filters.push({ title: { contains: search, mode: 'insensitive' } });
+    }
 
     if (cursor) {
       const createdAt = new Date(cursor.createdAt);
 
-      where.OR = [{ createdAt: { lt: createdAt } }, { createdAt, id: { lt: cursor.id } }];
+      filters.push({
+        OR: [{ createdAt: { lt: createdAt } }, { createdAt, id: { lt: cursor.id } }],
+      });
+    }
+
+    if (filters.length > 0) {
+      where.AND = filters;
     }
 
     const rows = await this.prisma.deal.findMany({

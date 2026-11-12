@@ -43,8 +43,10 @@ export class ContactsResolver {
     })
     first?: number,
     @Args('after', { type: () => String, nullable: true }) after?: string,
+    @Args('search', { type: () => String, nullable: true }) search?: string,
+    @Args('companyId', { type: () => ID, nullable: true }) companyId?: string,
   ) {
-    return this.contactsService.list(user, { first, after });
+    return this.contactsService.list(user, { first, after, search, companyId });
   }
 
   @Query(() => ContactType)

@@ -1,0 +1,76 @@
+fragment DealCard on Deal {
+  id
+  title
+  stage
+  valueCents
+  expectedCloseDate
+  closedAt
+  createdAt
+  updatedAt
+  version
+  companyId
+  contactId
+  contact {
+    id
+    firstName
+    lastName
+  }
+  company {
+    id
+    name
+  }
+}
+
+query DealsByContact($contactId: ID!, $first: Int) {
+  deals(contactId: $contactId, first: $first) {
+    edges {
+      cursor
+      node {
+        ...DealCard
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query PipelineDeals(
+  $first: Int
+  $stages: [DealStage!]
+  $search: String
+  $contactId: ID
+  $companyId: ID
+) {
+  deals(
+    first: $first
+    stages: $stages
+    search: $search
+    contactId: $contactId
+    companyId: $companyId
+  ) {
+    edges {
+      cursor
+      node {
+        ...DealCard
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+mutation CreateDeal($input: CreateDealInput!) {
+  createDeal(input: $input) {
+    ...DealCard
+  }
+}
+
+mutation UpdateDeal($id: ID!, $input: UpdateDealInput!) {
+  updateDeal(id: $id, input: $input) {
+    ...DealCard
+  }
+}

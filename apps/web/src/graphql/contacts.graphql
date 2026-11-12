@@ -1,0 +1,155 @@
+query ContactsList($first: Int, $after: String, $search: String, $companyId: ID) {
+  contacts(first: $first, after: $after, search: $search, companyId: $companyId) {
+    edges {
+      cursor
+      node {
+        id
+        firstName
+        lastName
+        email
+        phone
+        jobTitle
+        companyId
+        createdAt
+        updatedAt
+        company {
+          id
+          name
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query CompaniesList($first: Int) {
+  companies(first: $first) {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query ContactDetail($id: ID!) {
+  contact(id: $id) {
+    id
+    firstName
+    lastName
+    email
+    phone
+    jobTitle
+    companyId
+    createdAt
+    updatedAt
+    company {
+      id
+      name
+      industry
+      domain
+    }
+  }
+}
+
+mutation CreateContact($input: CreateContactInput!) {
+  createContact(input: $input) {
+    id
+    firstName
+    lastName
+    email
+    phone
+    jobTitle
+    companyId
+    createdAt
+    updatedAt
+    company {
+      id
+      name
+    }
+  }
+}
+
+mutation ExportContactData($id: ID!) {
+  exportContactData(id: $id) {
+    exportedAt
+    contact {
+      id
+      firstName
+      lastName
+      email
+      phone
+      jobTitle
+      companyId
+      createdAt
+      updatedAt
+    }
+    company {
+      id
+      name
+      industry
+      domain
+    }
+    deals {
+      id
+      title
+      stage
+      valueCents
+      expectedCloseDate
+      closedAt
+      createdAt
+      updatedAt
+      version
+      companyId
+      contactId
+      ownerId
+    }
+    activities {
+      id
+      type
+      subject
+      notes
+      occurredAt
+      contactId
+      dealId
+      ownerId
+      createdAt
+    }
+    conversations {
+      conversation {
+        id
+        contactId
+        accountId
+        channel
+        lastMessageAt
+        createdAt
+        updatedAt
+        ownerId
+      }
+      messages {
+        id
+        conversationId
+        body
+        direction
+        status
+        clientMessageId
+        externalId
+        sentAt
+        createdAt
+        errorCode
+      }
+    }
+  }
+}
+
+mutation DeleteContact($id: ID!) {
+  deleteContact(id: $id)
+}

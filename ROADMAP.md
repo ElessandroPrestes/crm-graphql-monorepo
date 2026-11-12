@@ -1,7 +1,7 @@
 # Roadmap — Nexo CRM
 
 > **Framework de Governança**: Universal SDD (Spec-Driven Development)
-> **Status vigente**: Fases 0, 1, 2 e 3 concluídas; Fase 4 pendente.
+> **Status vigente**: Fases 0 a 4 implementadas; revisão e QA final pendentes.
 
 O roadmap comunica direção, não compromisso de prazo. Nenhuma funcionalidade é
 implementada antes da aprovação formal de sua SPEC e TASK.
@@ -63,14 +63,20 @@ implementada antes da aprovação formal de sua SPEC e TASK.
 > `apps/api/test/fase-3.e2e.test.ts` e
 > `apps/worker/test/whatsapp-inbound.integration.test.ts`.
 
-## Fase 4 — Front-end
+## Fase 4 — Front-end (implementada, em revisão)
 
-- [ ] Login e sessão em memória com refresh em cookie HttpOnly.
-- [ ] Lista de contatos com busca e filtros.
-- [ ] Visão 360° do contato.
-- [ ] Kanban acessível com alternativa ao arrastar e soltar.
-- [ ] Inbox em tempo real com anúncios `aria-live`.
-- [ ] Dashboard, i18n pt-BR e temas claro/escuro.
+- [x] Login e sessão em memória com refresh em cookie HttpOnly.
+- [x] Lista de contatos com busca e filtros.
+- [x] Visão 360° do contato.
+- [x] Kanban acessível com alternativa ao arrastar e soltar.
+- [x] Inbox em tempo real com anúncios `aria-live`.
+- [x] Dashboard, i18n pt-BR e temas claro/escuro.
+
+Evidências: `specs/SPEC-005-fase-4-frontend.md`,
+`tasks/TASK-005-01-fase-4-fundacao-web.md`,
+`tasks/TASK-005-02-fase-4-contatos-360.md`,
+`tasks/TASK-005-03-fase-4-pipeline-inbox-dashboard.md`,
+`docs/qa-plan-fase-4.md` e `apps/web/src/**/*.test.tsx`.
 
 ## Fase 5 — Endurecimento e entrega
 

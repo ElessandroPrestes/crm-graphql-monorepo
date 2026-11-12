@@ -1,0 +1,36 @@
+query ActivitiesByContact($contactId: ID!, $first: Int) {
+  activities(contactId: $contactId, first: $first) {
+    edges {
+      cursor
+      node {
+        id
+        type
+        subject
+        notes
+        occurredAt
+        contactId
+        dealId
+        ownerId
+        createdAt
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+mutation CreateActivity($input: CreateActivityInput!) {
+  createActivity(input: $input) {
+    id
+    type
+    subject
+    notes
+    occurredAt
+    contactId
+    dealId
+    ownerId
+    createdAt
+  }
+}

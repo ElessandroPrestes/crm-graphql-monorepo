@@ -1,6 +1,6 @@
 # Segurança
 
-Status: Fases 0, 1 e 2 implementadas. Este documento lista o mapeamento OWASP,
+Status: Fases 0 a 4 implementadas. Este documento lista o mapeamento OWASP,
 o modelo de ameaças resumido e os riscos ainda abertos. Controles não implementados estão
 marcados como **planejado**; não os trate como existentes.
 
@@ -46,6 +46,20 @@ entre vendedores.
 Pendente para fases seguintes: persisted queries, rate limit por usuário/IP,
 limite explícito de corpo e desativação de field suggestions em produção.
 
+## Implementado na Fase 4 (front-end)
+
+- Access token mantido apenas em memória (`SessionStore`); nenhum token, PII
+  ou corpo de mensagem é gravado em `localStorage`/`sessionStorage`.
+- Refresh em cookie `HttpOnly`, `SameSite=Strict`, `Path=/auth`, com renovação
+  single-flight no cliente para evitar tempestade de refresh.
+- Logout limpa a sessão, o cache Apollo e a conexão WebSocket mesmo se a
+  requisição de logout falhar.
+- Guards de rota decidem por `status` do `AuthProvider`, sem confiar em dados
+  do cliente para autorização; o servidor continua sendo a fonte de verdade.
+- Erros GraphQL/REST são normalizados e exibidos sem stack, detalhes internos
+  ou distinção entre recurso inexistente e sem permissão.
+- Só dados fictícios são usados em seed, testes e revisão visual.
+
 ## Implementado na Fase 2
 
 - Autorização por propriedade em negócios, atividades, timeline e dashboard,
@@ -88,7 +102,8 @@ limite explícito de corpo e desativação de field suggestions em produção.
 | Risco                                                        | Impacto | Fase alvo      |
 | ------------------------------------------------------------ | ------- | -------------- |
 | Sem rate limit de login/GraphQL                              | Alto    | Fase 5         |
-| Sem política de senha e bloqueio progressivo                 | Médio   | Fase 4/5       |
+| Sem política de senha e bloqueio progressivo                 | Médio   | Fase 5         |
+| Sem E2E/axe automatizado no front-end                        | Médio   | Fase 5         |
 | Tokens expirados não têm job de limpeza                      | Baixo   | Fase 5         |
 | Logs ainda não possuem trilha de auditoria de segurança      | Médio   | Fase 5         |
 | Pub/sub de subscriptions é best-effort (sem entrega durável) | Médio   | Fase 5         |

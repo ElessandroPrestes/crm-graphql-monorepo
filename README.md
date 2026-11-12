@@ -1,8 +1,9 @@
 # Nexo CRM
 
-> **Status:** Fases 0, 1, 2 e 3 concluídas — fundação, domínio, autenticação,
-> funil, dashboard, WhatsApp, worker idempotente e LGPD; front-end entra na
-> Fase 4.
+> **Status:** Fases 0 a 4 implementadas — fundação, domínio, autenticação,
+> funil, WhatsApp, worker idempotente, LGPD e front-end React (sessão,
+> contatos/360°, kanban, inbox em tempo real e dashboard). Revisão e QA final
+> pendentes.
 > **Governança:** Universal SDD (Spec-Driven Development).
 > **Stack:** Node.js 26 LTS · pnpm · Turborepo · NestJS · React · Vite ·
 > TypeScript · Tailwind CSS.
@@ -20,20 +21,20 @@ cache e limites de complexidade).
 Fluxos de webhook, upload e pagamento permanecem em REST, conforme
 [ADR-002](adr/ADR-002-stack-api-graphql.md).
 
-> **Demo:** espaço reservado para o GIF do fluxo completo (Fase 4).
+> **Demo:** espaço reservado para o GIF do fluxo completo.
 
 ---
 
 ## Fases
 
-| Fase | Escopo                                                           | Status    |
-| ---- | ---------------------------------------------------------------- | --------- |
-| 0    | Fundação: monorepo, tooling, esqueletos, Docker, CI e docs       | Concluída |
-| 1    | Domínio e API núcleo: Prisma, auth, RBAC, GraphQL, DataLoader    | Concluída |
-| 2    | Funil e dashboard: negócios, concorrência, subscriptions, cache  | Concluída |
-| 3    | WhatsApp e eventos: provider, HMAC, RabbitMQ, worker, DLQ, LGPD  | Concluída |
-| 4    | Front-end: login, contatos, visão 360°, kanban, inbox, dashboard | Pendente  |
-| 5    | Endurecimento: persisted queries, k6, e2e, STRIDE e deploy       | Pendente  |
+| Fase | Escopo                                                           | Status     |
+| ---- | ---------------------------------------------------------------- | ---------- |
+| 0    | Fundação: monorepo, tooling, esqueletos, Docker, CI e docs       | Concluída  |
+| 1    | Domínio e API núcleo: Prisma, auth, RBAC, GraphQL, DataLoader    | Concluída  |
+| 2    | Funil e dashboard: negócios, concorrência, subscriptions, cache  | Concluída  |
+| 3    | WhatsApp e eventos: provider, HMAC, RabbitMQ, worker, DLQ, LGPD  | Concluída  |
+| 4    | Front-end: login, contatos, visão 360°, kanban, inbox, dashboard | Em revisão |
+| 5    | Endurecimento: persisted queries, k6, e2e, STRIDE e deploy       | Pendente   |
 
 ---
 

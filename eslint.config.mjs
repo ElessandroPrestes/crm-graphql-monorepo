@@ -2,8 +2,21 @@ import base from '@nexo/eslint-config/base';
 import { createReactConfig } from '@nexo/eslint-config/react';
 
 export default [
+  {
+    ignores: ['packages/graphql-schema/src/operations.ts'],
+  },
   ...base,
   ...createReactConfig(['apps/web/**/*.{ts,tsx}']),
+  {
+    files: [
+      'apps/web/src/auth/auth-context.tsx',
+      'apps/web/src/appearance/theme-provider.tsx',
+      'apps/web/src/i18n/i18n-context.tsx',
+    ],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
   {
     files: ['apps/api/**/*.ts', 'apps/worker/**/*.ts'],
     rules: {
