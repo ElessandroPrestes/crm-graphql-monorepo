@@ -52,6 +52,12 @@ remoção de sugestões `Did you mean ...` em produção. O login falha fechado 
 Redis estiver indisponível; leitura GraphQL/WS usa fail-open controlado com log.
 Detalhes e rollback estão em ADR-009.
 
+Testes E2E negativos da TASK-006-02 (`e2e/security.spec.ts`) exercitam IDOR
+entre vendedores, token inválido/expirado, reuso de refresh, HMAC inválido,
+WebSocket sem token e tentativa de burlar o rate limit anônimo com
+`X-Forwarded-For` forjado. Todos passam localmente em desktop/mobile/API; a
+execução na CI é registrada no job `e2e`.
+
 ## Implementado na Fase 4 (front-end)
 
 - Access token mantido apenas em memória (`SessionStore`); nenhum token, PII
@@ -109,7 +115,7 @@ Detalhes e rollback estão em ADR-009.
 | ------------------------------------------------------------ | ------- | --------------- |
 | Rate limit por janela fixa permite rajadas na borda          | Médio   | Evolução futura |
 | Política de senha sem endpoint público de cadastro           | Baixo   | Evolução futura |
-| Sem E2E/axe automatizado no front-end                        | Médio   | Fase 5          |
+| E2E/axe cobrem desktop/mobile; k6 e leitor de tela pendentes | Baixo   | TASK-006-02/03  |
 | Tokens expirados não têm job de limpeza                      | Baixo   | Fase 5          |
 | Logs ainda não possuem trilha de auditoria de segurança      | Médio   | Fase 5          |
 | Pub/sub de subscriptions é best-effort (sem entrega durável) | Médio   | Fase 5          |

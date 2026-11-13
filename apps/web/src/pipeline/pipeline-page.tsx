@@ -327,7 +327,12 @@ export function PipelinePage(): ReactElement {
 
       {deals.length > 0 ? (
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-          <div className="flex gap-3 overflow-x-auto pb-2">
+          <div
+            role="region"
+            aria-label={t('pipeline.title')}
+            tabIndex={0}
+            className="flex gap-3 overflow-x-auto pb-2"
+          >
             {groups.map((group) => (
               <StageColumn
                 key={group.stage}

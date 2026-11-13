@@ -113,7 +113,12 @@ export function DashboardPage(): ReactElement {
               <h2 id="dashboard-stages-title" className="text-xl font-semibold">
                 {t('dashboard.byStage')}
               </h2>
-              <div className="overflow-x-auto rounded-[var(--radius-panel)] border border-[var(--color-border)]">
+              <div
+                role="region"
+                aria-label={t('dashboard.byStage')}
+                tabIndex={0}
+                className="overflow-x-auto rounded-[var(--radius-panel)] border border-[var(--color-border)]"
+              >
                 <table className="w-full min-w-[28rem] text-left text-sm">
                   <caption className="sr-only">{t('dashboard.byStage')}</caption>
                   <thead className="bg-[var(--color-surface-muted)]">

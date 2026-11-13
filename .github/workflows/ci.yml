@@ -44,6 +44,57 @@ jobs:
       - name: Build
         run: pnpm build
 
+  e2e:
+    name: E2E and accessibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DATABASE_URL: postgresql://nexo:nexo@127.0.0.1:5402/nexo?schema=public
+      REDIS_URL: redis://127.0.0.1:8203
+      RABBITMQ_URL: amqp://nexo:nexo@127.0.0.1:8204
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@9bbca1e9dc2902adb87e8780fe5c98796985a62d # v6.1.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Start infrastructure
+        run: >-
+          docker compose -f infra/docker-compose.yml up -d --wait
+          postgres redis rabbitmq
+
+      - name: Install Playwright
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run E2E and axe
+        run: pnpm test:e2e
+
+      - name: Dump infrastructure logs
+        if: failure()
+        run: docker compose -f infra/docker-compose.yml logs --no-color
+
+      - name: Upload E2E artifacts
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: e2e-${{ github.run_id }}
+          path: |
+            test-results/playwright/**
+            test-results/playwright-report/**
+            test-results/playwright-results.json
+          retention-days: 7
+          if-no-files-found: warn
+
   security:
     name: Security scans
     runs-on: ubuntu-latest

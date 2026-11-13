@@ -108,6 +108,21 @@ pnpm format:check
 pnpm --filter @nexo/api schema:check
 ```
 
+### E2E e acessibilidade
+
+```sh
+pnpm e2e:install   # instala o Chromium do Playwright
+pnpm e2e:prepare   # build da API e do web
+pnpm e2e:db        # migrations e seed do banco de teste
+pnpm infra:up
+pnpm e2e
+```
+
+O `playwright.config.ts` sobe API (`3202`) e web (`5217`) e executa os projetos
+`desktop-chromium`, `mobile-chromium` e `api-security`. A suíte cobre fluxos
+críticos, axe nos temas claro/escuro, teclado/reflow e testes negativos de
+segurança. Antes da execução os contadores `throttle:*` do Redis são limpos.
+
 ### Infraestrutura
 
 ```sh

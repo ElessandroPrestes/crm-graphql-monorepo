@@ -2,7 +2,7 @@
   "name": "nexo-crm",
   "version": "0.2.0-alpha",
   "private": true,
-  "description": "Nexo CRM — monorepo GraphQL (NestJS + React)",
+  "description": "Nexo CRM \u2014 monorepo GraphQL (NestJS + React)",
   "license": "MIT",
   "packageManager": "pnpm@12.18.0",
   "engines": {
@@ -20,7 +20,12 @@
     "infra:up": "docker compose -f infra/docker-compose.yml up -d postgres redis rabbitmq",
     "infra:down": "docker compose -f infra/docker-compose.yml down",
     "infra:full": "docker compose -f infra/docker-compose.yml --profile full up --build",
-    "prepare": "husky"
+    "prepare": "husky",
+    "e2e": "playwright test",
+    "e2e:prepare": "pnpm --filter @nexo/shared build && pnpm --filter @nexo/api build",
+    "e2e:db": "pnpm --filter @nexo/api db:deploy && pnpm --filter @nexo/api db:seed",
+    "e2e:install": "playwright install --with-deps chromium",
+    "test:e2e": "pnpm e2e:prepare && pnpm e2e:db && pnpm e2e"
   },
   "lint-staged": {
     "*.{ts,tsx,js,mjs,cjs}": [
@@ -32,9 +37,11 @@
     ]
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@commitlint/cli": "21.2.4",
     "@commitlint/config-conventional": "21.2.4",
     "@nexo/eslint-config": "workspace:*",
+    "@playwright/test": "1.65.0",
     "eslint": "9.39.5",
     "husky": "9.1.7",
     "lint-staged": "17.6.0",

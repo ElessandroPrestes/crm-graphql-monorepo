@@ -28,3 +28,8 @@ pnpm-debug.log*
 .idea/
 .vscode/
 *.log
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/

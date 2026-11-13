@@ -123,7 +123,7 @@
 
 - [ ] Decisões de deploy, rate limit e LGPD registradas ou explicitamente
       adiadas.
-- [ ] SPEC-006, TASKs e QA-002 aprovados.
+- [x] SPEC-006, TASKs e QA-002 aprovados (2026-11-13).
 - [ ] Ambiente local reproduzível (Compose + seed fictício).
 - [ ] Proprietários de QA, Segurança, Design e Acessibilidade definidos.
 

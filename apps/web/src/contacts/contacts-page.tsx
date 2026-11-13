@@ -205,7 +205,12 @@ export function ContactsPage(): ReactElement {
             {t('contacts.count', { count: formatNumber(contacts.length) })}
           </p>
 
-          <div className="overflow-x-auto rounded-[var(--radius-panel)] border border-[var(--color-border)]">
+          <div
+            role="region"
+            aria-label={t('contacts.title')}
+            tabIndex={0}
+            className="overflow-x-auto rounded-[var(--radius-panel)] border border-[var(--color-border)]"
+          >
             <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
               <caption className="sr-only">{t('contacts.title')}</caption>
               <thead className="bg-[var(--color-surface-muted)]">

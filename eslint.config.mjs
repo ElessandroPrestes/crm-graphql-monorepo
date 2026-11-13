@@ -21,6 +21,15 @@ export default [
     },
   },
   {
+    files: ['apps/web/**/*.tsx'],
+    rules: {
+      'jsx-a11y/no-noninteractive-tabindex': [
+        'error',
+        { roles: ['tabpanel', 'region'], allowExpressionValues: true },
+      ],
+    },
+  },
+  {
     files: ['apps/api/**/*.ts', 'apps/worker/**/*.ts'],
     rules: {
       '@typescript-eslint/consistent-type-imports': 'off',

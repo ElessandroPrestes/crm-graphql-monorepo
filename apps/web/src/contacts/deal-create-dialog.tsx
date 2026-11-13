@@ -1,6 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@apollo/client/react';
-import { CreateDealDocument, type DealStage } from '@nexo/graphql-schema/operations';
+import {
+  CreateDealDocument,
+  DashboardMetricsDocument,
+  type DealStage,
+} from '@nexo/graphql-schema/operations';
 import { useMemo, useState, type ReactElement } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -79,7 +83,7 @@ export function DealCreateDialog({
               : undefined,
           },
         },
-        refetchQueries: ['DealsByContact', 'DashboardMetrics'],
+        refetchQueries: ['DealsByContact', DashboardMetricsDocument],
       });
       reset({ title: '', value: '', stage: 'LEAD', expectedCloseDate: '' });
       onClose();

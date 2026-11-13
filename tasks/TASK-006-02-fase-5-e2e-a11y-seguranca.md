@@ -5,7 +5,7 @@
 | Campo        | Valor                                                                                                      |
 | ------------ | ---------------------------------------------------------------------------------------------------------- |
 | ID           | TASK-006-02                                                                                                |
-| Status       | Planned — aguardando aprovação                                                                             |
+| Status       | In progress — automação concluída; CI e revisão manual pendentes (2026-11-13)                              |
 | Responsável  | QA, Engenharia e Acessibilidade                                                                            |
 | Refs:        | SPEC: SPEC-006; Critérios: AC-610, AC-611, AC-612, AC-613, AC-614, AC-620; ADRs: ADR-004, ADR-005, ADR-006 |
 | Dependências | TASK-006-01 concluída para testes de rate limit; Compose e seed determinísticos                            |
@@ -47,15 +47,16 @@ de segurança funcionam, com falhas bloqueando a CI.
 
 ## Etapas
 
-- [ ] Aprovar SPEC-006, esta TASK e QA-002.
-- [ ] Configurar Playwright com Compose/seed e projetos desktop/mobile.
-- [ ] Implementar E2E dos fluxos críticos.
-- [ ] Integrar axe e falhar em critical/serious.
-- [ ] Executar e registrar o checklist manual de acessibilidade.
-- [ ] Implementar testes negativos de segurança.
-- [ ] Adicionar job e artefatos na CI.
+- [x] Aprovar SPEC-006, esta TASK e QA-002 (instrução humana de 2026-11-13).
+- [x] Configurar Playwright com Compose/seed e projetos desktop/mobile.
+- [x] Implementar E2E dos fluxos críticos.
+- [x] Integrar axe e falhar em critical/serious.
+- [ ] Executar e registrar o checklist manual de acessibilidade (teclado,
+      reflow e contraste automatizados; NVDA/VoiceOver e zoom 200% pendentes).
+- [x] Implementar testes negativos de segurança.
+- [x] Adicionar job e artefatos na CI.
 - [ ] Encerrar o Gate 4 da Fase 4 com aprovações ou exceções.
-- [ ] Atualizar documentação e rastreabilidade.
+- [x] Atualizar documentação e rastreabilidade.
 
 ## Validação
 
@@ -78,7 +79,16 @@ de segurança funcionam, com falhas bloqueando a CI.
 
 ## Resultado
 
-- Mudanças feitas: pendente.
-- Evidência: pendente.
-- Trabalho em aberto ou bloqueios: decisões de QA/design/acessibilidade e
-  aprovação da TASK.
+- Mudanças feitas: `playwright.config.ts` com projetos `desktop-chromium`,
+  `mobile-chromium` e `api-security`; `e2e/` com fluxo crítico, axe, segurança
+  negativa, autenticação, limpeza de rate limit e setup global; scripts
+  `e2e*`/`test:e2e`; job `e2e` no workflow de CI com artefatos Playwright;
+  regiões roláveis com `tabIndex=0` e rótulo; links do inbox sem `aria-label`
+  divergente; `DashboardMetricsDocument` tipado em `refetchQueries`.
+- Evidência: `pnpm e2e` — 14 testes passaram localmente em 2026-11-13
+  (4 desktop, 4 mobile, 6 API), incluindo 18 varreduras axe sem critical/serious;
+  `docs/a11y.md` e `docs/qa-plan-fase-5.md` atualizados. CI da mudança ainda
+  será observada.
+- Trabalho em aberto ou bloqueios: revisão manual com NVDA/VoiceOver, zoom 200%,
+  aprovação humana do Gate 4 (QA-001/design/acessibilidade) e execução verde do
+  job `e2e` na CI.

@@ -156,13 +156,13 @@ export function ConversationListPanel({
                 <Link
                   to={`/inbox/${node.id}`}
                   aria-current={isActive ? 'page' : undefined}
-                  aria-label={t('inbox.openConversation', { name })}
                   className={`block space-y-1 rounded-[var(--radius-control)] border p-3 text-sm ${
                     isActive
                       ? 'border-[var(--color-primary)] bg-[var(--color-surface-muted)]'
                       : 'border-[var(--color-border)] hover:bg-[var(--color-surface-muted)]'
                   }`}
                 >
+                  <span className="sr-only">{t('inbox.openConversation', { name })}</span>
                   <span className="flex flex-wrap items-center justify-between gap-2">
                     <span className="font-medium">{name}</span>
                     <span className="text-xs text-[var(--color-text-muted)]">

@@ -7,7 +7,7 @@
 | ID                      | QA-002                                       |
 | Status                  | Approved — execução autorizada em 2026-11-13 |
 | Responsável (QA owner)  | Engenharia/QA                                |
-| Build/commit            | Pendente                                     |
+| Build/commit            | `bf58e1c` (TASK-006-01); E2E da TASK-006-02  |
 | SPEC/design relacionado | SPEC-006; DS-001 (sem nova mudança)          |
 | Janela de teste         | Fase 5                                       |
 
@@ -61,28 +61,28 @@
 
 ## Rastreabilidade dos critérios de aceitação
 
-| Critério | Risco | ID/caminho do teste                           | Caso manual                               | Evidência/resultado                | Defeito/exceção |
-| -------- | ----- | --------------------------------------------- | ----------------------------------------- | ---------------------------------- | --------------- |
-| AC-601   | R-502 | `apps/api` — `schema:check` + allowlist       | Revisar allowlist versionada              | Passou (`schema:check` sem drift)  | —               |
-| AC-602   | R-502 | `apps/api/test/fase-5.e2e.test.ts` — audit    | Query fora da allowlist em audit          | Passou (integração + unit de log)  | —               |
-| AC-603   | R-502 | `persisted-queries.middleware.test.ts`        | Query fora da allowlist em enforce        | Passou (unit; sem resolver)        | —               |
-| AC-604   | R-501 | `apps/api/test/fase-5.e2e.test.ts` — login    | Exceder tentativas                        | Passou (429 + Retry-After)         | —               |
-| AC-605   | R-501 | `password-policy.test.ts` + fase-5 — lockout  | Senha fraca e bloqueio                    | Passou (política + 429 genérico)   | —               |
-| AC-606   | R-501 | `apps/api/test/fase-5.e2e.test.ts` — GraphQL  | Exceder operações autenticado/anônimo     | Passou (429 por usuário)           | —               |
-| AC-607   | R-503 | `apps/api/test/fase-5.e2e.test.ts` — WS       | Abrir conexões acima do limite            | Passou (close 4429)                | —               |
-| AC-608   | R-509 | `apps/api/test/fase-5.e2e.test.ts` — payload  | Enviar corpo grande                       | Passou (413)                       | —               |
-| AC-609   | R-508 | `apps/api/test/fase-5-production.e2e.test.ts` | Introspecção/campo inválido               | Passou (sem introspecção/sugestão) | —               |
-| AC-610   | R-504 | `e2e/**` — fluxos críticos                    | Executar fluxo completo                   | Pendente                           | —               |
-| AC-611   | R-505 | `@axe-core/playwright`                        | Páginas principais                        | Pendente                           | —               |
-| AC-612   | R-505 | Checklist em `docs/a11y.md`                   | Teclado, zoom, contraste e leitor de tela | Pendente                           | —               |
-| AC-613   | R-503 | Suíte de segurança negativa                   | IDOR, tokens, HMAC, WS e bypass           | Pendente                           | —               |
-| AC-614   | R-504 | CI workflow                                   | Abrir PR                                  | Pendente                           | —               |
-| AC-615   | R-507 | `infra/k6/**`                                 | Executar antes/depois                     | Pendente                           | —               |
-| AC-616   | R-508 | Revisão de docs/security, a11y e deploy       | Revisar seções e rollback                 | Pendente                           | —               |
-| AC-617   | R-509 | SBOM + PR de dependência                      | Consultar artefato e PR                   | Pendente                           | —               |
-| AC-618   | R-509 | Revisão de README/CHANGELOG                   | Ver GIF e resultados                      | Pendente                           | —               |
-| AC-619   | R-506 | Revisão de QA-001/design/a11y                 | Comparar com quality gates                | Pendente                           | —               |
-| AC-620   | R-506 | Gates locais + CI                             | Executar pipeline                         | Passou local; CI pendente          | —               |
+| Critério | Risco | ID/caminho do teste                           | Caso manual                                        | Evidência/resultado                                                 | Defeito/exceção |
+| -------- | ----- | --------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------- | --------------- |
+| AC-601   | R-502 | `apps/api` — `schema:check` + allowlist       | Revisar allowlist versionada                       | Passou (`schema:check` sem drift)                                   | —               |
+| AC-602   | R-502 | `apps/api/test/fase-5.e2e.test.ts` — audit    | Query fora da allowlist em audit                   | Passou (integração + unit de log)                                   | —               |
+| AC-603   | R-502 | `persisted-queries.middleware.test.ts`        | Query fora da allowlist em enforce                 | Passou (unit; sem resolver)                                         | —               |
+| AC-604   | R-501 | `apps/api/test/fase-5.e2e.test.ts` — login    | Exceder tentativas                                 | Passou (429 + Retry-After)                                          | —               |
+| AC-605   | R-501 | `password-policy.test.ts` + fase-5 — lockout  | Senha fraca e bloqueio                             | Passou (política + 429 genérico)                                    | —               |
+| AC-606   | R-501 | `apps/api/test/fase-5.e2e.test.ts` — GraphQL  | Exceder operações autenticado/anônimo              | Passou (429 por usuário)                                            | —               |
+| AC-607   | R-503 | `apps/api/test/fase-5.e2e.test.ts` — WS       | Abrir conexões acima do limite                     | Passou (close 4429)                                                 | —               |
+| AC-608   | R-509 | `apps/api/test/fase-5.e2e.test.ts` — payload  | Enviar corpo grande                                | Passou (413)                                                        | —               |
+| AC-609   | R-508 | `apps/api/test/fase-5-production.e2e.test.ts` | Introspecção/campo inválido                        | Passou (sem introspecção/sugestão)                                  | —               |
+| AC-610   | R-504 | `e2e/critical-flow.spec.ts`                   | Login, contato, negócio, kanban, inbox e dashboard | Passou (desktop + mobile, 4 cenários)                               | —               |
+| AC-611   | R-505 | `e2e/a11y.spec.ts` — axe                      | Páginas principais, dois temas                     | Passou (18 varreduras, zero critical/serious)                       | —               |
+| AC-612   | R-505 | Checklist em `docs/a11y.md`                   | Teclado, reflow, contraste e leitor de tela        | Parcial: teclado/reflow/contraste passaram; NVDA/VoiceOver pendente | —               |
+| AC-613   | R-503 | `e2e/security.spec.ts`                        | IDOR, tokens, refresh, HMAC, WS e bypass           | Passou (6 testes)                                                   | —               |
+| AC-614   | R-504 | CI workflow — job `e2e`                       | Abrir PR                                           | Implementado local; CI pendente                                     | —               |
+| AC-615   | R-507 | `infra/k6/**`                                 | Executar antes/depois                              | Pendente                                                            | —               |
+| AC-616   | R-508 | Revisão de docs/security, a11y e deploy       | Revisar seções e rollback                          | Pendente                                                            | —               |
+| AC-617   | R-509 | SBOM + PR de dependência                      | Consultar artefato e PR                            | Pendente                                                            | —               |
+| AC-618   | R-509 | Revisão de README/CHANGELOG                   | Ver GIF e resultados                               | Pendente                                                            | —               |
+| AC-619   | R-506 | Revisão de QA-001/design/a11y                 | Comparar com quality gates                         | Pendente (aprovação humana)                                         | —               |
+| AC-620   | R-506 | Gates locais + CI                             | Executar pipeline                                  | Passou local (lint/typecheck/test/build/E2E); CI pendente           | —               |
 
 ## Ambiente e dados
 
@@ -103,7 +103,7 @@
 - [x] SPEC-006, TASKs e este plano aprovados.
 - [x] ADR-009 e decisões de limites/política registradas.
 - [x] Ambiente Compose + seed determinístico pronto.
-- [ ] Playwright, axe e k6 disponíveis nas versões fixadas.
+- [x] Playwright 1.65.0 e axe 4.14.0 disponíveis; k6 pendente (TASK-006-03).
 
 ## Critérios de saída
 
@@ -127,6 +127,10 @@
 
 ## Resumo do teste e recomendação
 
-- TASK-006-01 implementada e validada localmente; TASK-006-02/03 pendentes.
+- TASK-006-01 implementada e validada localmente.
+- TASK-006-02: E2E, axe, segurança negativa e job de CI implementados; 14 testes
+  passaram localmente. Restam revisão manual com leitor de tela, validação da CI
+  e fechamento do Gate 4 da Fase 4.
+- TASK-006-03 (k6, SBOM, deploy e release notes) pendente.
 - Recomendação atual: continuar em `develop`; No-go para release até concluir
-  E2E/axe/k6, deploy documentado e aprovação de retenção/base legal LGPD.
+  k6, deploy documentado, aprovação humana do Gate 4 e retenção/base legal LGPD.
