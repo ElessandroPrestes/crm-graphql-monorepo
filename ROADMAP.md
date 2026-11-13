@@ -83,7 +83,7 @@ O Gate 4 de release continua aberto até a aprovação de QA-001, da revisão de
 implementação de design e da revisão manual de acessibilidade, ou de exceção
 autorizada registrada.
 
-## Fase 5 — Endurecimento e entrega
+## Fase 5 — Endurecimento e entrega (proposta, aguardando aprovação)
 
 - [ ] Persisted queries e ajuste de limites/rate limits.
 - [ ] Benchmark k6 antes/depois do DataLoader com números no README.
@@ -91,6 +91,16 @@ autorizada registrada.
 - [ ] Modelo STRIDE finalizado e docs/a11y.md completo.
 - [ ] SBOM, Dependabot/Renovate e guia de deploy.
 - [ ] README final com GIF e resultados.
+
+Evidências propostas: `docs/discovery-fase-5.md`,
+`specs/SPEC-006-fase-5-endurecimento-entrega.md` (Draft),
+`tasks/TASK-006-01-fase-5-endurecimento-graphql.md` (Planned),
+`tasks/TASK-006-02-fase-5-e2e-a11y-seguranca.md` (Planned),
+`tasks/TASK-006-03-fase-5-desempenho-entrega.md` (Planned) e
+`docs/qa-plan-fase-5.md` (QA-002, Draft).
+
+Nenhum item da Fase 5 é implementado antes da aprovação da SPEC-006, do
+ADR-009 e das TASKs correspondentes.
 
 ---
 

@@ -2,16 +2,16 @@
 
 ## Metadados
 
-| Campo                   | Valor                                                        |
-| ----------------------- | ------------------------------------------------------------ |
-| Nome do Projeto         | Nexo CRM (`crm-graphql-monorepo`)                            |
-| Organização             | Portfólio pessoal                                            |
-| Responsável             | Engenharia (a designar por área)                             |
-| Estado                  | Ativo — Fases 0 a 4 implementadas; Gate 4 e Fase 5 pendentes |
-| Versão ou release       | `0.2.0-alpha`                                                |
-| Última revisão          | 2026-11-13                                                   |
-| Revisores               | Produto / Engenharia / QA / Segurança                        |
-| Framework de Governança | Universal SDD (Spec-Driven Development)                      |
+| Campo                   | Valor                                                             |
+| ----------------------- | ----------------------------------------------------------------- |
+| Nome do Projeto         | Nexo CRM (`crm-graphql-monorepo`)                                 |
+| Organização             | Portfólio pessoal                                                 |
+| Responsável             | Engenharia (a designar por área)                                  |
+| Estado                  | Ativo — Fases 0 a 4 implementadas; Gate 4 aberto; Fase 5 proposta |
+| Versão ou release       | `0.2.0-alpha`                                                     |
+| Última revisão          | 2026-11-13                                                        |
+| Revisores               | Produto / Engenharia / QA / Segurança                             |
+| Framework de Governança | Universal SDD (Spec-Driven Development)                           |
 
 ---
 
