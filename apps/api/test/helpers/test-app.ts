@@ -23,6 +23,7 @@ export interface TestContext {
 
 export interface StartTestAppOptions {
   rabbitmq?: boolean;
+  nodeEnv?: 'test' | 'production';
 }
 
 export async function startTestApp(options: StartTestAppOptions = {}): Promise<TestContext> {
@@ -39,7 +40,9 @@ export async function startTestApp(options: StartTestAppOptions = {}): Promise<T
   const databaseUrl = container.getConnectionUri();
   const redisUrl = `redis://${redis.getHost()}:${redis.getMappedPort(6379)}`;
 
-  process.env.NODE_ENV = 'test';
+  const nodeEnv = options.nodeEnv ?? 'test';
+
+  process.env.NODE_ENV = nodeEnv;
   process.env.DATABASE_URL = databaseUrl;
   process.env.REDIS_URL = redisUrl;
   process.env.ACCESS_TOKEN_SECRET = 'test-only-access-token-secret-32-chars';
@@ -47,9 +50,17 @@ export async function startTestApp(options: StartTestAppOptions = {}): Promise<T
   process.env.REFRESH_TOKEN_TTL_SECONDS = '604800';
   process.env.REFRESH_COOKIE_NAME = 'nexo_refresh';
   process.env.CORS_ORIGINS = 'http://localhost:5217';
-  process.env.WHATSAPP_PROVIDER = 'mock';
+  process.env.WHATSAPP_PROVIDER = nodeEnv === 'production' ? 'cloud' : 'mock';
   process.env.WHATSAPP_APP_SECRET = 'test-only-whatsapp-app-secret';
   process.env.WHATSAPP_VERIFY_TOKEN = 'test-only-whatsapp-verify-token';
+  process.env.WHATSAPP_ACCESS_TOKEN = 'test-only-whatsapp-access-token';
+  process.env.PERSISTED_QUERIES_MODE = process.env.PERSISTED_QUERIES_MODE ?? 'audit';
+  process.env.RATE_LIMIT_LOGIN_IP_MAX = process.env.RATE_LIMIT_LOGIN_IP_MAX ?? '1000';
+  process.env.RATE_LIMIT_LOGIN_EMAIL_MAX = process.env.RATE_LIMIT_LOGIN_EMAIL_MAX ?? '1000';
+  process.env.RATE_LIMIT_GRAPHQL_USER_MAX = process.env.RATE_LIMIT_GRAPHQL_USER_MAX ?? '1000';
+  process.env.RATE_LIMIT_GRAPHQL_ANON_MAX = process.env.RATE_LIMIT_GRAPHQL_ANON_MAX ?? '1000';
+  process.env.RATE_LIMIT_GRAPHQL_WRITE_MAX = process.env.RATE_LIMIT_GRAPHQL_WRITE_MAX ?? '1000';
+  process.env.RATE_LIMIT_WS_MAX = process.env.RATE_LIMIT_WS_MAX ?? '1000';
 
   if (rabbitmq) {
     process.env.RABBITMQ_URL = `amqp://guest:guest@${rabbitmq.getHost()}:${rabbitmq.getMappedPort(5672)}`;

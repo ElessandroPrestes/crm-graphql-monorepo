@@ -27,14 +27,14 @@ Fluxos de webhook, upload e pagamento permanecem em REST, conforme
 
 ## Fases
 
-| Fase | Escopo                                                           | Status     |
-| ---- | ---------------------------------------------------------------- | ---------- |
-| 0    | Fundação: monorepo, tooling, esqueletos, Docker, CI e docs       | Concluída  |
-| 1    | Domínio e API núcleo: Prisma, auth, RBAC, GraphQL, DataLoader    | Concluída  |
-| 2    | Funil e dashboard: negócios, concorrência, subscriptions, cache  | Concluída  |
-| 3    | WhatsApp e eventos: provider, HMAC, RabbitMQ, worker, DLQ, LGPD  | Concluída  |
-| 4    | Front-end: login, contatos, visão 360°, kanban, inbox, dashboard | Em revisão |
-| 5    | Endurecimento: persisted queries, k6, e2e, STRIDE e deploy       | Pendente   |
+| Fase | Escopo                                                           | Status       |
+| ---- | ---------------------------------------------------------------- | ------------ |
+| 0    | Fundação: monorepo, tooling, esqueletos, Docker, CI e docs       | Concluída    |
+| 1    | Domínio e API núcleo: Prisma, auth, RBAC, GraphQL, DataLoader    | Concluída    |
+| 2    | Funil e dashboard: negócios, concorrência, subscriptions, cache  | Concluída    |
+| 3    | WhatsApp e eventos: provider, HMAC, RabbitMQ, worker, DLQ, LGPD  | Concluída    |
+| 4    | Front-end: login, contatos, visão 360°, kanban, inbox, dashboard | Em revisão   |
+| 5    | Endurecimento: persisted queries, k6, e2e, STRIDE e deploy       | Em andamento |
 
 ---
 

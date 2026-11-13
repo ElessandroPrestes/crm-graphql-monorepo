@@ -115,5 +115,7 @@ main.tsx
 - O worker reconecta ao broker, mas replay de DLQ é manual.
 - Mídia e webhooks de status do WhatsApp ficam fora do escopo.
 - Os health checks verificam apenas o processo, não dependências externas.
-- Rate limit, persisted queries e benchmark k6 ficam para a Fase 5.
+- Rate limit (login/GraphQL/WS), persisted queries e limite de corpo foram
+  implementados na Fase 5 (TASK-006-01, ADR-009); benchmark k6 e E2E ficam nas
+  TASK-006-02/03.
 - O bundle principal tem ~708 kB; code splitting por rota é pendente.

@@ -3,6 +3,7 @@ node_modules
 packages/graphql-schema/schema.graphql
 packages/graphql-schema/src/types.ts
 packages/graphql-schema/src/operations.ts
+apps/api/src/graphql/persisted-queries.generated.ts
 dist
 build
 coverage

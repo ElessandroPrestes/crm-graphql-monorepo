@@ -16,6 +16,22 @@ export const apiEnvSchema = baseEnvSchema
     ACCESS_TOKEN_TTL_SECONDS: z.coerce.number().int().positive().default(900),
     REFRESH_TOKEN_TTL_SECONDS: z.coerce.number().int().positive().default(604800),
     REFRESH_COOKIE_NAME: z.string().min(1).default('nexo_refresh'),
+    JSON_BODY_LIMIT: z
+      .string()
+      .regex(/^\d+(b|kb|mb)$/i, 'JSON_BODY_LIMIT deve usar b, kb ou mb')
+      .default('256kb'),
+    PERSISTED_QUERIES_MODE: z.enum(['off', 'audit', 'enforce']).default('audit'),
+    RATE_LIMIT_LOGIN_IP_MAX: z.coerce.number().int().positive().default(30),
+    RATE_LIMIT_LOGIN_EMAIL_MAX: z.coerce.number().int().positive().default(10),
+    RATE_LIMIT_LOGIN_WINDOW_SECONDS: z.coerce.number().int().positive().default(900),
+    LOGIN_LOCK_THRESHOLD: z.coerce.number().int().positive().default(5),
+    LOGIN_LOCK_SECONDS: z.coerce.number().int().positive().default(900),
+    RATE_LIMIT_GRAPHQL_USER_MAX: z.coerce.number().int().positive().default(120),
+    RATE_LIMIT_GRAPHQL_ANON_MAX: z.coerce.number().int().positive().default(30),
+    RATE_LIMIT_GRAPHQL_WRITE_MAX: z.coerce.number().int().positive().default(40),
+    RATE_LIMIT_GRAPHQL_WINDOW_SECONDS: z.coerce.number().int().positive().default(60),
+    RATE_LIMIT_WS_MAX: z.coerce.number().int().positive().default(10),
+    RATE_LIMIT_WS_WINDOW_SECONDS: z.coerce.number().int().positive().default(60),
     WHATSAPP_PROVIDER: z.enum(['mock', 'cloud']).default('mock'),
     WHATSAPP_VERIFY_TOKEN: z.string().min(16).default(DEV_WHATSAPP_VERIFY_TOKEN),
     WHATSAPP_APP_SECRET: z.string().min(16).default(DEV_WHATSAPP_APP_SECRET),

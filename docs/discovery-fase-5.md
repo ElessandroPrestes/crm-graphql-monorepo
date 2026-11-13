@@ -4,7 +4,7 @@
 
 | Campo       | Valor                                                                                              |
 | ----------- | -------------------------------------------------------------------------------------------------- |
-| Status      | Draft — aguardando aprovação                                                                       |
+| Status      | Aprovado — execução autorizada em 2026-11-13                                                       |
 | Responsável | Engenharia, QA e Segurança                                                                         |
 | Criado      | 2026-11-13                                                                                         |
 | Atualizado  | 2026-11-13                                                                                         |

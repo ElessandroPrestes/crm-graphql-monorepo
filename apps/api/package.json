@@ -23,8 +23,10 @@
     "db:reset": "prisma migrate reset --force",
     "db:studio": "prisma studio",
     "schema:generate": "pnpm build && node dist/schema/generate-schema.js",
-    "schema:codegen": "pnpm --filter @nexo/graphql-schema codegen",
-    "schema:check": "pnpm schema:generate && pnpm schema:codegen && git diff --exit-code ../../packages/graphql-schema/schema.graphql ../../packages/graphql-schema/src/types.ts"
+    "schema:codegen": "pnpm --filter @nexo/graphql-schema codegen && pnpm persisted:generate",
+    "schema:check": "pnpm schema:generate && pnpm schema:codegen && git diff --exit-code ../../packages/graphql-schema/schema.graphql ../../packages/graphql-schema/src/types.ts src/graphql/persisted-queries.generated.ts",
+    "persisted:generate": "tsx scripts/generate-persisted-queries.ts",
+    "persisted:check": "pnpm persisted:generate && git diff --exit-code src/graphql/persisted-queries.generated.ts"
   },
   "dependencies": {
     "@apollo/server": "5.5.1",
@@ -60,6 +62,7 @@
   "devDependencies": {
     "@nestjs/cli": "12.0.12",
     "@nestjs/testing": "12.4.2",
+    "@nexo/graphql-schema": "workspace:*",
     "@nexo/tsconfig": "workspace:*",
     "@swc/core": "1.16.22",
     "@testcontainers/postgresql": "12.2.1",

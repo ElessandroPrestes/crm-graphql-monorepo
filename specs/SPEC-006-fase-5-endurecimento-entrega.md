@@ -5,7 +5,7 @@
 | Campo             | Valor                                                                                                                                                  |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | ID                | SPEC-006                                                                                                                                               |
-| Status            | Draft — aguardando aprovação                                                                                                                           |
+| Status            | Approved — execução autorizada em 2026-11-13                                                                                                           |
 | Responsável       | Engenharia, QA e Segurança                                                                                                                             |
 | Revisores         | Produto / Design / Engenharia / QA / Segurança / Acessibilidade                                                                                        |
 | Criado            | 2026-11-13                                                                                                                                             |
@@ -30,8 +30,10 @@ e desempenho, cadeia de suprimentos rastreável, deploy reproduzível e riscos
 residuais explícitos. Nenhuma mudança funcional de produto é introduzida além
 das correções de baixo impacto já registradas em REVIEW-001.
 
-Nenhuma implementação começa antes da aprovação humana de `docs/discovery-fase-5.md`,
-desta SPEC, de ADR-009, das TASKs e de QA-002.
+A execução foi autorizada por instrução direta do solicitante humano em
+2026-11-13, após a proposta de discovery, SPEC, QA-002 e TASKs. As decisões
+técnicas abertas foram registradas com defaults conservadores em ADR-009 e
+continuam sujeitas a revisão antes do release.
 
 ## Escopo
 
@@ -427,23 +429,23 @@ evidence_type: automated
 
 ## Questões abertas
 
-| Questão                                       | Responsável          | Data limite                           | Resolução |
-| --------------------------------------------- | -------------------- | ------------------------------------- | --------- |
-| Qual provedor/topologia de deploy será usado? | Produto/Engenharia   | Antes da TASK-006-03                  | Pendente  |
-| Persisted queries: audit por quanto tempo?    | Engenharia/Segurança | Antes da implementação                | Pendente  |
-| Limites exatos de login/GraphQL/WS?           | Segurança/Produto    | Antes da implementação                | Pendente  |
-| Política de senha e duração do bloqueio?      | Produto/Segurança    | Antes da implementação                | Pendente  |
-| Metas de p95/erro/throughput do k6?           | Engenharia/QA        | Antes do benchmark                    | Pendente  |
-| Retenção/base legal LGPD?                     | Produto/Jurídico     | Antes de qualquer uso com dados reais | Pendente  |
-| Code splitting entra nesta fase?              | Engenharia           | Antes da TASK-006-03                  | Pendente  |
+| Questão                                       | Responsável          | Data limite                           | Resolução                                                                                                                      |
+| --------------------------------------------- | -------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Qual provedor/topologia de deploy será usado? | Produto/Engenharia   | Antes da TASK-006-03                  | Pendente                                                                                                                       |
+| Persisted queries: audit por quanto tempo?    | Engenharia/Segurança | Antes da implementação                | Assumido: `audit` em dev/teste, `enforce` habilitável por env em produção (ADR-009); janela de observação a validar no release |
+| Limites exatos de login/GraphQL/WS?           | Segurança/Produto    | Antes da implementação                | Assumido em ADR-009: login 10/15 min por IP+e-mail, GraphQL 120/min por usuário e 30/min por IP anônimo, WS 10/min por IP      |
+| Política de senha e duração do bloqueio?      | Produto/Segurança    | Antes da implementação                | Assumido em ADR-009: mínimo 12 caracteres; bloqueio progressivo de 15 min após 5 falhas, com contador Redis                    |
+| Metas de p95/erro/throughput do k6?           | Engenharia/QA        | Antes do benchmark                    | Pendente                                                                                                                       |
+| Retenção/base legal LGPD?                     | Produto/Jurídico     | Antes de qualquer uso com dados reais | Pendente                                                                                                                       |
+| Code splitting entra nesta fase?              | Engenharia           | Antes da TASK-006-03                  | Pendente                                                                                                                       |
 
 ## Aprovação
 
-| Papel          | Nome | Decisão             | Data | Notas |
-| -------------- | ---- | ------------------- | ---- | ----- |
-| Produto        |      | Approved / Rejected |      |       |
-| Design         |      | Approved / N/A      |      |       |
-| Engenharia     |      | Approved / Rejected |      |       |
-| QA             |      | Ready / Not ready   |      |       |
-| Segurança      |      | Approved / Rejected |      |       |
-| Acessibilidade |      | Approved / N/A      |      |       |
+| Papel          | Nome                           | Decisão  | Data       | Notas                                                                |
+| -------------- | ------------------------------ | -------- | ---------- | -------------------------------------------------------------------- |
+| Produto        | Solicitante humano (instrução) | Approved | 2026-11-13 | Autorizou seguir para a Fase 5 e continuar a execução na `develop`.  |
+| Design         | Solicitante humano (instrução) | N/A      | 2026-11-13 | Sem mudança visual nova; revisão de design da Fase 4 segue pendente. |
+| Engenharia     | Solicitante humano (instrução) | Approved | 2026-11-13 | Implementação inicia por TASK-006-01.                                |
+| QA             | Solicitante humano (instrução) | Ready    | 2026-11-13 | QA-002 aceito para execução; resultados serão registrados.           |
+| Segurança      | Solicitante humano (instrução) | Approved | 2026-11-13 | Defaults de ADR-009 assumidos; revisão antes do release.             |
+| Acessibilidade | Solicitante humano (instrução) | Approved | 2026-11-13 | Verificação de implementação ocorre em TASK-006-02.                  |

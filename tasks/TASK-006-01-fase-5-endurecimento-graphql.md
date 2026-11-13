@@ -5,7 +5,7 @@
 | Campo        | Valor                                                                                                                              |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
 | ID           | TASK-006-01                                                                                                                        |
-| Status       | Planned — aguardando aprovação                                                                                                     |
+| Status       | Done — validação local; revisão independente pendente                                                                              |
 | Responsável  | Engenharia de API/Segurança                                                                                                        |
 | Refs:        | SPEC: SPEC-006; Critérios: AC-601, AC-602, AC-603, AC-604, AC-605, AC-606, AC-607, AC-608, AC-609, AC-620; ADRs: ADR-009 (a criar) |
 | Dependências | SPEC-006 e ADR-009 aprovados; Redis disponível; cliente Apollo atualizado                                                          |
@@ -50,16 +50,16 @@ bloqueio progressivo, sem alterar o comportamento funcional aprovado.
 
 ## Etapas
 
-- [ ] Aprovar SPEC-006, ADR-009, esta TASK e QA-002.
-- [ ] Definir limites e política de senha com Segurança/Produto.
-- [ ] Implementar allowlist e modo audit/enforce no servidor.
-- [ ] Integrar o hash de persisted query no cliente Apollo.
-- [ ] Implementar rate limit de login, GraphQL e handshake WS com Redis.
-- [ ] Implementar política de senha e bloqueio progressivo.
-- [ ] Aplicar limite de corpo e desativar sugestões em produção.
-- [ ] Adicionar testes unitários, de integração e de bypass.
-- [ ] Rodar lint, typecheck, testes, build e schema check.
-- [ ] Atualizar documentação, `.env.example` e rastreabilidade.
+- [x] Aprovar SPEC-006, ADR-009, esta TASK e QA-002 (instrução humana de 2026-11-13).
+- [x] Definir limites e política de senha com defaults registrados em ADR-009.
+- [x] Implementar allowlist e modo audit/enforce no servidor.
+- [x] Integrar o hash de persisted query no cliente Apollo.
+- [x] Implementar rate limit de login, GraphQL e handshake WS com Redis.
+- [x] Implementar política de senha e bloqueio progressivo.
+- [x] Aplicar limite de corpo e desativar sugestões em produção.
+- [x] Adicionar testes unitários, de integração e de bypass.
+- [x] Rodar lint, typecheck, testes, build e schema check.
+- [x] Atualizar documentação, `.env.example` e rastreabilidade.
 
 ## Validação
 
@@ -78,14 +78,21 @@ bloqueio progressivo, sem alterar o comportamento funcional aprovado.
 
 ## Condição de conclusão
 
-- [ ] Escopo implementado sem expansão.
-- [ ] Testes e validações aplicáveis passam.
-- [ ] Documentação e rastreabilidade atualizadas.
-- [ ] Limitações e desvios registrados.
+- [x] Escopo implementado sem expansão.
+- [x] Testes e validações aplicáveis passam.
+- [x] Documentação e rastreabilidade atualizadas.
+- [x] Limitações e desvios registrados.
 
 ## Resultado
 
-- Mudanças feitas: pendente.
-- Evidência: pendente.
-- Trabalho em aberto ou bloqueios: aprovação de SPEC-006/ADR-009 e decisão dos
-  limites.
+- Mudanças feitas: allowlist de persisted queries gerada pelo codegen e
+  integrada ao Apollo; modos audit/enforce; rate limit de login, GraphQL e WS;
+  bloqueio progressivo; política de senha; limite de corpo; sanitização de
+  sugestões em produção; ADR-009; testes unitários e de integração.
+- Evidência: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`,
+  `pnpm format:check`, `pnpm --filter @nexo/api schema:check` e
+  `pnpm audit --audit-level high` passaram. Testes: API unit 37, web 39,
+  integração completa 37 (inclui `fase-5` com 7 e `fase-5-production` com 2).
+- Trabalho em aberto ou bloqueios: revisão independente de Segurança/QA e
+  revisão dos limites antes do release; `pnpm audit` mantém 2 advisories
+  moderadas em ferramentas dev, já conhecidas e sem correção compatível.

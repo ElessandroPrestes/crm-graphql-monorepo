@@ -1,6 +1,6 @@
 # Segurança
 
-Status: Fases 0 a 4 implementadas. Este documento lista o mapeamento OWASP,
+Status: Fases 0 a 4 implementadas; endurecimento da Fase 5 em andamento. Este documento lista o mapeamento OWASP,
 o modelo de ameaças resumido e os riscos ainda abertos. Controles não implementados estão
 marcados como **planejado**; não os trate como existentes.
 
@@ -25,7 +25,7 @@ marcados como **planejado**; não os trate como existentes.
 | A04 Insecure Design                            | ADRs, modelo de ameaças e limites definidos antes do código                                                        | Em andamento                                                              |
 | A05 Security Misconfiguration                  | helmet, CORS com allowlist, validação de env, erros genéricos, introspection off em produção                       | Parcial (helmet, CORS, env e introspection off; headers finais pendentes) |
 | A06 Vulnerable and Outdated Components         | lockfile, `pnpm audit`, Dependabot, Trivy e SBOM                                                                   | Parcial (audit e Trivy na CI; Dependabot/SBOM pendentes)                  |
-| A07 Identification and Authentication Failures | Política de senha, bloqueio progressivo, rate limit, rotação de refresh com detecção de reuso                      | Parcial (argon2id, rotação e reuso; rate limit/política pendentes)        |
+| A07 Identification and Authentication Failures | Política de senha, bloqueio progressivo, rate limit, rotação de refresh com detecção de reuso                      | Implementado (argon2id, rotação/reuso, política, bloqueio e rate limit)   |
 | A08 Software and Data Integrity Failures       | Actions fixadas por SHA, permissões mínimas, HMAC de webhook, builds com lockfile                                  | Parcial (Actions por SHA e lockfile na Fase 0)                            |
 | A09 Security Logging and Monitoring Failures   | pino com redação, correlation id, auditoria de eventos de segurança                                                | Parcial (pino e correlation id na Fase 0)                                 |
 | A10 Server-Side Request Forgery                | Apenas hosts fixos e configurados; Cloud API usa URL base não fornecida pelo usuário                               | Parcial (Fase 3)                                                          |
@@ -43,8 +43,14 @@ rejeitada sem token válido e cada evento `dealMoved` é filtrado por `ownerId`
 (ADMIN recebe todos). Testes negativos cobrem conexão sem token e isolamento
 entre vendedores.
 
-Pendente para fases seguintes: persisted queries, rate limit por usuário/IP,
-limite explícito de corpo e desativação de field suggestions em produção.
+Implementado na Fase 5 (TASK-006-01): persisted queries com allowlist gerada
+pelo codegen e modos `off`/`audit`/`enforce`; rate limit de login por IP/e-mail,
+de GraphQL por usuário/IP e de handshake WebSocket com Redis; bloqueio
+temporário após falhas de login; política de senha de 12 a 128 caracteres;
+limite de corpo JSON configurável (`JSON_BODY_LIMIT`, default `256kb`); e
+remoção de sugestões `Did you mean ...` em produção. O login falha fechado se o
+Redis estiver indisponível; leitura GraphQL/WS usa fail-open controlado com log.
+Detalhes e rollback estão em ADR-009.
 
 ## Implementado na Fase 4 (front-end)
 
@@ -99,19 +105,19 @@ limite explícito de corpo e desativação de field suggestions em produção.
 
 ## Riscos pendentes
 
-| Risco                                                        | Impacto | Fase alvo      |
-| ------------------------------------------------------------ | ------- | -------------- |
-| Sem rate limit de login/GraphQL                              | Alto    | Fase 5         |
-| Sem política de senha e bloqueio progressivo                 | Médio   | Fase 5         |
-| Sem E2E/axe automatizado no front-end                        | Médio   | Fase 5         |
-| Tokens expirados não têm job de limpeza                      | Baixo   | Fase 5         |
-| Logs ainda não possuem trilha de auditoria de segurança      | Médio   | Fase 5         |
-| Pub/sub de subscriptions é best-effort (sem entrega durável) | Médio   | Fase 5         |
-| SBOM e Dependabot ainda não configurados                     | Médio   | Fase 5         |
-| Sem TLS local obrigatório; produção depende do provedor      | Médio   | Fase 5         |
-| Política de retenção/base legal ainda não aprovada           | Alto    | Fase 5         |
-| Sem outbox/exactly-once; DLQ exige replay manual             | Médio   | Fase 5         |
-| CI das Fases 1 e 2 ainda não executada no GitHub             | Médio   | Antes do merge |
+| Risco                                                        | Impacto | Fase alvo       |
+| ------------------------------------------------------------ | ------- | --------------- |
+| Rate limit por janela fixa permite rajadas na borda          | Médio   | Evolução futura |
+| Política de senha sem endpoint público de cadastro           | Baixo   | Evolução futura |
+| Sem E2E/axe automatizado no front-end                        | Médio   | Fase 5          |
+| Tokens expirados não têm job de limpeza                      | Baixo   | Fase 5          |
+| Logs ainda não possuem trilha de auditoria de segurança      | Médio   | Fase 5          |
+| Pub/sub de subscriptions é best-effort (sem entrega durável) | Médio   | Fase 5          |
+| SBOM e Dependabot ainda não configurados                     | Médio   | Fase 5          |
+| Sem TLS local obrigatório; produção depende do provedor      | Médio   | Fase 5          |
+| Política de retenção/base legal ainda não aprovada           | Alto    | Fase 5          |
+| Sem outbox/exactly-once; DLQ exige replay manual             | Médio   | Fase 5          |
+| CI das Fases 1 e 2 ainda não executada no GitHub             | Médio   | Antes do merge  |
 
 ## LGPD
 

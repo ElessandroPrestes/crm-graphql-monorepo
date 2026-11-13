@@ -43,6 +43,7 @@ async function bootstrap(): Promise<void> {
     credentials: true,
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id', 'X-CSRF-Token'],
+    exposedHeaders: ['Retry-After', 'X-Request-Id'],
   });
   app.useGlobalPipes(
     new ValidationPipe({

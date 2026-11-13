@@ -9,18 +9,24 @@ import {
   Res,
   UnauthorizedException,
   UseGuards,
+  UseFilters,
   Body,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { Request, Response } from 'express';
 import type { ApiEnv } from '../config/env.js';
-import { AuthService } from './auth.service.js';
+import { clientIp } from '../common/client-ip.js';
+import { LoginThrottledException } from '../common/rate-limit/login-throttled.exception.js';
+import { RateLimitExceptionFilter } from '../common/rate-limit/rate-limit-exception.filter.js';
+import { AuthService, type SessionResult } from './auth.service.js';
+import { AuthThrottleService } from './auth-throttle.service.js';
 import { CurrentUser } from './current-user.decorator.js';
 import type { AuthenticatedUser } from './auth.types.js';
 import { JwtAuthGuard } from './jwt-auth.guard.js';
 import { LoginDto } from './login.dto.js';
 
 @Controller('auth')
+@UseFilters(RateLimitExceptionFilter)
 export class AuthController {
   private readonly cookieName: string;
   private readonly cookieSecure: boolean;
@@ -29,6 +35,7 @@ export class AuthController {
 
   constructor(
     @Inject(AuthService) private readonly authService: AuthService,
+    @Inject(AuthThrottleService) private readonly throttle: AuthThrottleService,
     @Inject(ConfigService) config: ConfigService<ApiEnv, true>,
   ) {
     this.cookieName = config.get('REFRESH_COOKIE_NAME', { infer: true });
@@ -51,7 +58,25 @@ export class AuthController {
   }> {
     this.assertAllowedOrigin(request);
 
-    const session = await this.authService.login(body);
+    await this.throttle.beforeLogin(clientIp(request), body.email);
+
+    let session: SessionResult;
+
+    try {
+      session = await this.authService.login(body);
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        const retryAfterSeconds = await this.throttle.recordFailure(body.email);
+
+        if (retryAfterSeconds > 0) {
+          throw new LoginThrottledException(retryAfterSeconds);
+        }
+      }
+
+      throw error;
+    }
+
+    await this.throttle.reset(body.email);
 
     this.setRefreshCookie(response, session.refreshToken);
 

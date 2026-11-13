@@ -53,6 +53,28 @@ export class RedisService implements OnModuleDestroy {
     return this.cache.incr(key);
   }
 
+  async incrementWithTtl(key: string, ttlSeconds: number): Promise<number> {
+    const count = await this.cache.incr(key);
+
+    if (count === 1) {
+      await this.cache.expire(key, ttlSeconds);
+    }
+
+    return count;
+  }
+
+  async set(key: string, value: string, ttlSeconds: number): Promise<void> {
+    await this.cache.set(key, value, 'EX', ttlSeconds);
+  }
+
+  async delete(key: string): Promise<void> {
+    await this.cache.del(key);
+  }
+
+  async ttl(key: string): Promise<number> {
+    return this.cache.ttl(key);
+  }
+
   async publish(channel: string, payload: unknown): Promise<void> {
     await this.publisher.publish(channel, JSON.stringify(payload));
   }

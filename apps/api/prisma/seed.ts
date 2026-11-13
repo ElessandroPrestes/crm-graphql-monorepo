@@ -1,11 +1,12 @@
 import 'dotenv/config';
 import argon2 from 'argon2';
+import { assertPasswordPolicy } from '../src/auth/password-policy.js';
 import { createPrismaClient } from '../src/prisma/client.js';
 
 const databaseUrl =
   process.env.DATABASE_URL ?? 'postgresql://nexo:nexo@localhost:5402/nexo?schema=public';
 
-const password = 'NexoDemo!2026';
+const password = assertPasswordPolicy('NexoDemo!2026');
 
 const ids = {
   admin: '11111111-1111-4111-8111-111111111111',

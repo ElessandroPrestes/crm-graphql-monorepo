@@ -1,6 +1,7 @@
 import { ApolloClient, ApolloLink, HttpLink, InMemoryCache, type ErrorLike } from '@apollo/client';
 import { SetContextLink } from '@apollo/client/link/context';
 import { ErrorLink } from '@apollo/client/link/error';
+import { PersistedQueryLink } from '@apollo/client/link/persisted-queries';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { Observable, getMainDefinition } from '@apollo/client/utilities';
 import { CombinedGraphQLErrors, ServerError } from '@apollo/client/errors';
@@ -81,6 +82,17 @@ const wsClient = createClient({
 
 const wsLink = new GraphQLWsLink(wsClient);
 
+async function sha256(query: string): Promise<string> {
+  const data = new TextEncoder().encode(query);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+const persistedQueryLink = new PersistedQueryLink({ sha256 });
+
 const terminatingLink = ApolloLink.split(
   ({ query }) => {
     const definition = getMainDefinition(query);
@@ -88,7 +100,7 @@ const terminatingLink = ApolloLink.split(
     return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
   },
   wsLink,
-  ApolloLink.from([errorLink, authLink, httpLink]),
+  ApolloLink.from([errorLink, authLink, persistedQueryLink, httpLink]),
 );
 
 export const apolloClient = new ApolloClient({

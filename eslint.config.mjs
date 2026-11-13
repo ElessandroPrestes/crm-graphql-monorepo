@@ -3,7 +3,10 @@ import { createReactConfig } from '@nexo/eslint-config/react';
 
 export default [
   {
-    ignores: ['packages/graphql-schema/src/operations.ts'],
+    ignores: [
+      'packages/graphql-schema/src/operations.ts',
+      'apps/api/src/graphql/persisted-queries.generated.ts',
+    ],
   },
   ...base,
   ...createReactConfig(['apps/web/**/*.{ts,tsx}']),
