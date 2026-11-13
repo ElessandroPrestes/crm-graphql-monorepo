@@ -2,14 +2,14 @@
 
 ## Metadados
 
-| Campo                   | Valor                                        |
-| ----------------------- | -------------------------------------------- |
-| ID                      | QA-002                                       |
-| Status                  | Approved — execução autorizada em 2026-11-13 |
-| Responsável (QA owner)  | Engenharia/QA                                |
-| Build/commit            | `bf58e1c` (TASK-006-01); E2E da TASK-006-02  |
-| SPEC/design relacionado | SPEC-006; DS-001 (sem nova mudança)          |
-| Janela de teste         | Fase 5                                       |
+| Campo                   | Valor                                            |
+| ----------------------- | ------------------------------------------------ |
+| ID                      | QA-002                                           |
+| Status                  | Approved — execução autorizada em 2026-11-13     |
+| Responsável (QA owner)  | Engenharia/QA                                    |
+| Build/commit            | `f830704` (TASK-006-02); `bf58e1c` (TASK-006-01) |
+| SPEC/design relacionado | SPEC-006; DS-001 (sem nova mudança)              |
+| Janela de teste         | Fase 5                                           |
 
 ## Escopo e objetivo de qualidade
 
@@ -72,17 +72,17 @@
 | AC-607   | R-503 | `apps/api/test/fase-5.e2e.test.ts` — WS       | Abrir conexões acima do limite                     | Passou (close 4429)                                                 | —               |
 | AC-608   | R-509 | `apps/api/test/fase-5.e2e.test.ts` — payload  | Enviar corpo grande                                | Passou (413)                                                        | —               |
 | AC-609   | R-508 | `apps/api/test/fase-5-production.e2e.test.ts` | Introspecção/campo inválido                        | Passou (sem introspecção/sugestão)                                  | —               |
-| AC-610   | R-504 | `e2e/critical-flow.spec.ts`                   | Login, contato, negócio, kanban, inbox e dashboard | Passou (desktop + mobile, 4 cenários)                               | —               |
-| AC-611   | R-505 | `e2e/a11y.spec.ts` — axe                      | Páginas principais, dois temas                     | Passou (18 varreduras, zero critical/serious)                       | —               |
+| AC-610   | R-504 | `e2e/critical-flow.spec.ts`                   | Login, contato, negócio, kanban, inbox e dashboard | Passou local e CI (desktop + mobile, 4 cenários)                    | —               |
+| AC-611   | R-505 | `e2e/a11y.spec.ts` — axe                      | Páginas principais, dois temas                     | Passou local e CI (18 varreduras, zero critical/serious)            | —               |
 | AC-612   | R-505 | Checklist em `docs/a11y.md`                   | Teclado, reflow, contraste e leitor de tela        | Parcial: teclado/reflow/contraste passaram; NVDA/VoiceOver pendente | —               |
 | AC-613   | R-503 | `e2e/security.spec.ts`                        | IDOR, tokens, refresh, HMAC, WS e bypass           | Passou (6 testes)                                                   | —               |
-| AC-614   | R-504 | CI workflow — job `e2e`                       | Abrir PR                                           | Implementado local; CI pendente                                     | —               |
+| AC-614   | R-504 | CI workflow — job `e2e`                       | Abrir PR                                           | Passou (run 43430975275; artefatos publicados)                      | —               |
 | AC-615   | R-507 | `infra/k6/**`                                 | Executar antes/depois                              | Pendente                                                            | —               |
 | AC-616   | R-508 | Revisão de docs/security, a11y e deploy       | Revisar seções e rollback                          | Pendente                                                            | —               |
 | AC-617   | R-509 | SBOM + PR de dependência                      | Consultar artefato e PR                            | Pendente                                                            | —               |
 | AC-618   | R-509 | Revisão de README/CHANGELOG                   | Ver GIF e resultados                               | Pendente                                                            | —               |
 | AC-619   | R-506 | Revisão de QA-001/design/a11y                 | Comparar com quality gates                         | Pendente (aprovação humana)                                         | —               |
-| AC-620   | R-506 | Gates locais + CI                             | Executar pipeline                                  | Passou local (lint/typecheck/test/build/E2E); CI pendente           | —               |
+| AC-620   | R-506 | Gates locais + CI                             | Executar pipeline                                  | Passou local e CI (quality gates, E2E, security e CodeQL)           | —               |
 
 ## Ambiente e dados
 
@@ -129,8 +129,8 @@
 
 - TASK-006-01 implementada e validada localmente.
 - TASK-006-02: E2E, axe, segurança negativa e job de CI implementados; 14 testes
-  passaram localmente. Restam revisão manual com leitor de tela, validação da CI
-  e fechamento do Gate 4 da Fase 4.
+  passaram localmente e a CI ficou verde (run 43430975275). Restam revisão
+  manual com leitor de tela e fechamento do Gate 4 da Fase 4.
 - TASK-006-03 (k6, SBOM, deploy e release notes) pendente.
 - Recomendação atual: continuar em `develop`; No-go para release até concluir
   k6, deploy documentado, aprovação humana do Gate 4 e retenção/base legal LGPD.

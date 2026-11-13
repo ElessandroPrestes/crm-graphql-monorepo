@@ -5,7 +5,7 @@
 | Campo        | Valor                                                                                                      |
 | ------------ | ---------------------------------------------------------------------------------------------------------- |
 | ID           | TASK-006-02                                                                                                |
-| Status       | In progress — automação concluída; CI e revisão manual pendentes (2026-11-13)                              |
+| Status       | In progress — automação e CI concluídas; revisão manual e Gate 4 pendentes (2026-11-13)                    |
 | Responsável  | QA, Engenharia e Acessibilidade                                                                            |
 | Refs:        | SPEC: SPEC-006; Critérios: AC-610, AC-611, AC-612, AC-613, AC-614, AC-620; ADRs: ADR-004, ADR-005, ADR-006 |
 | Dependências | TASK-006-01 concluída para testes de rate limit; Compose e seed determinísticos                            |
@@ -86,9 +86,9 @@ de segurança funcionam, com falhas bloqueando a CI.
   regiões roláveis com `tabIndex=0` e rótulo; links do inbox sem `aria-label`
   divergente; `DashboardMetricsDocument` tipado em `refetchQueries`.
 - Evidência: `pnpm e2e` — 14 testes passaram localmente em 2026-11-13
-  (4 desktop, 4 mobile, 6 API), incluindo 18 varreduras axe sem critical/serious;
-  `docs/a11y.md` e `docs/qa-plan-fase-5.md` atualizados. CI da mudança ainda
-  será observada.
-- Trabalho em aberto ou bloqueios: revisão manual com NVDA/VoiceOver, zoom 200%,
-  aprovação humana do Gate 4 (QA-001/design/acessibilidade) e execução verde do
-  job `e2e` na CI.
+  (4 desktop, 4 mobile, 6 API), incluindo 18 varreduras axe sem critical/serious.
+  Commit `f830704` e CI run `43430975275` verdes em `Quality gates`, `E2E and
+accessibility`, `Security scans` e `CodeQL`, com artefatos Playwright
+  publicados. `docs/a11y.md` e `docs/qa-plan-fase-5.md` atualizados.
+- Trabalho em aberto ou bloqueios: revisão manual com NVDA/VoiceOver, zoom 200%
+  e aprovação humana do Gate 4 (QA-001/design/acessibilidade).
