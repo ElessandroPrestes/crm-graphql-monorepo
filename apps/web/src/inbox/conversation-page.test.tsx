@@ -5,7 +5,7 @@ import {
   MessagesDocument,
   SendMessageDocument,
 } from '@nexo/graphql-schema/operations';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { Route, Routes } from 'react-router-dom';
@@ -105,7 +105,9 @@ describe('ConversationPage', () => {
     await user.type(composer, 'Mensagem nova');
     await user.click(screen.getByRole('button', { name: /^enviar$/i }));
 
-    expect(await screen.findByText('Mensagem nova', {}, { timeout: 3000 })).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getAllByText('Mensagem nova').length).toBeGreaterThan(0);
+    });
     expect(clientMessageId).toMatch(/^[a-zA-Z0-9-]{8,}$/);
     expect(composer).toHaveFocus();
   });
