@@ -5,7 +5,7 @@
 | Campo        | Valor                                                                                 |
 | ------------ | ------------------------------------------------------------------------------------- |
 | ID           | TASK-005-01                                                                           |
-| Status       | Implementada — aguardando revisão                                                     |
+| Status       | Done — revisão aprovada com ressalvas (REVIEW-001)                                    |
 | Responsável  | Engenharia de front-end                                                               |
 | SPEC         | SPEC-005                                                                              |
 | Critérios    | AC-501, AC-502, AC-503, AC-504, AC-517, AC-518, AC-521, AC-523, AC-524                |

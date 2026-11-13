@@ -63,7 +63,7 @@ implementada antes da aprovação formal de sua SPEC e TASK.
 > `apps/api/test/fase-3.e2e.test.ts` e
 > `apps/worker/test/whatsapp-inbound.integration.test.ts`.
 
-## Fase 4 — Front-end (implementada, em revisão)
+## Fase 4 — Front-end (implementada; código aprovado com ressalvas)
 
 - [x] Login e sessão em memória com refresh em cookie HttpOnly.
 - [x] Lista de contatos com busca e filtros.
@@ -76,7 +76,12 @@ Evidências: `specs/SPEC-005-fase-4-frontend.md`,
 `tasks/TASK-005-01-fase-4-fundacao-web.md`,
 `tasks/TASK-005-02-fase-4-contatos-360.md`,
 `tasks/TASK-005-03-fase-4-pipeline-inbox-dashboard.md`,
-`docs/qa-plan-fase-4.md` e `apps/web/src/**/*.test.tsx`.
+`docs/qa-plan-fase-4.md`, `reviews/VERIFICATION-REPORT-VR-001.md`,
+`reviews/REVIEW-001-fase-4.md` e `apps/web/src/**/*.test.tsx`.
+
+O Gate 4 de release continua aberto até a aprovação de QA-001, da revisão de
+implementação de design e da revisão manual de acessibilidade, ou de exceção
+autorizada registrada.
 
 ## Fase 5 — Endurecimento e entrega
 
