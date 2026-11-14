@@ -76,32 +76,46 @@ Manter o store e o destino de deploy na mesma camada gravável elimina o
 copy-up. O cache do Turbo é montado separadamente em `/cache/turbo`.
 
 O primeiro experimento com apenas o estágio de build levou **140 s** no frio
-(install 62 s, Turbo 43 s, deploy ~3 s). O build final, que também exporta as
-três imagens de runtime, levou **299 s** no frio.
+(install 62 s, Turbo 43 s, deploy ~3 s). O build com os três targets de runtime
+levou **299 s** no frio. Porém, uma mudança de código reexecutava o
+`pnpm install`, então essa versão não atendia ao AC-702.
+
+### Install em camada separada com deploy por cópia
+
+O `deps` passou a copiar apenas os manifestos e instalar o workspace. O `build`
+copia a fonte, executa o Turbo e chama `pnpm deploy` com
+`--config.package-import-method=copy`.
+
+O deploy padrão (hardlinks) a partir da camada inferior levou **13 min 13 s**
+em um protótipo. Com cópia, o mesmo deploy levou **38 s** no protótipo e cerca
+de **30 s** para API + worker no build completo. O install fica em cache quando
+só o código muda.
 
 ## Resultado final
 
-Build final: `infra/Dockerfile` com targets `api`, `worker` e `web`.
+Build final: `infra/Dockerfile` com estágios `deps` e `build` e targets `api`,
+`worker` e `web`.
 
 | Cenário                       | Tempo     | Como foi medido                                           |
 | ----------------------------- | --------- | --------------------------------------------------------- |
-| Frio, cache do builder podado | **299 s** | `CONFIRM=1 make cache-prune` + `MODE=cold make benchmark` |
-| Sem mudanças (tudo em cache)  | **18 s**  | `MODE=warm make benchmark`                                |
-| Mudança de código na API      | **155 s** | `MODE=code make benchmark`                                |
-| Mudança no lockfile           | **185 s** | `MODE=deps make benchmark`                                |
+| Frio, cache do builder podado | **315 s** | `CONFIRM=1 make cache-prune` + `MODE=cold make benchmark` |
+| Sem mudanças (tudo em cache)  | **17 s**  | `MODE=warm make benchmark`                                |
+| Mudança de código na API      | **122 s** | `MODE=code make benchmark`                                |
+| Mudança no lockfile           | **282 s** | `MODE=deps make benchmark`                                |
 
-Ganho no build frio: **745 s → 299 s (2,5×)**. O rebuild sem mudanças caiu para
-18 s. A mudança de código reexecuta o install (60 s) e o Turbo reconstrói
-apenas a API (22 s); shared, worker e web vieram do cache. A mudança de
-dependência invalida o hash global do Turbo e reconstrói as quatro tarefas,
-como esperado.
+Ganho no build frio: **745 s → 315 s (2,4×)**. O rebuild sem mudanças caiu para
+17 s. A mudança de código mantém o install em cache, recompila a API e copia o
+deploy (~30 s). A mudança de dependência reinstala (66 s), reconstrói as quatro
+tarefas (61 s) e copia o deploy (53 s). O frio ficou 16 s acima da versão de
+`RUN` único, mas o rebuild de código ficou 33 s mais rápido e o install deixou
+de ser reexecutado, atendendo ao AC-702.
 
 ### Tamanho das imagens
 
 | Imagem            | Antes   | Depois  |
 | ----------------- | ------- | ------- |
-| `nexo-crm-api`    | 419 MB  | 317 MB  |
-| `nexo-crm-worker` | 400 MB  | 298 MB  |
+| `nexo-crm-api`    | 419 MB  | 322 MB  |
+| `nexo-crm-worker` | 400 MB  | 300 MB  |
 | `nexo-crm-web`    | 61,6 MB | 61,6 MB |
 
 A redução vem de não incluir pnpm nem o store no estágio de runtime.
@@ -131,6 +145,10 @@ verifica se o arquivo alvo está limpo antes de alterar e restaura com
   não volumes nem imagens.
 - O tempo de install depende da rede e do registry. O CI pode ter números
   diferentes.
+- O deploy por cópia adiciona ~30 s em toda mudança de código. A alternativa
+  com hardlinks entre camadas levava minutos por causa do copy-up do overlayfs.
+- O modo `code` do benchmark acrescenta um `console.log` temporário para mudar
+  a saída compilada; um comentário não invalidaria o cache do deploy.
 - O Compose usa `NODE_ENV=production` com segredos de demonstração para
   exercitar o caminho de produção localmente. Isso não é uma configuração de
   produção.

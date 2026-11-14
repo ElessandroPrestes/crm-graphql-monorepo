@@ -9,8 +9,9 @@ O repositório usa um único `infra/Dockerfile` multi-stage com três targets:
 
 ```text
 infra/Dockerfile
-├─ base      Node + pnpm, cache de ferramentas
-├─ build     install + Turbo build + pnpm deploy
+├─ base      Node + pnpm
+├─ deps      manifestos + pnpm install
+├─ build     fonte + Turbo build + pnpm deploy (copy)
 ├─ runtime   Node de produção, usuário não-root
 │  ├─ api    /prod/api
 │  └─ worker /prod/worker
@@ -30,33 +31,47 @@ infra/Dockerfile
 
 ## Fluxo de build
 
-1. `pnpm install --frozen-lockfile --prefer-offline` instala o workspace.
-2. `turbo run build --filter=@nexo/api --filter=@nexo/worker --filter=@nexo/web
---concurrency=1` executa os builds na ordem topológica.
-3. `pnpm --filter @nexo/api --prod deploy /prod/api` e o equivalente do worker
-   produzem pacotes de runtime isolados.
-4. `rm -rf` remove `node_modules`, `.turbo` e o store pnpm do estágio de build
-   para não inflar a camada intermediária.
-5. Os targets `api` e `worker` copiam apenas `/prod/*`; o target `web` copia o
-   `dist` do Vite para o Nginx.
+1. `deps` copia apenas os manifestos (`package.json`, `pnpm-lock.yaml`,
+   `pnpm-workspace.yaml`, `.npmrc` e os `package.json` dos workspaces) e executa
+   `pnpm install --frozen-lockfile`. Essa camada só muda quando um manifesto ou
+   o lockfile muda.
+2. `build` copia o restante do contexto e executa
+   `turbo run build --filter=@nexo/api --filter=@nexo/worker --filter=@nexo/web
+--concurrency=1` na ordem topológica.
+3. `pnpm --filter @nexo/api --prod --offline --trust-lockfile
+--config.package-import-method=copy deploy /prod/api` e o equivalente do worker
+   produzem pacotes de runtime isolados. O store continua na camada `deps`; o
+   deploy copia os arquivos em vez de criar hardlinks entre camadas.
+4. Os targets `api` e `worker` copiam apenas `/prod/*`; o target `web` copia o
+   `dist` do Vite para o Nginx. O estágio `build` não faz parte da imagem final.
 
 O `--concurrency=1` é intencional: os hooks `prebuild` da API e do worker rodam
 `prisma generate`, e a execução concorrente pode disputar os mesmos arquivos
 gerados. O custo de serializar é pequeno diante do ganho de previsibilidade.
 
-## Por que install, build e deploy no mesmo `RUN`
+## Por que separar `deps` e `build`
 
 Em overlayfs, quando o store pnpm está em uma camada inferior e `pnpm deploy`
 cria hardlinks em uma camada superior, o kernel precisa copiar os arquivos
-(hardlink entre camadas dispara copy-up). Nesta máquina isso elevou o deploy de
-~10 s para centenas de segundos.
+(hardlink entre camadas dispara copy-up). Nesta máquina o deploy padrão levou
+**13 min 13 s** em um protótipo com install e deploy em camadas separadas.
 
-Manter install, build e deploy no mesmo `RUN` deixa store e destino na mesma
-camada gravável. O cache BuildKit é usado apenas para o cache do Turbo
-(`/cache/turbo`), que é pequeno e não sofre o mesmo problema. O trade-off é que
-uma mudança de código reexecuta o `pnpm install`; ainda assim o rebuild fica
-muito abaixo do baseline. Os números estão em
-[build-optimization.md](build-optimization.md).
+A primeira versão da refatoração manteve install, build e deploy no mesmo `RUN`
+para evitar o copy-up. Isso reduziu o build frio para 299 s, mas uma mudança de
+código reexecutava o `pnpm install` e não atendia ao AC-702.
+
+A versão final separa as responsabilidades:
+
+- `deps` instala o workspace em uma camada que só depende dos manifestos. Uma
+  mudança de código reutiliza essa camada; uma mudança de lockfile a reconstrói.
+- `build` copia a fonte, executa o Turbo e chama `pnpm deploy` com
+  `--config.package-import-method=copy`. A cópia lê do store na camada `deps` e
+  evita o copy-up de hardlinks. O deploy de API + worker levou ~30 s.
+
+O cache BuildKit é usado apenas para o cache do Turbo (`/cache/turbo`), que é
+pequeno e não sofre o mesmo problema. O trade-off é pagar a cópia do deploy em
+toda mudança de código; em troca, o install não é reexecutado. Os números estão
+em [build-optimization.md](build-optimization.md).
 
 ## Prisma
 

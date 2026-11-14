@@ -28,7 +28,7 @@ case "$MODE" in
       echo "Arquivo $restore_file tem mudanças locais; abortando." >&2
       exit 1
     fi
-    printf '\n// benchmark: cache bust de código\n' >> "$ROOT/$restore_file"
+    printf "\nconsole.log('benchmark: cache bust de código');\n" >> "$ROOT/$restore_file"
     build_args=(build --progress=plain)
     ;;
   deps)

@@ -55,10 +55,12 @@ adicione um `tmpfs` em `/packages`. Não remova `read_only` em produção.
 
 ## Build lento ou `pnpm deploy` demorando minutos
 
-O `infra/Dockerfile` mantém install, build e deploy no mesmo `RUN`
-propositalmente. Mover o store pnpm para um cache mount ou para uma camada
-inferior faz o overlayfs copiar arquivos no deploy e piora o tempo nesta
-máquina. Veja [build-optimization.md](build-optimization.md).
+O `infra/Dockerfile` separa o install (`deps`) do build/deploy (`build`) e usa
+`--config.package-import-method=copy` no `pnpm deploy`. Install e deploy no
+mesmo `RUN` evitam o copy-up, mas reexecutam o install a cada mudança de código.
+Mover o store para um cache mount faz o overlayfs copiar o cache no install
+(EXDEV) e pode levar minutos. Veja
+[build-optimization.md](build-optimization.md).
 
 Se o build estiver lento por cache antigo:
 

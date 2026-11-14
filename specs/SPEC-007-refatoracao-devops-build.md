@@ -25,9 +25,10 @@ o build frio completo (`docker compose ... build --no-cache`), com
 `pnpm deploy` da API levando centenas de segundos por causa de hardlinks sobre
 camadas do overlayfs.
 
-Resultado esperado: um único Dockerfile multi-stage com cache BuildKit para o
-store pnpm, um `Makefile` autodocumentado e não destrutivo, Compose endurecido
-sem perder os volumes existentes e documentação com benchmark antes/depois.
+Resultado esperado: um único Dockerfile multi-stage com install em camada
+separada, cache BuildKit para o Turbo e deploy por cópia, um `Makefile`
+autodocumentado e não destrutivo, Compose endurecido sem perder os volumes
+existentes e documentação com benchmark antes/depois.
 
 ## Escopo
 
@@ -36,7 +37,8 @@ sem perder os volumes existentes e documentação com benchmark antes/depois.
 - Consolidar `infra/api.Dockerfile`, `infra/worker.Dockerfile` e
   `infra/web.Dockerfile` em `infra/Dockerfile` com targets `api`, `worker` e
   `web`.
-- Usar cache mounts BuildKit para o store pnpm e para o cache do Turborepo.
+- Separar o install em uma camada `deps` e usar cache BuildKit para o Turbo;
+  o deploy usa `package-import-method=copy` para evitar copy-up de hardlinks.
 - Reduzir o contexto com `.dockerignore` seguro.
 - Criar `Makefile` com ajuda automática, build, subida, health, logs, limpeza
   seletiva e benchmark.
@@ -132,14 +134,21 @@ Evidência necessária: revisão dos documentos.
 
 ## Abordagem técnica
 
-- `infra/Dockerfile` com estágios `base`, `deps`, `build`, `prod`, `api`,
-  `worker` e `web`; store pnpm montado como cache em `deps` e `prod`.
+- `infra/Dockerfile` com estágios `base`, `deps`, `build`, `runtime`, `api`,
+  `worker` e `web`; o store pnpm fica na camada `deps`.
 - Builds sequenciais no estágio `build` para evitar corrida de `prisma generate`
   entre API e worker.
-- `pnpm deploy` sequencial em um único estágio `prod`, produzindo `/prod/api` e
+- `pnpm deploy` sequencial no estágio `build`, com
+  `--config.package-import-method=copy`, produzindo `/prod/api` e
   `/prod/worker`.
 - Turborepo continua sendo a interface local/CI; o cache de schema Prisma é
   corrigido no `turbo.json`.
+
+A primeira tentativa montou o store pnpm como cache BuildKit. O deploy caiu
+para ~25 s, mas o install com store quente copiou o cache para o overlayfs
+(EXDEV) e levou ~10 min. A abordagem foi descartada em favor da camada `deps`
+com deploy por cópia.
+
 - Compose referencia `infra/Dockerfile` com `target` por serviço.
 - `Makefile` usa `docker compose` e variáveis sobrescrevíveis; limpeza de
   volumes nunca faz parte de `make clean`.

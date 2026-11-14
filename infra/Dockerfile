@@ -10,22 +10,35 @@ ENV PNPM_HOME=/pnpm \
 RUN npm install -g pnpm@${PNPM_VERSION}
 WORKDIR /app
 
-# Install, build and deploy in a single layer. Keeping the pnpm store in the
-# same writable layer as `pnpm deploy` avoids the overlayfs copy-up that made
-# deploy take minutes when the store lived in a lower layer.
-FROM base AS build
+# Install dependencies in a layer that only depends on the manifests. A code
+# change reuses this layer; a lockfile change rebuilds it.
+FROM base AS deps
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY apps/api/package.json apps/api/
+COPY apps/worker/package.json apps/worker/
+COPY apps/web/package.json apps/web/
+COPY packages/shared/package.json packages/shared/
+COPY packages/graphql-schema/package.json packages/graphql-schema/
+COPY packages/eslint-config/package.json packages/eslint-config/
+COPY packages/tsconfig/package.json packages/tsconfig/
+RUN pnpm install --frozen-lockfile
+
+# Build and deploy. The pnpm store lives in the lower `deps` layer. Deploy uses
+# copy instead of hardlinks so overlayfs does not copy up every file; hardlinks
+# from a lower layer made deploy take minutes.
+FROM deps AS build
 COPY . .
 RUN --mount=type=cache,id=nexo-turbo-cache,target=/cache/turbo,sharing=locked \
-    pnpm install --frozen-lockfile --prefer-offline \
- && pnpm exec turbo run build \
+    pnpm exec turbo run build \
       --filter=@nexo/api \
       --filter=@nexo/worker \
       --filter=@nexo/web \
       --concurrency=1 \
-      --cache-dir=/cache/turbo \
- && pnpm --filter @nexo/api --prod --offline --trust-lockfile deploy /prod/api \
- && pnpm --filter @nexo/worker --prod --offline --trust-lockfile deploy /prod/worker \
- && rm -rf /app/node_modules /app/apps/*/node_modules /app/packages/*/node_modules /app/.turbo /pnpm/store
+      --cache-dir=/cache/turbo
+RUN pnpm --filter @nexo/api --prod --offline --trust-lockfile \
+      --config.package-import-method=copy deploy /prod/api \
+ && pnpm --filter @nexo/worker --prod --offline --trust-lockfile \
+      --config.package-import-method=copy deploy /prod/worker
 
 FROM node:${NODE_VERSION}-alpine AS runtime
 ENV NODE_ENV=production

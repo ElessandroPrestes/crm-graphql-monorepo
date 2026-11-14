@@ -21,7 +21,7 @@ alterar o comportamento da aplicação nem remover volumes.
 ### Incluído
 
 - `infra/Dockerfile` multi-stage com targets `api`, `worker` e `web`.
-- Cache BuildKit para o cache do Turborepo; store pnpm na mesma camada do deploy.
+- Cache BuildKit para o Turborepo; store pnpm na camada `deps` e deploy por cópia.
 - `.dockerignore` revisado.
 - `Makefile` autodocumentado e não destrutivo.
 - `infra/docker-compose.yml` atualizado para o novo Dockerfile e endurecido.
@@ -81,8 +81,10 @@ alterar o comportamento da aplicação nem remover volumes.
 ## Resultado
 
 - Mudanças realizadas:
-  - `infra/Dockerfile` multi-stage com targets `api`, `worker` e `web`.
-  - Install, build e deploy no mesmo `RUN`, com cache BuildKit para o Turbo.
+  - `infra/Dockerfile` multi-stage com estágios `deps` e `build` e targets
+    `api`, `worker` e `web`.
+  - Install em camada separada; deploy por cópia para evitar copy-up; cache
+    BuildKit para o Turbo.
   - `Makefile` autodocumentado e script `scripts/benchmark-docker-build.sh`.
   - Compose com `init`, `read_only`, `tmpfs`, `cap_drop`, rotação de logs,
     `restart` e valores locais de demonstração.
@@ -91,11 +93,16 @@ alterar o comportamento da aplicação nem remover volumes.
     `prisma generate`.
   - Documentação em `docs/devops/` e atualização de README, deploy e PROJECT.
 - Evidências:
-  - Baseline frio: 745 s; novo frio: 299 s; warm: 18 s; código: 155 s;
-    dependências: 185 s.
-  - Imagens: API 317 MB, worker 298 MB, web 61,6 MB.
+  - Baseline frio: 745 s; novo frio: 315 s; warm: 17 s; código: 122 s
+    (install em cache); dependências: 282 s.
+  - Imagens: API 322 MB, worker 300 MB, web 61,6 MB.
   - `make up`: seis containers `healthy`; `make down` preservou os três volumes.
   - `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`,
     `pnpm format:check`, `schema:check` e `pnpm audit --audit-level high`
     passaram.
-- Pendências ou bloqueios: commit, push e CI.
+- Desvios: a primeira versão usava install, build e deploy no mesmo `RUN` e
+  chegou a 299 s no frio, mas reexecutava o install em mudanças de código e não
+  atendia ao AC-702. A versão final separa `deps`/`build` e usa
+  `--config.package-import-method=copy`; o cache mount do store foi descartado
+  porque o install com store quente levava ~10 min por cópia EXDEV.
+- Pendências ou bloqueios: commit final, push e CI; revisão independente.
