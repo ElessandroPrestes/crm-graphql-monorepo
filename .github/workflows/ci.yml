@@ -44,6 +44,11 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Validate DevOps assets
+        run: |
+          make help >/dev/null
+          make config
+
   e2e:
     name: E2E and accessibility
     runs-on: ubuntu-latest

@@ -44,10 +44,17 @@ inicialização se o segredo de acesso ou o WhatsApp Cloud estiverem incompletos
 ## Build e publicação
 
 ```sh
-docker build -f infra/api.Dockerfile -t registry.example/nexo-api:0.3.0-alpha .
-docker build -f infra/worker.Dockerfile -t registry.example/nexo-worker:0.3.0-alpha .
-docker build -f infra/web.Dockerfile -t registry.example/nexo-web:0.3.0-alpha .
+docker build -f infra/Dockerfile --target api \
+  -t registry.example/nexo-api:0.3.0-alpha .
+docker build -f infra/Dockerfile --target worker \
+  -t registry.example/nexo-worker:0.3.0-alpha .
+docker build -f infra/Dockerfile --target web \
+  -t registry.example/nexo-web:0.3.0-alpha .
 ```
+
+O mesmo Dockerfile atende aos três targets. Para medir o build local, use
+`make benchmark MODE=cold`; os resultados e a estratégia de cache estão em
+[devops/build-optimization.md](devops/build-optimization.md).
 
 Publique as três imagens com o mesmo commit e prefixe a release com o SHA. O web
 serve apenas arquivos estáticos; o proxy deve encaminhar `/graphql`, `/auth` e

@@ -17,8 +17,14 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   redis:
     image: redis:8.8.4-alpine
@@ -32,8 +38,14 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   rabbitmq:
     image: rabbitmq:4.4.0-management-alpine
@@ -51,23 +63,42 @@ services:
       timeout: 10s
       retries: 5
       start_period: 20s
+    restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   api:
     profiles: ['full']
     build:
       context: ..
-      dockerfile: infra/api.Dockerfile
+      dockerfile: infra/Dockerfile
+      target: api
     environment:
+      # Compose local: valores de demonstração, nunca usar em produção.
       NODE_ENV: production
       API_PORT: 3202
       DATABASE_URL: postgresql://nexo:nexo@postgres:5432/nexo?schema=public
       REDIS_URL: redis://redis:6379
       RABBITMQ_URL: amqp://nexo:nexo@rabbitmq:5672
       CORS_ORIGINS: http://localhost:5217,http://nexo.localhost
+      ACCESS_TOKEN_SECRET: local-compose-access-token-secret-32
+      WHATSAPP_PROVIDER: cloud
+      WHATSAPP_VERIFY_TOKEN: local-compose-whatsapp-verify-token
+      WHATSAPP_APP_SECRET: local-compose-whatsapp-app-secret
+      WHATSAPP_ACCESS_TOKEN: local-compose-whatsapp-access-token
+    init: true
     ports:
       - '3202:3202'
+    read_only: true
+    tmpfs:
+      - /tmp
+    stop_grace_period: 20s
+    restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
@@ -81,14 +112,22 @@ services:
       timeout: 5s
       retries: 5
       start_period: 20s
+    cap_drop:
+      - ALL
     security_opt:
       - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   worker:
     profiles: ['full']
     build:
       context: ..
-      dockerfile: infra/worker.Dockerfile
+      dockerfile: infra/Dockerfile
+      target: worker
     environment:
       NODE_ENV: production
       WORKER_PORT: 3203
@@ -102,22 +141,39 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    init: true
     healthcheck:
       test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1:3203/health/live >/dev/null || exit 1']
       interval: 15s
       timeout: 5s
       retries: 5
       start_period: 20s
+    read_only: true
+    tmpfs:
+      - /tmp
+    stop_grace_period: 20s
+    restart: unless-stopped
+    cap_drop:
+      - ALL
     security_opt:
       - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
 
   web:
     profiles: ['full']
     build:
       context: ..
-      dockerfile: infra/web.Dockerfile
+      dockerfile: infra/Dockerfile
+      target: web
+    init: true
     ports:
       - '5217:8080'
+    stop_grace_period: 20s
+    restart: unless-stopped
     depends_on:
       api:
         condition: service_healthy
@@ -127,8 +183,15 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    cap_drop:
+      - ALL
     security_opt:
       - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
 
 volumes:
   postgres-data:

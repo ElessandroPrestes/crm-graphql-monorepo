@@ -82,8 +82,13 @@ Credenciais locais do RabbitMQ: `nexo` / `nexo`. Não use em produção.
 ### Stack completo em containers
 
 ```sh
-pnpm infra:full
+make up
+make health
 ```
+
+`make up` constrói as imagens, sobe a stack e aguarda os health checks. O
+`pnpm infra:full` continua disponível como atalho. Arquitetura, cache e
+benchmark estão em [docs/devops/](docs/devops/).
 
 ### Banco e seed
 
@@ -140,9 +145,14 @@ docker run --rm --network host -v "$PWD/infra/k6:/scripts:ro" \
 ### Infraestrutura
 
 ```sh
-pnpm infra:up    # postgres, redis e rabbitmq
-pnpm infra:down
+make up-infra    # postgres, redis e rabbitmq
+make up          # stack completa em containers
+make health
+make down        # remove containers e preserva volumes
 ```
+
+O `Makefile` é a interface operacional; veja
+[docs/devops/makefile-reference.md](docs/devops/makefile-reference.md).
 
 ---
 
@@ -159,7 +169,7 @@ nexo-crm/
 │  ├─ shared/             Schemas zod e utilidades puras
 │  ├─ eslint-config/      ESLint flat compartilhado
 │  └─ tsconfig/           TypeScript compartilhado
-├─ infra/                 Compose, Dockerfiles e Nginx
+├─ infra/                 Compose, Dockerfile multi-stage e Nginx
 ├─ specs/ tasks/ reviews/ Rastreabilidade SDD
 ├─ adr/                   Decisões arquiteturais
 ├─ docs/                  Arquitetura, segurança, a11y e guias

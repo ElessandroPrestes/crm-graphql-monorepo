@@ -14,3 +14,33 @@ coverage
 .env
 .env.*
 !.env.example
+
+# Governança, documentação e artefatos de QA não entram na imagem
+adr
+docs
+knowledge
+profiles
+reviews
+specs
+standards
+tasks
+templates
+workflows
+**/*.md
+
+# Testes, relatórios e benchmarks locais
+e2e
+test-results
+playwright-report
+blob-report
+coverage
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+infra/k6
+
+# Segredos e arquivos locais
+*.pem
+*.key
+.DS_Store

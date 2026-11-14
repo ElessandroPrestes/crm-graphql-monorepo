@@ -74,28 +74,30 @@ Versões e justificativas de compatibilidade: [ADR-003](adr/ADR-003-versoes-e-co
 
 ## 4. Estrutura do repositório
 
-| Caminho                        | Responsabilidade                                            |
-| ------------------------------ | ----------------------------------------------------------- |
-| `apps/api/`                    | API NestJS; health, auth REST, GraphQL e Prisma             |
-| `apps/worker/`                 | Worker NestJS; health check e consumer WhatsApp             |
-| `apps/web/`                    | SPA React/Vite; sessão, contatos, kanban, inbox e dashboard |
-| `packages/shared/`             | Schemas zod de ambiente, contratos de eventos e utilidades  |
-| `packages/graphql-schema/`     | Schema gerado, types e documents GraphQL                    |
-| `packages/eslint-config/`      | Configuração ESLint compartilhada                           |
-| `packages/tsconfig/`           | Configurações TypeScript compartilhadas                     |
-| `infra/`                       | Docker Compose, Dockerfiles e configuração do Nginx         |
-| `specs/`, `tasks/`, `reviews/` | Rastreabilidade SDD                                         |
-| `adr/`                         | Decisões arquiteturais                                      |
-| `docs/`                        | Arquitetura, segurança, acessibilidade e guias              |
-| `scripts/`                     | Automação de rastreabilidade                                |
+| Caminho                        | Responsabilidade                                               |
+| ------------------------------ | -------------------------------------------------------------- |
+| `apps/api/`                    | API NestJS; health, auth REST, GraphQL e Prisma                |
+| `apps/worker/`                 | Worker NestJS; health check e consumer WhatsApp                |
+| `apps/web/`                    | SPA React/Vite; sessão, contatos, kanban, inbox e dashboard    |
+| `packages/shared/`             | Schemas zod de ambiente, contratos de eventos e utilidades     |
+| `packages/graphql-schema/`     | Schema gerado, types e documents GraphQL                       |
+| `packages/eslint-config/`      | Configuração ESLint compartilhada                              |
+| `packages/tsconfig/`           | Configurações TypeScript compartilhadas                        |
+| `infra/`                       | Docker Compose, Dockerfile multi-stage e configuração do Nginx |
+| `specs/`, `tasks/`, `reviews/` | Rastreabilidade SDD                                            |
+| `adr/`                         | Decisões arquiteturais                                         |
+| `docs/`                        | Arquitetura, segurança, acessibilidade e guias                 |
+| `scripts/`                     | Automação de rastreabilidade                                   |
 
 ## 5. Runtime e configuração
 
 - **Pré-requisitos**: Node.js 26 LTS, pnpm 12, Docker e Docker Compose.
 - **Instalação**: `pnpm install --frozen-lockfile`.
-- **Execução local**: `pnpm infra:up`, migrations/seed e `pnpm dev` (sobe
+- **Execução local**: `make up-infra`, migrations/seed e `pnpm dev` (sobe
   Postgres, Redis e RabbitMQ e inicia api, worker e web). O arquivo `.env` é
   opcional; os defaults apontam para `localhost`.
+- **Stack completa em containers**: `make up` (build + health checks) e
+  `make down` (preserva volumes).
 - **Build**: `pnpm build`.
 - **Banco**: `pnpm --filter @nexo/api db:migrate`, `db:seed` e
   `db:generate` (o client é gerado automaticamente nos hooks).
@@ -105,8 +107,9 @@ Versões e justificativas de compatibilidade: [ADR-003](adr/ADR-003-versoes-e-co
   `pnpm --filter @nexo/api test:integration` e
   `pnpm --filter @nexo/worker test:integration` (Testcontainers).
 - **Lint/typecheck**: `pnpm lint` e `pnpm typecheck`.
-- **Infraestrutura**: `pnpm infra:up`, `pnpm infra:down` e `pnpm infra:full`
-  para o stack completo em containers.
+- **Infraestrutura**: `make up-infra`, `make up`, `make down`, `make health`
+  e `make benchmark`. O `Makefile` é a interface operacional; a arquitetura e
+  o benchmark estão em `docs/devops/`.
 - **Variáveis de ambiente**: ver `.env.example`. Nenhum valor secreto real é
   versionado.
 
