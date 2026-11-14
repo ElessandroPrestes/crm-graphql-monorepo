@@ -115,8 +115,8 @@ describe('ContactDetailPage', () => {
     });
 
     expect(await screen.findByText(/nenhum negócio para este contato/i)).toBeInTheDocument();
-    expect(screen.getByText(/nenhuma atividade registrada/i)).toBeInTheDocument();
-    expect(screen.getByText(/nenhuma conversa com este contato/i)).toBeInTheDocument();
+    expect(await screen.findByText(/nenhuma atividade registrada/i)).toBeInTheDocument();
+    expect(await screen.findByText(/nenhuma conversa com este contato/i)).toBeInTheDocument();
   });
 
   it('shows not found for an unauthorized or missing contact', async () => {
