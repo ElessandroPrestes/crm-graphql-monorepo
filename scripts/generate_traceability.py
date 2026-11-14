@@ -93,7 +93,7 @@ def git_commits(root: Path) -> list[Commit]:
 
     commits = []
     for record in completed.stdout.split("\x1e"):
-        record = record.strip()
+        record = record.strip("\r\n")
         if not record:
             continue
         sha, subject, body = record.split("\x1f", maxsplit=2)

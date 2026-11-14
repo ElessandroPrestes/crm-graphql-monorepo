@@ -2,14 +2,13 @@
 
 ## Metadados
 
-| Campo                                               | Valor                                                                                                      |
-| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| ID                                                  | TASK-006-02                                                                                                |
-| Status                                              | In progress — automação e CI concluídas; checklist manual parcial; revisão manual                          |
-| e Gate 4 pendentes de aprovador humano (2026-11-13) |
-| Responsável                                         | QA, Engenharia e Acessibilidade                                                                            |
-| Refs:                                               | SPEC: SPEC-006; Critérios: AC-610, AC-611, AC-612, AC-613, AC-614, AC-620; ADRs: ADR-004, ADR-005, ADR-006 |
-| Dependências                                        | TASK-006-01 concluída para testes de rate limit; Compose e seed determinísticos                            |
+| Campo        | Valor                                                                                                      |
+| ------------ | ---------------------------------------------------------------------------------------------------------- |
+| ID           | TASK-006-02                                                                                                |
+| Status       | In progress — automação/CI e checklist parcial; revisão manual e Gate 4 pendentes (2026-11-13)             |
+| Responsável  | QA, Engenharia e Acessibilidade                                                                            |
+| Refs:        | SPEC: SPEC-006; Critérios: AC-610, AC-611, AC-612, AC-613, AC-614, AC-620; ADRs: ADR-004, ADR-005, ADR-006 |
+| Dependências | TASK-006-01 concluída para testes de rate limit; Compose e seed determinísticos                            |
 
 ## Objetivo
 
