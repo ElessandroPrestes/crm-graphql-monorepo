@@ -7,6 +7,11 @@ describe('validateApiEnv', () => {
 
     expect(env.API_PORT).toBe(3202);
     expect(env.CORS_ORIGINS).toEqual(['http://localhost:5217']);
+    expect(env.DATALOADER_ENABLED).toBe(true);
+  });
+
+  it('parses DATALOADER_ENABLED=false as false', () => {
+    expect(validateApiEnv({ DATALOADER_ENABLED: 'false' }).DATALOADER_ENABLED).toBe(false);
   });
 
   it('rejects an invalid port', () => {

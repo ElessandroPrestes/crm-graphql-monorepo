@@ -1,4 +1,5 @@
 import { Inject, UseGuards } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import {
   Args,
   Context,
@@ -13,6 +14,7 @@ import {
 } from '@nestjs/graphql';
 import type { AuthenticatedUser, GqlContext } from '../auth/auth.types.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
+import type { ApiEnv } from '../config/env.js';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { CompanyType } from '../companies/company.type.js';
 import { DEFAULT_PAGE_SIZE } from '../common/pagination.js';
@@ -35,6 +37,7 @@ export class DealsResolver {
     @Inject(DealsService) private readonly dealsService: DealsService,
     @Inject(DealEventsService) private readonly dealEvents: DealEventsService,
     @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(ConfigService) private readonly config: ConfigService<ApiEnv, true>,
   ) {}
 
   @Query(() => DealConnection)
@@ -119,6 +122,15 @@ export class DealsResolver {
       return null;
     }
 
+    if (!this.config.get('DATALOADER_ENABLED', { infer: true })) {
+      return this.prisma.contact.findFirst({
+        where: {
+          id: deal.contactId,
+          ...(context.user?.role === 'ADMIN' ? {} : { ownerId: context.user?.id }),
+        },
+      });
+    }
+
     context.contactLoader ??= createContactLoader(this.prisma, context.user);
 
     return context.contactLoader.load(deal.contactId);
@@ -128,6 +140,15 @@ export class DealsResolver {
   async company(@Parent() deal: Deal, @Context() context: GqlContext): Promise<Company | null> {
     if (!deal.companyId) {
       return null;
+    }
+
+    if (!this.config.get('DATALOADER_ENABLED', { infer: true })) {
+      return this.prisma.company.findFirst({
+        where: {
+          id: deal.companyId,
+          ...(context.user?.role === 'ADMIN' ? {} : { ownerId: context.user?.id }),
+        },
+      });
     }
 
     context.companyLoader ??= createCompanyLoader(this.prisma, context.user);

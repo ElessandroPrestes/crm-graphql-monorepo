@@ -6,6 +6,49 @@ e o versionamento adotará [Semantic Versioning](https://semver.org/lang/pt-BR/)
 
 ---
 
+## [0.3.0-alpha] - 2026-11-13
+
+### Adicionado
+
+- Persisted queries com codegen e modos `off`, `audit` e `enforce`.
+- Rate limit de login, GraphQL e handshake WebSocket com Redis; bloqueio
+  progressivo e política de senha de 12 a 128 caracteres.
+- E2E Playwright em desktop, mobile emulado e API, com axe nos temas claro e
+  escuro e testes negativos de autorização/segurança.
+- Job `e2e` na CI com artefatos de Playwright e axe.
+- Cenário k6 comparando `DATALOADER_ENABLED=false/true`; seed determinístico de
+  benchmark e resultados em `docs/performance.md`.
+- SBOM CycloneDX 1.6 gerado a partir do lockfile e publicado como artefato da
+  CI; Dependabot semanal para pnpm e GitHub Actions.
+- `docs/deploy.md` com variáveis, migrations, health checks, smoke tests,
+  backup, rollback e riscos residuais.
+- STRIDE final, riscos residuais e checklist de acessibilidade atualizado.
+- Release notes de `0.3.0-alpha`.
+
+### Alterado
+
+- Front-end com regiões roláveis focáveis e rótulos acessíveis em contatos,
+  pipeline e dashboard.
+- Mensagens de erro GraphQL/REST sem stack, detalhes internos ou sugestões de
+  campo em produção.
+- Versão do monorepo e das aplicações para `0.3.0-alpha`.
+
+### Segurança
+
+- Corpo JSON limitado a `256kb` por default e webhook com limite próprio.
+- Introspecção e sugestões `Did you mean ...` desativadas em produção.
+- Login falha fechado se o Redis estiver indisponível.
+- Ações do GitHub fixadas por SHA e permissões mínimas.
+
+### Observações
+
+- Deploy real, definição de provedor e aprovação LGPD de retenção/base legal
+  permanecem pendentes; nenhum dado real deve ser usado.
+- Gate 4 da Fase 4 aguarda revisão humana de leitor de tela e zoom 200%.
+- Primeiro PR do Dependabot depende da execução do agendamento no GitHub.
+
+---
+
 ## [0.2.0-alpha] - 2026-11-09
 
 ### Adicionado

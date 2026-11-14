@@ -1,6 +1,6 @@
 {
   "name": "nexo-crm",
-  "version": "0.2.0-alpha",
+  "version": "0.3.0-alpha",
   "private": true,
   "description": "Nexo CRM \u2014 monorepo GraphQL (NestJS + React)",
   "license": "MIT",
@@ -17,6 +17,7 @@
     "test": "turbo run test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "sbom": "node scripts/generate-sbom.mjs",
     "infra:up": "docker compose -f infra/docker-compose.yml up -d postgres redis rabbitmq",
     "infra:down": "docker compose -f infra/docker-compose.yml down",
     "infra:full": "docker compose -f infra/docker-compose.yml --profile full up --build",

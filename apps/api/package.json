@@ -1,6 +1,6 @@
 {
   "name": "@nexo/api",
-  "version": "0.2.0-alpha",
+  "version": "0.3.0-alpha",
   "private": true,
   "type": "module",
   "description": "Nexo CRM GraphQL API (NestJS)",
@@ -20,6 +20,7 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "prisma db seed",
+    "db:seed:benchmark": "tsx prisma/seed-benchmark.ts",
     "db:reset": "prisma migrate reset --force",
     "db:studio": "prisma studio",
     "schema:generate": "pnpm build && node dist/schema/generate-schema.js",

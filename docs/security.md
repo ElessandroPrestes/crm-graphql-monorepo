@@ -1,34 +1,35 @@
 # Segurança
 
-Status: Fases 0 a 4 implementadas; endurecimento da Fase 5 em andamento. Este documento lista o mapeamento OWASP,
-o modelo de ameaças resumido e os riscos ainda abertos. Controles não implementados estão
-marcados como **planejado**; não os trate como existentes.
+Status: Fases 0 a 5 implementadas em `develop`; release e aprovações humanas
+pendentes. Este documento lista o mapeamento OWASP, o modelo STRIDE final e os
+riscos ainda abertos. Controles não implementados estão marcados como
+**planejado**; não os trate como existentes.
 
-## Modelo de ameaças (STRIDE resumido)
+## Modelo de ameaças (STRIDE final)
 
-| Ameaça                 | Exemplo no Nexo CRM                        | Controle planejado                                                        |
-| ---------------------- | ------------------------------------------ | ------------------------------------------------------------------------- |
-| Spoofing               | Token de acesso forjado ou sessão roubada  | JWT curto com algoritmo fixo, refresh rotativo e hash no banco            |
-| Tampering              | Alteração indevida de negócio ou mensagem  | Autorização por recurso, validação de input e webhook HMAC                |
-| Repudiation            | Negar uma ação sensível                    | Logs estruturados com correlação e trilha de auditoria                    |
-| Information disclosure | Vazamento de contato ou conversa           | Autorização por campo, logs redigidos e mensagens genéricas               |
-| Denial of service      | Query profunda, batching ou flood de login | Limites de profundidade/complexidade/aliases, rate limit e payload máximo |
-| Elevation of privilege | SELLER acessa recurso de outro usuário     | Negar por padrão e testes negativos de autorização/IDOR                   |
+| Ameaça                 | Exemplo no Nexo CRM                        | Controles implementados                                                                                                      | Risco residual                                                     |
+| ---------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Spoofing               | Token de acesso forjado ou sessão roubada  | JWT HS256 curto com segredo validado; refresh opaco rotativo com hash no banco; cookie `HttpOnly`/`SameSite=Strict`/`Secure` | Roubo de dispositivo ou segredo ainda não têm revogação central    |
+| Tampering              | Alteração indevida de negócio ou mensagem  | Autorização por propriedade, validação zod/class-validator, concorrência otimista e HMAC do webhook                          | Sem assinatura de integridade no banco                             |
+| Repudiation            | Negar uma ação sensível                    | Logs pino com `x-request-id` e redação; auditoria de ações sensíveis em tabelas dedicadas                                    | Sem trilha imutável/WORM nem exportação de auditoria               |
+| Information disclosure | Vazamento de contato ou conversa           | RBAC por recurso, respostas `NOT_FOUND` genéricas, logs redigidos, introspecção off e exportação LGPD controlada             | Logs de aplicação não têm retenção aprovada                        |
+| Denial of service      | Query profunda, batching ou flood de login | Profundidade/complexidade/aliases, paginação máxima, rate limit por Redis, bloqueio de login, corpo máximo e limite de WS    | Janela fixa permite rajadas na borda; falta proteção de L3/L4      |
+| Elevation of privilege | SELLER acessa recurso de outro usuário     | Negar por padrão, checagem de `ownerId` em leitura/escrita, subscriptions filtradas e testes negativos entre usuários        | Nenhum controle de administração granular além de `ADMIN`/`SELLER` |
 
 ## OWASP Top 10 — mapeamento
 
-| Categoria                                      | Controle no projeto                                                                                                | Status                                                                    |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
-| A01 Broken Access Control                      | Autorização em resolver/service com checagem de propriedade; negar por padrão; testes entre usuários               | Implementado (Fases 1 e 2, inclui subscriptions)                          |
-| A02 Cryptographic Failures                     | argon2id, TLS fora do local, refresh armazenado como hash, segredos fora do código                                 | Parcial (argon2id e hash de refresh; TLS produção pendente)               |
-| A03 Injection                                  | Prisma parametrizado, proibição de `$queryRawUnsafe`, validação com zod/class-validator, saída escapada pelo React | Implementado (Fases 1 e 2)                                                |
-| A04 Insecure Design                            | ADRs, modelo de ameaças e limites definidos antes do código                                                        | Em andamento                                                              |
-| A05 Security Misconfiguration                  | helmet, CORS com allowlist, validação de env, erros genéricos, introspection off em produção                       | Parcial (helmet, CORS, env e introspection off; headers finais pendentes) |
-| A06 Vulnerable and Outdated Components         | lockfile, `pnpm audit`, Dependabot, Trivy e SBOM                                                                   | Parcial (audit e Trivy na CI; Dependabot/SBOM pendentes)                  |
-| A07 Identification and Authentication Failures | Política de senha, bloqueio progressivo, rate limit, rotação de refresh com detecção de reuso                      | Implementado (argon2id, rotação/reuso, política, bloqueio e rate limit)   |
-| A08 Software and Data Integrity Failures       | Actions fixadas por SHA, permissões mínimas, HMAC de webhook, builds com lockfile                                  | Parcial (Actions por SHA e lockfile na Fase 0)                            |
-| A09 Security Logging and Monitoring Failures   | pino com redação, correlation id, auditoria de eventos de segurança                                                | Parcial (pino e correlation id na Fase 0)                                 |
-| A10 Server-Side Request Forgery                | Apenas hosts fixos e configurados; Cloud API usa URL base não fornecida pelo usuário                               | Parcial (Fase 3)                                                          |
+| Categoria                                      | Controle no projeto                                                                                                | Status                                                                  |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| A01 Broken Access Control                      | Autorização em resolver/service com checagem de propriedade; negar por padrão; testes entre usuários               | Implementado (Fases 1 e 2, inclui subscriptions)                        |
+| A02 Cryptographic Failures                     | argon2id, TLS terminado no proxy, refresh armazenado como hash, segredos fora do código                            | Parcial (aplicação correta; TLS depende do deploy documentado)          |
+| A03 Injection                                  | Prisma parametrizado, proibição de `$queryRawUnsafe`, validação com zod/class-validator, saída escapada pelo React | Implementado (Fases 1 e 2)                                              |
+| A04 Insecure Design                            | ADRs, modelo de ameaças e limites definidos antes do código                                                        | Em andamento                                                            |
+| A05 Security Misconfiguration                  | helmet, CORS com allowlist, validação de env, erros genéricos, introspecção off, corpo limitado e headers do proxy | Implementado na aplicação; headers do proxy são checklist de deploy     |
+| A06 Vulnerable and Outdated Components         | lockfile, `pnpm audit`, Trivy, SBOM CycloneDX e Dependabot agrupado                                                | Implementado; primeiro PR do Dependabot aguarda execução no GitHub      |
+| A07 Identification and Authentication Failures | Política de senha, bloqueio progressivo, rate limit, rotação de refresh com detecção de reuso                      | Implementado (argon2id, rotação/reuso, política, bloqueio e rate limit) |
+| A08 Software and Data Integrity Failures       | Actions fixadas por SHA, permissões mínimas, SBOM, HMAC e builds com lockfile                                      | Implementado; assinatura de imagens não faz parte desta fase            |
+| A09 Security Logging and Monitoring Failures   | pino com redação, correlation id, auditoria de eventos de segurança                                                | Parcial (sem métricas/tracing; retenção de logs pendente)               |
+| A10 Server-Side Request Forgery                | Apenas hosts fixos e configurados; Cloud API usa URL base não fornecida pelo usuário                               | Implementado para o provider atual                                      |
 
 ## GraphQL (OWASP API Security)
 
@@ -57,6 +58,24 @@ entre vendedores, token inválido/expirado, reuso de refresh, HMAC inválido,
 WebSocket sem token e tentativa de burlar o rate limit anônimo com
 `X-Forwarded-For` forjado. Todos passam localmente em desktop/mobile/API; a
 execução na CI é registrada no job `e2e`.
+
+## Implementado na Fase 5 (TASK-006-03)
+
+- Benchmark k6 versionado compara `DATALOADER_ENABLED=false/true` em
+  `deals(first: 100)` com `contact` e `company`; resultados e limitações estão
+  em `docs/performance.md`. A flag existe para medição e o default é `true`.
+- SBOM CycloneDX 1.6 é gerado por `scripts/generate-sbom.mjs` a partir de
+  `pnpm -r licenses list` e publicado como artefato no job `security` da CI.
+  O arquivo é gerado de forma determinística, mas a validação contra o schema
+  oficial CycloneDX ainda não está automatizada.
+- Dependabot está configurado para pnpm e GitHub Actions, com PRs semanais
+  agrupados por produção/desenvolvimento; a primeira execução ocorre após o
+  push no GitHub.
+- `docs/deploy.md` cobre variáveis, ordem de implantação, migrations, health
+  checks, smoke tests, backup, rollback e riscos residuais. O deploy real e a
+  escolha do provedor continuam fora do escopo.
+- O STRIDE acima foi revisado com controles implementados e risco residual. A
+  aprovação de retenção LGPD segue pendente; nenhum dado real é usado.
 
 ## Implementado na Fase 4 (front-end)
 
@@ -111,19 +130,18 @@ execução na CI é registrada no job `e2e`.
 
 ## Riscos pendentes
 
-| Risco                                                        | Impacto | Fase alvo       |
-| ------------------------------------------------------------ | ------- | --------------- |
-| Rate limit por janela fixa permite rajadas na borda          | Médio   | Evolução futura |
-| Política de senha sem endpoint público de cadastro           | Baixo   | Evolução futura |
-| E2E/axe cobrem desktop/mobile; k6 e leitor de tela pendentes | Baixo   | TASK-006-02/03  |
-| Tokens expirados não têm job de limpeza                      | Baixo   | Fase 5          |
-| Logs ainda não possuem trilha de auditoria de segurança      | Médio   | Fase 5          |
-| Pub/sub de subscriptions é best-effort (sem entrega durável) | Médio   | Fase 5          |
-| SBOM e Dependabot ainda não configurados                     | Médio   | Fase 5          |
-| Sem TLS local obrigatório; produção depende do provedor      | Médio   | Fase 5          |
-| Política de retenção/base legal ainda não aprovada           | Alto    | Fase 5          |
-| Sem outbox/exactly-once; DLQ exige replay manual             | Médio   | Fase 5          |
-| CI das Fases 1 e 2 ainda não executada no GitHub             | Médio   | Antes do merge  |
+| Risco                                                         | Impacto | Disposição                                      |
+| ------------------------------------------------------------- | ------- | ----------------------------------------------- |
+| Rate limit por janela fixa permite rajadas na borda           | Médio   | Evolução futura                                 |
+| Política de senha sem endpoint público de cadastro            | Baixo   | Evolução futura                                 |
+| Leitor de tela e zoom 200% reais ainda não revisados          | Médio   | Gate 4 humano                                   |
+| Tokens expirados não têm job de limpeza                       | Baixo   | Evolução futura                                 |
+| Logs sem trilha imutável e sem métricas/tracing               | Médio   | Evolução futura; deploy usa logs + health       |
+| Pub/sub de subscriptions é best-effort (sem entrega durável)  | Médio   | Documentado em `docs/deploy.md`                 |
+| Sem TLS no repositório; produção depende do proxy do provedor | Médio   | Checklist de deploy; decisão de provedor aberta |
+| Política de retenção/base legal ainda não aprovada            | Alto    | Bloqueia dados reais                            |
+| Sem bootstrap de primeiro `ADMIN` para produção               | Alto    | Provisionamento manual antes do go-live         |
+| Sem outbox/exactly-once; DLQ exige replay manual              | Médio   | Documentado; evolução futura                    |
 
 ## LGPD
 

@@ -21,6 +21,10 @@ export const apiEnvSchema = baseEnvSchema
       .regex(/^\d+(b|kb|mb)$/i, 'JSON_BODY_LIMIT deve usar b, kb ou mb')
       .default('256kb'),
     PERSISTED_QUERIES_MODE: z.enum(['off', 'audit', 'enforce']).default('audit'),
+    DATALOADER_ENABLED: z
+      .enum(['true', 'false'])
+      .default('true')
+      .transform((value) => value === 'true'),
     RATE_LIMIT_LOGIN_IP_MAX: z.coerce.number().int().positive().default(30),
     RATE_LIMIT_LOGIN_EMAIL_MAX: z.coerce.number().int().positive().default(10),
     RATE_LIMIT_LOGIN_WINDOW_SECONDS: z.coerce.number().int().positive().default(900),

@@ -36,6 +36,14 @@ export default [
     },
   },
   {
+    files: ['infra/k6/**/*.js'],
+    languageOptions: {
+      globals: {
+        __ENV: 'readonly',
+      },
+    },
+  },
+  {
     files: ['**/*.config.{js,mjs,cjs,ts}', '**/vite.config.ts', '**/vitest.config.ts'],
     rules: {
       '@typescript-eslint/no-require-imports': 'off',

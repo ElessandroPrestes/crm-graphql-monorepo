@@ -1,9 +1,9 @@
 # Nexo CRM
 
-> **Status:** Fases 0 a 4 implementadas — fundação, domínio, autenticação,
-> funil, WhatsApp, worker idempotente, LGPD e front-end React (sessão,
-> contatos/360°, kanban, inbox em tempo real e dashboard). Revisão e QA final
-> pendentes.
+> **Status:** Fases 0 a 5 implementadas em `develop` — fundação, domínio,
+> autenticação, funil, WhatsApp, worker idempotente, front-end React,
+> endurecimento GraphQL, E2E/axe, benchmark k6, SBOM e guia de deploy. Release
+> `0.3.0-alpha` e Gate 4 humano pendentes.
 > **Governança:** Universal SDD (Spec-Driven Development).
 > **Stack:** Node.js 26 LTS · pnpm · Turborepo · NestJS · React · Vite ·
 > TypeScript · Tailwind CSS.
@@ -21,20 +21,20 @@ cache e limites de complexidade).
 Fluxos de webhook, upload e pagamento permanecem em REST, conforme
 [ADR-002](adr/ADR-002-stack-api-graphql.md).
 
-> **Demo:** espaço reservado para o GIF do fluxo completo.
+> **Demo:** gravação do fluxo completo pendente; nenhum GIF é versionado ainda.
 
 ---
 
 ## Fases
 
-| Fase | Escopo                                                           | Status       |
-| ---- | ---------------------------------------------------------------- | ------------ |
-| 0    | Fundação: monorepo, tooling, esqueletos, Docker, CI e docs       | Concluída    |
-| 1    | Domínio e API núcleo: Prisma, auth, RBAC, GraphQL, DataLoader    | Concluída    |
-| 2    | Funil e dashboard: negócios, concorrência, subscriptions, cache  | Concluída    |
-| 3    | WhatsApp e eventos: provider, HMAC, RabbitMQ, worker, DLQ, LGPD  | Concluída    |
-| 4    | Front-end: login, contatos, visão 360°, kanban, inbox, dashboard | Em revisão   |
-| 5    | Endurecimento: persisted queries, k6, e2e, STRIDE e deploy       | Em andamento |
+| Fase | Escopo                                                           | Status                                      |
+| ---- | ---------------------------------------------------------------- | ------------------------------------------- |
+| 0    | Fundação: monorepo, tooling, esqueletos, Docker, CI e docs       | Concluída                                   |
+| 1    | Domínio e API núcleo: Prisma, auth, RBAC, GraphQL, DataLoader    | Concluída                                   |
+| 2    | Funil e dashboard: negócios, concorrência, subscriptions, cache  | Concluída                                   |
+| 3    | WhatsApp e eventos: provider, HMAC, RabbitMQ, worker, DLQ, LGPD  | Concluída                                   |
+| 4    | Front-end: login, contatos, visão 360°, kanban, inbox, dashboard | Implementada; Gate 4 pendente               |
+| 5    | Endurecimento: persisted queries, k6, e2e, STRIDE e deploy       | Implementada em `develop`; release pendente |
 
 ---
 
@@ -106,6 +106,7 @@ pnpm --filter @nexo/worker test:integration
 pnpm build
 pnpm format:check
 pnpm --filter @nexo/api schema:check
+pnpm run sbom
 ```
 
 ### E2E e acessibilidade
@@ -122,6 +123,19 @@ O `playwright.config.ts` sobe API (`3202`) e web (`5217`) e executa os projetos
 `desktop-chromium`, `mobile-chromium` e `api-security`. A suíte cobre fluxos
 críticos, axe nos temas claro/escuro, teclado/reflow e testes negativos de
 segurança. Antes da execução os contadores `throttle:*` do Redis são limpos.
+
+### Benchmark k6
+
+O cenário compara DataLoader desligado e ligado em `deals(first: 100)` com
+contatos e empresas. Metodologia e resultados estão em
+[docs/performance.md](docs/performance.md); o script é
+`infra/k6/deals-dataloader.js`. O seed adicional é idempotente:
+
+```sh
+pnpm --filter @nexo/api db:seed:benchmark
+docker run --rm --network host -v "$PWD/infra/k6:/scripts:ro" \
+  grafana/k6:0.57.0 run /scripts/deals-dataloader.js
+```
 
 ### Infraestrutura
 
@@ -172,10 +186,26 @@ nexo-crm/
 
 ---
 
-## Segurança e acessibilidade
+## Resultados da Fase 5
 
-- Segurança: [docs/security.md](docs/security.md) e [SECURITY.md](SECURITY.md).
+- E2E Playwright: 43 testes em desktop, mobile emulado, API e suíte dedicada de
+  acessibilidade; fluxos de login, contato, negócio, kanban, inbox e dashboard.
+- axe: 30 varreduras nos temas claro/escuro (18 em desktop/mobile e 12 na suíte
+  dedicada), zero violações critical/serious.
+- Segurança negativa: IDOR, token inválido/expirado, reuso de refresh, HMAC,
+  WebSocket sem token e bypass de rate limit cobertos em `e2e/security.spec.ts`.
+- k6: p95 de 9.494,65 ms sem DataLoader para 58,58 ms com DataLoader, com
+  throughput de 5,69 para 9,91 req/s e zero erros. Detalhes e limitações em
+  [docs/performance.md](docs/performance.md).
+- SBOM CycloneDX 1.6 com 1.119 componentes gerado na CI; Dependabot semanal
+  configurado para pnpm e Actions.
+
+## Segurança, acessibilidade e deploy
+
+- Segurança e STRIDE: [docs/security.md](docs/security.md) e [SECURITY.md](SECURITY.md).
 - Acessibilidade: [docs/a11y.md](docs/a11y.md), alvo WCAG 2.2 AA.
+- Deploy, backup e rollback: [docs/deploy.md](docs/deploy.md).
+- Release notes: [docs/release-notes-0.3.0-alpha.md](docs/release-notes-0.3.0-alpha.md).
 - Nenhum segredo real é versionado; use `.env.example` como referência.
 
 ---
