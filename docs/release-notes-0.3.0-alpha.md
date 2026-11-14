@@ -25,7 +25,7 @@ Status: pré-release técnica; não é um anúncio de produção.
 | k6 p95        | 9.494,65 ms sem DataLoader; 58,58 ms com DataLoader                            |
 | k6 throughput | 5,69 req/s sem DataLoader; 9,91 req/s com DataLoader                           |
 | SBOM          | CycloneDX 1.6 com 1.119 componentes; schema oficial ainda não validado         |
-| CI            | Quality gates, E2E, security scans e CodeQL verdes em `develop`                |
+| CI            | Quality gates, E2E, security scans e CodeQL verdes (run 43535806770)           |
 
 Os números de k6 são de um host local compartilhado e não são SLO de produção.
 Consulte [performance.md](performance.md).

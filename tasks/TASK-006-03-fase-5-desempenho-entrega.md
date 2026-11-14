@@ -93,7 +93,9 @@ acessibilidade e deploy, automatizar dependências/SBOM e publicar a entrega
   28 de acessibilidade e 1 setup), 30 varreduras axe sem critical/serious;
   `pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm format:check`,
   `schema:check`, `pnpm audit --audit-level high` e `pnpm run sbom` verdes em
-  2026-11-13. Detalhes em `reviews/qa-evidence/QA-EVIDENCE-TASK-006-03.md`.
+  2026-11-13; CI run `43535806770` verde em `develop` (Quality gates, E2E,
+  Security e CodeQL). Detalhes em
+  `reviews/qa-evidence/QA-EVIDENCE-TASK-006-03.md`.
 - Trabalho em aberto ou bloqueios: aprovação humana do Gate 4, decisão e
   execução do deploy de referência, retenção/base legal LGPD, bootstrap do
   primeiro `ADMIN`, primeiro PR do Dependabot e GIF de demonstração.

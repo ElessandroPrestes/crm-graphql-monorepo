@@ -110,7 +110,7 @@ action_taken: Executar `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`,
 observable_result: Lint, typecheck, 93 testes unitários, build, format, schema e audit (sem high/critical) verdes; E2E com 43 testes verdes e 30 varreduras axe sem critical/serious.
 reproducible_evidence:
   command: pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm format:check && pnpm --filter @nexo/api schema:check && pnpm audit --audit-level high && pnpm test:e2e
-  log_or_artifact: Saída local de 2026-11-13; CI registrada após o push em develop
+  log_or_artifact: Saída local de 2026-11-13; CI run 43535806770 verde em develop (Quality gates, E2E, Security e CodeQL)
   details: Nenhuma regressão nas fases anteriores; auditoria mantém 2 advisories moderadas de desenvolvimento sem correção compatível.
 exception_ref: N/A
 ```

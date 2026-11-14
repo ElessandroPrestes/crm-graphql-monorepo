@@ -82,7 +82,7 @@
 | AC-617   | R-509 | SBOM + PR de dependência                      | Consultar artefato e PR                            | Parcial: SBOM CycloneDX 1.6 com 1.119 componentes gerado; PR do Dependabot aguarda o agendamento no GitHub                                                                                               | —               |
 | AC-618   | R-509 | Revisão de README/CHANGELOG                   | Ver GIF e resultados                               | Parcial: README, CHANGELOG e release notes completos; GIF de demonstração ainda não gravado                                                                                                              | —               |
 | AC-619   | R-506 | Revisão de QA-001/design/a11y                 | Comparar com quality gates                         | Pendente (aprovação humana)                                                                                                                                                                              | —               |
-| AC-620   | R-506 | Gates locais + CI                             | Executar pipeline                                  | Passou local (lint, typecheck, test, build, format, schema, audit, 43 E2E) e CI anterior verde                                                                                                           | —               |
+| AC-620   | R-506 | Gates locais + CI                             | Executar pipeline                                  | Passou local (lint, typecheck, test, build, format, schema, audit, 93 unitários e 43 E2E) e CI run 43535806770 verde (Quality gates, E2E, Security e CodeQL)                                             | —               |
 
 ## Ambiente e dados
 
