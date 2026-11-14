@@ -53,19 +53,33 @@ export default defineConfig({
   },
   projects: [
     {
+      name: 'auth-setup',
+      testMatch: /auth-setup\.ts/,
+    },
+    {
       name: 'desktop-chromium',
-      testIgnore: /security\.spec\.ts/,
+      testIgnore: [/security\.spec\.ts/, /a11y\//],
       use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 } },
     },
     {
       name: 'mobile-chromium',
-      testIgnore: /security\.spec\.ts/,
+      testIgnore: [/security\.spec\.ts/, /a11y\//],
       use: { ...devices['Pixel 7'] },
     },
     {
       name: 'api-security',
       testMatch: /security\.spec\.ts/,
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'a11y',
+      testDir: './e2e/a11y',
+      dependencies: ['auth-setup'],
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 900 },
+        storageState: 'e2e/.auth/user.json',
+      },
     },
   ],
   webServer: [
