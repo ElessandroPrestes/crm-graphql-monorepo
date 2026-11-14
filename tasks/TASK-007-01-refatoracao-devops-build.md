@@ -2,13 +2,13 @@
 
 ## Metadados
 
-| Campo        | Valor                                                                 |
-| ------------ | --------------------------------------------------------------------- |
-| ID           | TASK-007-01                                                           |
-| Status       | In progress — implementação e validação local concluídas; CI pendente |
-| Responsável  | Engenharia                                                            |
-| Refs:        | SPEC: SPEC-007; Critérios: AC-701..AC-706; ADRs: ADR-001, ADR-002     |
-| Dependências | SPEC-007 aprovada por instrução humana em 2026-11-14                  |
+| Campo        | Valor                                                                                         |
+| ------------ | --------------------------------------------------------------------------------------------- |
+| ID           | TASK-007-01                                                                                   |
+| Status       | Done — implementação, validação local e CI verdes; revisão independente pendente (2026-11-14) |
+| Responsável  | Engenharia                                                                                    |
+| Refs:        | SPEC: SPEC-007; Critérios: AC-701..AC-706; ADRs: ADR-001, ADR-002                             |
+| Dependências | SPEC-007 aprovada por instrução humana em 2026-11-14                                          |
 
 ## Objetivo
 
@@ -58,25 +58,25 @@ alterar o comportamento da aplicação nem remover volumes.
 - [x] Validar build, health checks e comandos do Makefile.
 - [x] Medir rebuild de código e de dependência.
 - [x] Documentar arquitetura, benchmark, comandos e troubleshooting.
-- [ ] Commitar, publicar em `develop` e acompanhar CI.
+- [x] Commitar, publicar em `develop` e acompanhar CI.
 
 ## Validação
 
-| Critério/risco | Teste, comando ou revisão                 | Evidência esperada                       |
-| -------------- | ----------------------------------------- | ---------------------------------------- |
-| AC-701         | `FRESH=1 make benchmark`                  | Tempo frio e log em docs/devops          |
-| AC-702         | Alterar código e `make benchmark`         | `CACHED` na instalação; tempo registrado |
-| AC-703         | Alterar lockfile e reconstruir            | Reinstalação e health checks verdes      |
-| AC-704         | `make help`, `make config`, `make doctor` | Saída válida, sem alteração de dados     |
-| AC-705         | `make up` e `make health`                 | Serviços `healthy`; volumes preservados  |
-| AC-706         | Revisão de `docs/devops/**`               | Conteúdo completo e links válidos        |
+| Critério/risco | Teste, comando ou revisão                                 | Evidência esperada                       |
+| -------------- | --------------------------------------------------------- | ---------------------------------------- |
+| AC-701         | `CONFIRM=1 make cache-prune` + `MODE=cold make benchmark` | Tempo frio e log em docs/devops          |
+| AC-702         | `MODE=code make benchmark`                                | `CACHED` na instalação; tempo registrado |
+| AC-703         | `MODE=deps make benchmark` + `make up`                    | Reinstalação e health checks verdes      |
+| AC-704         | `make help`, `make config`, `make doctor`                 | Saída válida, sem alteração de dados     |
+| AC-705         | `make up` e `make health`                                 | Serviços `healthy`; volumes preservados  |
+| AC-706         | Revisão de `docs/devops/**`                               | Conteúdo completo e links válidos        |
 
 ## Condição de conclusão
 
-- [ ] Escopo implementado sem expansão.
-- [ ] Testes e validações aplicáveis passam.
-- [ ] Documentação e rastreabilidade foram atualizadas.
-- [ ] Limitações e desvios estão registrados.
+- [x] Escopo implementado sem expansão.
+- [x] Testes e validações aplicáveis passam.
+- [x] Documentação e rastreabilidade foram atualizadas.
+- [x] Limitações e desvios estão registrados.
 
 ## Resultado
 
@@ -100,9 +100,12 @@ alterar o comportamento da aplicação nem remover volumes.
   - `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`,
     `pnpm format:check`, `schema:check` e `pnpm audit --audit-level high`
     passaram.
+  - Commits `ae71289`, `6f281af` e `b79d04c`; CI run `43641509234` verde em
+    `develop` (Quality gates, E2E, Security e CodeQL). Detalhes em
+    `reviews/qa-evidence/QA-EVIDENCE-TASK-007-01.md`.
 - Desvios: a primeira versão usava install, build e deploy no mesmo `RUN` e
   chegou a 299 s no frio, mas reexecutava o install em mudanças de código e não
   atendia ao AC-702. A versão final separa `deps`/`build` e usa
   `--config.package-import-method=copy`; o cache mount do store foi descartado
   porque o install com store quente levava ~10 min por cópia EXDEV.
-- Pendências ou bloqueios: commit final, push e CI; revisão independente.
+- Pendências ou bloqueios: revisão independente do artefato.
