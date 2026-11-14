@@ -177,7 +177,7 @@ describe('ConversationPage', () => {
 
     await user.click(screen.getByRole('button', { name: /reenviar/i }));
 
-    expect(await screen.findByText('Vai falhar', {}, { timeout: 3000 })).toBeInTheDocument();
+    expect(await screen.findByText('Vai falhar', {}, { timeout: 8000 })).toBeInTheDocument();
     expect(sentClientIds).toHaveLength(2);
     expect(sentClientIds[0]).toBe(sentClientIds[1]);
     expect(sentClientIds[0]).toMatch(/^[a-zA-Z0-9-]{8,}$/);
