@@ -1,7 +1,7 @@
 # Roadmap — Nexo CRM
 
 > **Framework de Governança**: Universal SDD (Spec-Driven Development)
-> **Status vigente**: Fases 0 a 4 implementadas; revisão e QA final pendentes.
+> **Status vigente**: Fases 0 a 5 implementadas tecnicamente; Gate 4 humano pendente; Fase 6 em discovery (não aprovada).
 
 O roadmap comunica direção, não compromisso de prazo. Nenhuma funcionalidade é
 implementada antes da aprovação formal de sua SPEC e TASK.
@@ -83,24 +83,46 @@ O Gate 4 de release continua aberto até a aprovação de QA-001, da revisão de
 implementação de design e da revisão manual de acessibilidade, ou de exceção
 autorizada registrada.
 
-## Fase 5 — Endurecimento e entrega (proposta, aguardando aprovação)
+## Fase 5 — Endurecimento e entrega (implementada tecnicamente; Gate 4 humano pendente)
 
-- [ ] Persisted queries e ajuste de limites/rate limits.
-- [ ] Benchmark k6 antes/depois do DataLoader com números no README.
-- [ ] E2E Playwright + axe e testes de segurança finais.
-- [ ] Modelo STRIDE finalizado e docs/a11y.md completo.
-- [ ] SBOM, Dependabot/Renovate e guia de deploy.
-- [ ] README final com GIF e resultados.
+- [x] Persisted queries e ajuste de limites/rate limits.
+- [x] Benchmark k6 antes/depois do DataLoader com números no README.
+- [x] E2E Playwright + axe e testes de segurança finais.
+- [x] Modelo STRIDE finalizado e docs/a11y.md com verificação automatizada.
+- [x] SBOM, configuração do Dependabot e guia de deploy; primeiro PR do Dependabot pendente.
+- [x] README final com resultados.
+- [ ] GIF de demonstração.
+- [ ] Gate 4 humano: QA-001, design, NVDA/VoiceOver e zoom 200% reais.
 
-Evidências propostas: `docs/discovery-fase-5.md`,
-`specs/SPEC-006-fase-5-endurecimento-entrega.md` (Draft),
-`tasks/TASK-006-01-fase-5-endurecimento-graphql.md` (Planned),
-`tasks/TASK-006-02-fase-5-e2e-a11y-seguranca.md` (Planned),
-`tasks/TASK-006-03-fase-5-desempenho-entrega.md` (Planned) e
-`docs/qa-plan-fase-5.md` (QA-002, Draft).
+Evidências: `docs/discovery-fase-5.md`,
+`specs/SPEC-006-fase-5-endurecimento-entrega.md` (Approved),
+`tasks/TASK-006-01-fase-5-endurecimento-graphql.md` (Done),
+`tasks/TASK-006-02-fase-5-e2e-a11y-seguranca.md` (In progress — somente Gate 4),
+`tasks/TASK-006-03-fase-5-desempenho-entrega.md` (Done),
+`docs/qa-plan-fase-5.md` (QA-002, Approved) e
+`reviews/qa-evidence/QA-EVIDENCE-TASK-006-03.md`.
 
-Nenhum item da Fase 5 é implementado antes da aprovação da SPEC-006, do
-ADR-009 e das TASKs correspondentes.
+A Fase 5 está tecnicamente concluída. O Gate 4 de release permanece aberto até
+a aprovação humana de QA, design e acessibilidade manual, ou exceção autorizada.
+
+---
+
+## Fase 6 — Produção e operação (discovery proposta, aguardando aprovação)
+
+- [ ] Deploy de referência, staging e pipeline de CD com rollback.
+- [ ] Bootstrap seguro do primeiro `ADMIN` e gerenciamento de segredos.
+- [ ] Readiness de PostgreSQL/Redis/RabbitMQ, métricas, tracing, alertas e SLOs.
+- [ ] Outbox transacional e replay de DLQ testado.
+- [ ] Retenção LGPD, purge de tokens/logs e auditoria.
+- [ ] Code splitting por rota e orçamento de bundle.
+- [ ] Runbooks, backup/restore, SBOM validado e assinatura de imagens.
+
+Evidências propostas: `docs/discovery-fase-6.md`,
+`specs/SPEC-008-producao-operacao.md` (a criar),
+`adr/ADR-010-topologia-deploy.md` (a criar) e TASKs `TASK-008-01..06` (a criar).
+
+Nenhum item da Fase 6 é implementado antes da aprovação da discovery, da
+SPEC-008, do ADR de topologia e das TASKs correspondentes.
 
 ---
 

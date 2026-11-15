@@ -1,9 +1,11 @@
 # Arquitetura
 
-Status: Fases 0 a 4 implementadas. A Fase 3 adicionou webhook de WhatsApp,
-fila durável com retry/DLQ, worker idempotente, conversas/mensagens,
-subscription `messageReceived` e exportação/exclusão LGPD. A Fase 4 entregou
-a SPA React com sessão, contatos, kanban, inbox em tempo real e dashboard.
+Status: Fases 0 a 5 implementadas tecnicamente; Gate 4 humano pendente; Fase 6
+em discovery. A Fase 3 adicionou webhook de WhatsApp, fila durável com
+retry/DLQ, worker idempotente, conversas/mensagens, subscription
+`messageReceived` e exportação/exclusão LGPD. A Fase 4 entregou a SPA React com
+sessão, contatos, kanban, inbox em tempo real e dashboard. A Fase 5 adicionou
+persisted queries, rate limits, E2E/axe, benchmark k6, SBOM e guia de deploy.
 
 ## Contexto
 
@@ -108,14 +110,19 @@ main.tsx
 
 ## Limitações atuais
 
-- A SPA cobre os fluxos da Fase 4; E2E Playwright, axe e code splitting
-  ficam para a Fase 5.
+- E2E Playwright e axe estão na CI; code splitting por rota é proposto na
+  Fase 6.
 - Subscriptions e eventos são best-effort; não há outbox transacional nem
-  exactly-once.
+  exactly-once. A Fase 6 propõe outbox e replay de DLQ.
 - O worker reconecta ao broker, mas replay de DLQ é manual.
 - Mídia e webhooks de status do WhatsApp ficam fora do escopo.
-- Os health checks verificam apenas o processo, não dependências externas.
+- Os health checks verificam apenas o processo, não dependências externas; a
+  Fase 6 propõe readiness real de PostgreSQL, Redis e RabbitMQ.
 - Rate limit (login/GraphQL/WS), persisted queries e limite de corpo foram
-  implementados na Fase 5 (TASK-006-01, ADR-009); benchmark k6 e E2E ficam nas
-  TASK-006-02/03.
-- O bundle principal tem ~708 kB; code splitting por rota é pendente.
+  implementados na Fase 5 (TASK-006-01, ADR-009); benchmark k6 e E2E foram
+  concluídos nas TASK-006-02/03.
+- Não há métricas Prometheus, tracing distribuído, dashboards, alertas ou SLOs;
+  a Fase 6 propõe observabilidade e SLOs.
+- O deploy real, staging e pipeline de CD não existem; a Fase 6 propõe a
+  topologia e o pipeline.
+- O bundle principal tem ~694 kB; code splitting por rota é proposto na Fase 6.

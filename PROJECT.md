@@ -2,16 +2,16 @@
 
 ## Metadados
 
-| Campo                   | Valor                                                             |
-| ----------------------- | ----------------------------------------------------------------- |
-| Nome do Projeto         | Nexo CRM (`crm-graphql-monorepo`)                                 |
-| Organização             | Portfólio pessoal                                                 |
-| Responsável             | Engenharia (a designar por área)                                  |
-| Estado                  | Ativo — Fases 0 a 4 implementadas; Gate 4 aberto; Fase 5 proposta |
-| Versão ou release       | `0.2.0-alpha`                                                     |
-| Última revisão          | 2026-11-13                                                        |
-| Revisores               | Produto / Engenharia / QA / Segurança                             |
-| Framework de Governança | Universal SDD (Spec-Driven Development)                           |
+| Campo                   | Valor                                                                                                      |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Nome do Projeto         | Nexo CRM (`crm-graphql-monorepo`)                                                                          |
+| Organização             | Portfólio pessoal                                                                                          |
+| Responsável             | Engenharia (a designar por área)                                                                           |
+| Estado                  | Ativo — Fases 0 a 5 implementadas tecnicamente; Gate 4 humano pendente; Fase 6 em discovery (não aprovada) |
+| Versão ou release       | `0.3.0-alpha`                                                                                              |
+| Última revisão          | 2026-11-14                                                                                                 |
+| Revisores               | Produto / Engenharia / QA / Segurança                                                                      |
+| Framework de Governança | Universal SDD (Spec-Driven Development)                                                                    |
 
 ---
 
@@ -170,8 +170,8 @@ Versões e justificativas de compatibilidade: [ADR-003](adr/ADR-003-versoes-e-co
   `pnpm --filter @nexo/api test:integration`, `schema:check` e
   `python3 scripts/generate_traceability.py`.
 - **Níveis**: unitários (Vitest) e integração GraphQL/REST/WebSocket com
-  Testcontainers (PostgreSQL, Redis e RabbitMQ), incluindo worker. e2e
-  Playwright e testes de segurança ampliados entram nas fases seguintes.
+  Testcontainers (PostgreSQL, Redis e RabbitMQ), incluindo worker. E2E
+  Playwright, axe e testes de segurança negativos são executados na CI.
 - **Ambientes e dados**: Docker Compose local e Testcontainers; seeds
   exclusivamente fictícios.
 - **Gates e responsáveis**: ver `standards/quality-gates.md`; CI em
@@ -181,11 +181,14 @@ Versões e justificativas de compatibilidade: [ADR-003](adr/ADR-003-versoes-e-co
 
 - **Pipelines**: GitHub Actions com quality gates, auditoria, gitleaks, Trivy e
   CodeQL. Actions fixadas por SHA.
-- **Ambientes**: local via Docker Compose. Deploy será documentado na Fase 5.
+- **Ambientes**: local via Docker Compose. Staging, produção e pipeline de
+  CD são propostos na Fase 6; o guia provider-neutral está em
+  [`docs/deploy.md`](docs/deploy.md).
 - **Migração e rollback**: `prisma migrate deploy` em ambientes; rollback
   documentado por migration e backup antes de mudanças destrutivas.
-- **Observabilidade**: health checks e logs estruturados na Fase 0;
-  OpenTelemetry e métricas nas fases seguintes.
+- **Observabilidade**: health checks de processo e logs estruturados. Readiness
+  de dependências, métricas, tracing e SLOs são propostos na Fase 6
+  ([`docs/discovery-fase-6.md`](docs/discovery-fase-6.md)).
 
 ## 11. Padrões de desenvolvimento
 
@@ -199,17 +202,20 @@ Versões e justificativas de compatibilidade: [ADR-003](adr/ADR-003-versoes-e-co
 
 ## 12. Limitações e riscos conhecidos
 
-| Item                                                   | Impacto | Mitigação                                                               | Responsável          |
-| ------------------------------------------------------ | ------- | ----------------------------------------------------------------------- | -------------------- |
-| Rate limit de login/GraphQL ainda ausente              | Alto    | Implementar na Fase 5 com Redis                                         | Engenharia/Segurança |
-| CI das Fases 1 e 2 ainda não executada no GitHub       | Médio   | Rodar pipeline em PR antes do merge                                     | Engenharia           |
-| Pub/sub de `dealMoved`/`messageReceived` é best-effort | Médio   | Evento mínimo e reconciliação por query; entrega durável fora do escopo | Engenharia           |
-| Retenção e base legal LGPD ainda não aprovadas         | Alto    | Exportação/exclusão prontas; não usar dados reais                       | Produto/Segurança    |
-| Sem outbox transacional nem exactly-once               | Médio   | Idempotência por `externalId` e DLQ manual                              | Engenharia           |
-| Mídia e webhooks de status do WhatsApp ausentes        | Baixo   | Fora do escopo da Fase 3; avaliar na Fase 4/5                           | Produto              |
-| Health checks não verificam dependências               | Médio   | Adicionar checks reais por fase                                         | Engenharia           |
-| Deploy não documentado                                 | Médio   | Guia de deploy na Fase 5                                                | Engenharia           |
-| Cobertura de testes ainda inicial                      | Médio   | Ampliar pirâmide por fase e definir thresholds                          | QA                   |
+| Item                                                  | Impacto | Mitigação                                                          | Responsável          |
+| ----------------------------------------------------- | ------- | ------------------------------------------------------------------ | -------------------- |
+| Gate 4 humano e a11y manual pendentes                 | Alto    | Aprovação de QA/design/a11y ou exceção autorizada                  | QA/A11y              |
+| Sem deploy de referência, staging ou CD               | Alto    | Fase 6: staging, pipeline de CD, smoke tests e rollback            | Engenharia/Operações |
+| Health checks não verificam dependências              | Alto    | Fase 6: readiness real de PostgreSQL, Redis e RabbitMQ             | Engenharia           |
+| Sem métricas, tracing, dashboards, alertas ou SLOs    | Alto    | Fase 6: observabilidade e SLOs medidos no ambiente alvo            | Engenharia/Operações |
+| Sem outbox transacional; eventos best-effort          | Alto    | Fase 6: outbox e replay de DLQ testado                             | Engenharia           |
+| Retenção e base legal LGPD ainda não aprovadas        | Alto    | Aprovação humana e jobs de purge na Fase 6; sem dados reais até lá | Produto/Jurídico     |
+| Bootstrap do primeiro `ADMIN` ausente                 | Alto    | Fase 6: comando seguro e auditável, sem seed em produção           | Segurança/Operações  |
+| Rate limit de janela fixa permite rajadas na borda    | Médio   | Revisar estratégia na Fase 6                                       | Segurança            |
+| Bundle inicial de ~694 kB sem code splitting por rota | Médio   | Fase 6: rotas lazy, orçamento de bundle e cache headers            | Engenharia           |
+| Sem assinatura de imagem nem SBOM validado            | Médio   | Fase 6: gate de supply chain, se aprovado                          | Segurança            |
+| Mídia e webhooks de status do WhatsApp ausentes       | Baixo   | Fora do escopo atual; reavaliar após a Fase 6                      | Produto              |
+| Cobertura de testes ainda inicial                     | Médio   | Ampliar pirâmide por fase e definir thresholds                     | QA                   |
 
 ## 13. Tecnologias e abordagens intencionalmente não usadas
 
