@@ -156,6 +156,23 @@ make down        # remove containers e preserva volumes
 O `Makefile` é a interface operacional; veja
 [docs/devops/makefile-reference.md](docs/devops/makefile-reference.md).
 
+### Memória de agentes (ai-memory)
+
+O repositório declara o escopo `portfolio/crm-graphql-monorepo` em
+[`.ai-memory.toml`](.ai-memory.toml) e mantém o bloco de roteamento do
+[ai-memory](https://github.com/akitaonrails/ai-memory) em `AGENTS.md`. A
+ferramenta é opcional e não é dependência de runtime; nesta máquina a
+instalação local foi concluída em 2026-11-15. Captura, busca e handoffs exigem
+a instalação descrita em [docs/ai-memory.md](docs/ai-memory.md).
+
+```sh
+curl -fsSL https://github.com/akitaonrails/ai-memory/releases/latest/download/install.sh | sh
+ai-memory setup
+```
+
+A topologia padrão é single-user em loopback (`127.0.0.1:49374`). A decisão
+está em [ADR-012](adr/ADR-012-memoria-agentes-ai-memory.md).
+
 ---
 
 ## Estrutura
@@ -195,6 +212,8 @@ nexo-crm/
   e idempotência.
 - [ADR-007](adr/ADR-007-lgpd-exportacao-exclusao.md): exportação e exclusão
   LGPD.
+- [ADR-012](adr/ADR-012-memoria-agentes-ai-memory.md): memória compartilhada de
+  agentes com ai-memory.
 
 ---
 

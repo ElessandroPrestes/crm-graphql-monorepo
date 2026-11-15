@@ -1,0 +1,31 @@
+workspace = "portfolio"
+project = "crm-graphql-monorepo"
+
+[capture]
+ignore_paths = [
+  "node_modules/**",
+  "**/node_modules/**",
+  "dist/**",
+  "**/dist/**",
+  "build/**",
+  "**/build/**",
+  "coverage/**",
+  "**/coverage/**",
+  ".turbo/**",
+  "test-results/**",
+  "playwright-report/**",
+  "blob-report/**",
+  "apps/*/src/generated/**",
+  "adr/**",
+  "specs/**",
+  "tasks/**",
+  "reviews/**",
+  ".env",
+  "**/.env",
+  ".env.local",
+  "**/.env.local",
+  "*.pem",
+  "**/*.pem",
+  "*.key",
+  "**/*.key",
+]

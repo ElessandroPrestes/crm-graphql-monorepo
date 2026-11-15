@@ -9,6 +9,7 @@ build
 coverage
 .turbo
 pnpm-lock.yaml
+.ai-memory.toml
 *.log
 
 # Documentos herdados do framework SDD, fora do escopo de formatação desta fase
