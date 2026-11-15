@@ -1,7 +1,7 @@
 # Roadmap — Nexo CRM
 
 > **Framework de Governança**: Universal SDD (Spec-Driven Development)
-> **Status vigente**: Fases 0 a 5 implementadas tecnicamente; Gate 4 humano pendente; Fase 6 em discovery (não aprovada).
+> **Status vigente**: Fases 0 a 5 implementadas tecnicamente; Gate 4 humano pendente; Fase 6 com discovery aprovada, SPEC-008 em revisão e TASKs planejadas.
 
 O roadmap comunica direção, não compromisso de prazo. Nenhuma funcionalidade é
 implementada antes da aprovação formal de sua SPEC e TASK.
@@ -107,7 +107,7 @@ a aprovação humana de QA, design e acessibilidade manual, ou exceção autoriz
 
 ---
 
-## Fase 6 — Produção e operação (discovery proposta, aguardando aprovação)
+## Fase 6 — Produção e operação (discovery aprovada; SPEC-008 em revisão)
 
 - [ ] Deploy de referência, staging e pipeline de CD com rollback.
 - [ ] Bootstrap seguro do primeiro `ADMIN` e gerenciamento de segredos.
@@ -117,12 +117,13 @@ a aprovação humana de QA, design e acessibilidade manual, ou exceção autoriz
 - [ ] Code splitting por rota e orçamento de bundle.
 - [ ] Runbooks, backup/restore, SBOM validado e assinatura de imagens.
 
-Evidências propostas: `docs/discovery-fase-6.md`,
-`specs/SPEC-008-producao-operacao.md` (a criar),
-`adr/ADR-010-topologia-deploy.md` (a criar) e TASKs `TASK-008-01..06` (a criar).
+Evidências: `docs/discovery-fase-6.md` (Approved),
+`specs/SPEC-008-producao-operacao.md` (In review),
+`adr/ADR-010-topologia-deploy.md` (Proposed),
+`docs/qa-plan-fase-6.md` (QA-003, Draft) e TASKs `TASK-008-01..06` (Planned).
 
-Nenhum item da Fase 6 é implementado antes da aprovação da discovery, da
-SPEC-008, do ADR de topologia e das TASKs correspondentes.
+Nenhum item da Fase 6 é implementado antes da aprovação da SPEC-008, do ADR-010
+e das TASKs; o Gate 2 permanece pendente.
 
 ---
 

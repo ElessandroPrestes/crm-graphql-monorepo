@@ -4,16 +4,17 @@
 
 | Campo       | Valor                                                                                                           |
 | ----------- | --------------------------------------------------------------------------------------------------------------- |
-| Status      | Draft — proposta de discovery; aguardando aprovação humana                                                      |
+| Status      | Approved — escopo aprovado por instrução humana em 2026-11-14                                                   |
 | Responsável | Engenharia, QA, Segurança e Operações                                                                           |
 | Criado      | 2026-11-14                                                                                                      |
 | Atualizado  | 2026-11-14                                                                                                      |
-| SPEC alvo   | SPEC-008 (proposta)                                                                                             |
+| SPEC alvo   | SPEC-008 (In review)                                                                                            |
 | Fontes      | `PROJECT.md`, `ROADMAP.md`, `docs/deploy.md`, `docs/security.md`, `docs/architecture.md`, `REVIEW-001` e código |
 
 Este documento mapeia o estado real após a Fase 5 e a refatoração DevOps
-(SPEC-007). Ele não aprova escopo, arquitetura, release nem uso de dados reais.
-As decisões abertas estão separadas no fim e precisam de aprovação humana.
+(SPEC-007). O escopo mínimo foi aprovado por instrução humana em 2026-11-14; a
+SPEC-008 e as TASKs derivadas seguem para revisão. Arquitetura, release e uso de
+dados reais continuam exigindo aprovação específica.
 
 ## Fatos conhecidos
 
@@ -239,9 +240,15 @@ Critérios sugeridos:
 - `docs/deploy.md` registra que não há endpoint Prometheus nem tracing e que o
   replay de DLQ é manual.
 
+## Aprovação
+
+| Papel              | Nome | Decisão  | Data       | Notas                                                            |
+| ------------------ | ---- | -------- | ---------- | ---------------------------------------------------------------- |
+| Solicitante humano | —    | Approved | 2026-11-14 | Aprovou o escopo mínimo proposto; SPEC e TASKs seguem em revisão |
+
 ## Próximo passo sugerido
 
-Aprovar ou ajustar esta discovery e o escopo mínimo. Com a aprovação, o próximo
-artefato é uma SPEC-008 em `specs/SPEC-008-producao-operacao.md`, seguida de
-ADR-010 para a topologia de deploy e de TASKs derivadas. Nenhuma implementação
-deve começar antes da aprovação da SPEC e das TASKs.
+A SPEC-008 foi criada em `specs/SPEC-008-producao-operacao.md` com status
+`In review`, acompanhada do `ADR-010` proposto, do plano `QA-003` e das TASKs
+`TASK-008-01..06` em `Planned`. Nenhuma implementação deve começar antes da
+aprovação da SPEC, do ADR-010 e das TASKs.

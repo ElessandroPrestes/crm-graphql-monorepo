@@ -1,7 +1,9 @@
 # Guia de deploy
 
 Status: **referência operacional da Fase 5**. O deploy real não foi executado e
-o provedor de infraestrutura permanece em aberto. Este documento define o
+o provedor de infraestrutura permanece em aberto. A topologia, o pipeline de CD
+e os runbooks são propostos na `SPEC-008` e no `ADR-010` (em revisão); este guia
+continua provider-neutral. Este documento define o
 mínimo exigido para uma implantação do Nexo CRM sem tratar o Compose local como
 ambiente de produção.
 

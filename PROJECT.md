@@ -2,16 +2,16 @@
 
 ## Metadados
 
-| Campo                   | Valor                                                                                                      |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Nome do Projeto         | Nexo CRM (`crm-graphql-monorepo`)                                                                          |
-| Organização             | Portfólio pessoal                                                                                          |
-| Responsável             | Engenharia (a designar por área)                                                                           |
-| Estado                  | Ativo — Fases 0 a 5 implementadas tecnicamente; Gate 4 humano pendente; Fase 6 em discovery (não aprovada) |
-| Versão ou release       | `0.3.0-alpha`                                                                                              |
-| Última revisão          | 2026-11-14                                                                                                 |
-| Revisores               | Produto / Engenharia / QA / Segurança                                                                      |
-| Framework de Governança | Universal SDD (Spec-Driven Development)                                                                    |
+| Campo                   | Valor                                                                                                                                           |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nome do Projeto         | Nexo CRM (`crm-graphql-monorepo`)                                                                                                               |
+| Organização             | Portfólio pessoal                                                                                                                               |
+| Responsável             | Engenharia (a designar por área)                                                                                                                |
+| Estado                  | Ativo — Fases 0 a 5 implementadas tecnicamente; Gate 4 humano pendente; Fase 6 com discovery aprovada e SPEC-008 em revisão (sem implementação) |
+| Versão ou release       | `0.3.0-alpha`                                                                                                                                   |
+| Última revisão          | 2026-11-14                                                                                                                                      |
+| Revisores               | Produto / Engenharia / QA / Segurança                                                                                                           |
+| Framework de Governança | Universal SDD (Spec-Driven Development)                                                                                                         |
 
 ---
 
@@ -182,13 +182,14 @@ Versões e justificativas de compatibilidade: [ADR-003](adr/ADR-003-versoes-e-co
 - **Pipelines**: GitHub Actions com quality gates, auditoria, gitleaks, Trivy e
   CodeQL. Actions fixadas por SHA.
 - **Ambientes**: local via Docker Compose. Staging, produção e pipeline de
-  CD são propostos na Fase 6; o guia provider-neutral está em
-  [`docs/deploy.md`](docs/deploy.md).
+  CD são definidos na [`SPEC-008`](specs/SPEC-008-producao-operacao.md) (em
+  revisão); o guia provider-neutral está em [`docs/deploy.md`](docs/deploy.md).
 - **Migração e rollback**: `prisma migrate deploy` em ambientes; rollback
   documentado por migration e backup antes de mudanças destrutivas.
 - **Observabilidade**: health checks de processo e logs estruturados. Readiness
-  de dependências, métricas, tracing e SLOs são propostos na Fase 6
-  ([`docs/discovery-fase-6.md`](docs/discovery-fase-6.md)).
+  de dependências, métricas, tracing e SLOs são definidos na
+  [`SPEC-008`](specs/SPEC-008-producao-operacao.md) (em revisão), com plano em
+  [`docs/qa-plan-fase-6.md`](docs/qa-plan-fase-6.md).
 
 ## 11. Padrões de desenvolvimento
 
