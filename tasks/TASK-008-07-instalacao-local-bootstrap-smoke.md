@@ -2,15 +2,15 @@
 
 ## Metadados
 
-| Campo        | Valor                                                                              |
-| ------------ | ---------------------------------------------------------------------------------- |
-| ID           | TASK-008-07                                                                        |
-| Status       | In progress — implementação concluída; validação em clone limpo pendente de commit |
-| Responsável  | Engenharia                                                                         |
-| SPEC         | SPEC-008                                                                           |
-| Critérios    | AC-811                                                                             |
-| Dependências | ADR-013 aceito; clone limpo; Node, pnpm e Docker                                   |
-| ADRs         | ADR-013 (distribuição local)                                                       |
+| Campo        | Valor                                                      |
+| ------------ | ---------------------------------------------------------- |
+| ID           | TASK-008-07                                                |
+| Status       | Done — validado em clone limpo e banco vazio em 2026-11-16 |
+| Responsável  | Engenharia                                                 |
+| SPEC         | SPEC-008                                                   |
+| Critérios    | AC-811                                                     |
+| Dependências | ADR-013 aceito; clone limpo; Node, pnpm e Docker           |
+| ADRs         | ADR-013 (distribuição local)                               |
 
 ## Objetivo
 
@@ -43,8 +43,7 @@ comandos: `make bootstrap` e `make smoke`.
 - [x] Criar script de smoke test local.
 - [x] Adicionar `make bootstrap` e `make smoke`.
 - [x] Documentar o início rápido por git clone.
-- [ ] Executar `make bootstrap` e `make smoke` em clone limpo. — Validado no
-      checkout atual em 2026-11-16; o clone limpo depende do commit.
+- [x] Executar `make bootstrap` e `make smoke` em clone limpo.
 - [x] Registrar evidências e atualizar rastreabilidade.
 
 ## Validação
@@ -57,19 +56,27 @@ comandos: `make bootstrap` e `make smoke`.
 
 ## Condição de conclusão
 
-- [ ] Escopo implementado sem expansão.
-- [ ] Testes e validações aplicáveis passam.
-- [ ] Documentação e rastreabilidade foram atualizadas.
-- [ ] Limitações e desvios estão registrados.
+- [x] Escopo implementado sem expansão.
+- [x] Testes e validações aplicáveis passam.
+- [x] Documentação e rastreabilidade foram atualizadas.
+- [x] Limitações e desvios estão registrados.
 
 ## Resultado
 
 - Mudanças realizadas: `scripts/smoke-local.mjs`, targets `bootstrap` e `smoke`
   no `Makefile`, início rápido por git clone no `README.md` e atualização da
   SPEC-008/QA-003.
-- Evidências: em 2026-11-16, `make bootstrap` aplicou migrations e seed, subiu
-  API, worker, web, Postgres, Redis e RabbitMQ com health checks verdes e
-  terminou com `smoke ok: API, web, login e GraphQL (admin@nexo.local)`. A
-  segunda execução de `make smoke` também passou. ESLint e Prettier limpos.
-- Pendências ou bloqueios: validar em clone limpo após o commit; não há
-  provedor, domínio, TLS ou custo no escopo.
+- Evidências: em 2026-11-16, `make bootstrap` foi executado em um clone limpo
+  (`git clone --branch develop`) no commit `bb0a6dc`, com o projeto Compose
+  isolado `nexo-crm-test` e volumes vazios. O comando gerou o cliente Prisma,
+  aplicou migrations e seed, construiu API, worker e web, subiu os seis
+  containers com health checks verdes e terminou com
+  `smoke ok: API, web, login e GraphQL (admin@nexo.local)`. Uma segunda
+  execução de `make smoke` também passou; o projeto de teste foi removido com
+  `down -v` e a stack normal foi restaurada.
+- Correção associada: o primeiro clone limpo revelou que o seed precisava do
+  cliente Prisma gerado; `make bootstrap` passou a executar `db:generate`
+  antes de `db:deploy` (commit `bb0a6dc`).
+- Pendências ou bloqueios: não há provedor, domínio, TLS ou custo no escopo.
+  A validação automatizada de acessibilidade manual (NVDA/VoiceOver e zoom
+  200%) permanece como risco residual da fase.

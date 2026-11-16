@@ -64,19 +64,19 @@
 
 ## Rastreabilidade dos critérios de aceitação
 
-| Critério | Risco       | ID/caminho do teste                        | Caso manual                               | Evidência/resultado      | Defeito/exceção |
-| -------- | ----------- | ------------------------------------------ | ----------------------------------------- | ------------------------ | --------------- |
-| AC-801   | R-601       | Pipeline de staging + smoke tests          | Deploy e rollback em staging              | Planned                  | —               |
-| AC-802   | R-601       | Pipeline de CD + simulação de falha        | Aprovação manual e rollback               | Planned                  | —               |
-| AC-803   | R-601       | Teste de bootstrap e repetição             | Criar primeiro ADMIN e tentar repetir     | Planned                  | —               |
-| AC-804   | R-602       | Teste de readiness com dependências caídas | Derrubar cada dependência                 | Planned                  | —               |
-| AC-805   | R-607       | Teste de métricas/tracing e alertas        | Gerar 5xx, login, fila e DLQ              | Planned                  | —               |
-| AC-806   | R-607       | Revisão de SLO e baseline                  | Comparar janela e error budget            | Planned                  | —               |
-| AC-807   | R-603       | Teste de falha da outbox e replay          | Falhar publicação e reiniciar worker      | Planned                  | —               |
-| AC-808   | R-604       | Teste de dry-run e purge                   | Dados fictícios com idades variadas       | Planned                  | —               |
-| AC-809   | R-605       | Build + E2E + axe + medição de bundle      | Navegar por todas as rotas                | Planned                  | —               |
-| AC-811   | R-610       | `make bootstrap` + `make smoke`            | Clone limpo e stack local                 | Partial — checkout atual | —               |
-| AC-810   | R-606/R-608 | Drill de restore + SBOM + assinatura       | Restore cronometrado e admissão de imagem | Planned                  | —               |
+| Critério | Risco       | ID/caminho do teste                        | Caso manual                               | Evidência/resultado                 | Defeito/exceção |
+| -------- | ----------- | ------------------------------------------ | ----------------------------------------- | ----------------------------------- | --------------- |
+| AC-801   | R-601       | Pipeline de staging + smoke tests          | Deploy e rollback em staging              | Planned                             | —               |
+| AC-802   | R-601       | Pipeline de CD + simulação de falha        | Aprovação manual e rollback               | Planned                             | —               |
+| AC-803   | R-601       | Teste de bootstrap e repetição             | Criar primeiro ADMIN e tentar repetir     | Planned                             | —               |
+| AC-804   | R-602       | Teste de readiness com dependências caídas | Derrubar cada dependência                 | Planned                             | —               |
+| AC-805   | R-607       | Teste de métricas/tracing e alertas        | Gerar 5xx, login, fila e DLQ              | Planned                             | —               |
+| AC-806   | R-607       | Revisão de SLO e baseline                  | Comparar janela e error budget            | Planned                             | —               |
+| AC-807   | R-603       | Teste de falha da outbox e replay          | Falhar publicação e reiniciar worker      | Planned                             | —               |
+| AC-808   | R-604       | Teste de dry-run e purge                   | Dados fictícios com idades variadas       | Planned                             | —               |
+| AC-809   | R-605       | Build + E2E + axe + medição de bundle      | Navegar por todas as rotas                | Planned                             | —               |
+| AC-811   | R-610       | `make bootstrap` + `make smoke`            | Clone limpo e stack local                 | Verified — clone limpo em `bb0a6dc` | —               |
+| AC-810   | R-606/R-608 | Drill de restore + SBOM + assinatura       | Restore cronometrado e admissão de imagem | Planned                             | —               |
 
 ## Ambiente e dados
 
@@ -105,7 +105,8 @@
 
 ## Critérios de saída
 
-- [ ] AC-803..AC-811 com evidência reproduzível; AC-801 e AC-802 estão cancelados.
+- [x] AC-811 com evidência reproduzível em clone limpo; AC-803 pendente;
+      AC-801 e AC-802 estão cancelados.
 - [ ] Deploy, rollback, restore e replay de DLQ ensaiados.
 - [ ] Readiness, métricas, tracing, dashboards e alertas verdes.
 - [ ] Nenhum defeito S1/S2 aberto; S3/S4 com disposição.

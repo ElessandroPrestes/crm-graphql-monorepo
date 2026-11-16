@@ -5,7 +5,7 @@
 | Campo             | Valor                                                                                                                                        |
 | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | ID                | SPEC-008                                                                                                                                     |
-| Status            | Approved — reescopo local; TASK-008-07 em andamento com bootstrap/smoke validados no checkout e clone limpo pendente de commit               |
+| Status            | Approved — reescopo local; TASK-008-07 concluída com bootstrap/smoke validados em clone limpo (2026-11-16)                                   |
 | Responsável       | Engenharia, Operações, QA e Segurança                                                                                                        |
 | Revisores         | Produto / Engenharia / QA / Segurança / Operações / Jurídico                                                                                 |
 | Criado            | 2026-11-14                                                                                                                                   |
