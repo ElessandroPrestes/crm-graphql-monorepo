@@ -61,8 +61,8 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
-    "@nestjs/cli": "12.0.12",
-    "@nestjs/testing": "12.4.2",
+    "@nestjs/cli": "12.0.13",
+    "@nestjs/testing": "12.5.0",
     "@nexo/graphql-schema": "workspace:*",
     "@nexo/tsconfig": "workspace:*",
     "@swc/core": "1.16.22",
