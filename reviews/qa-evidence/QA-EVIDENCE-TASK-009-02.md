@@ -204,5 +204,5 @@ exception_ref: N/A
 - Nenhum handoff real foi gerado; a sessão de validação foi curta e não abriu
   trabalho pendente.
 - A revisão independente desta evidência ainda não foi realizada.
-- O commit de implementação e os trailers `Spec-Ref: SPEC-009` /
-  `Task-Ref: TASK-009-02` ainda não existem.
+- O commit de implementação é `c42d10e`, com `Spec-Ref: SPEC-009` e
+  `Task-Ref: TASK-009-02`.

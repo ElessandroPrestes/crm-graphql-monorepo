@@ -146,8 +146,9 @@ exception_ref: N/A
   ficaram fora desta evidência e foram executados depois na
   [TASK-009-02](QA-EVIDENCE-TASK-009-02.md); esta evidência cobre apenas o
   artefato versionado.
-- O commit de implementação e os trailers `Spec-Ref: SPEC-009` /
-  `Task-Ref: TASK-009-01` ainda não existem; a matriz registra essa lacuna.
+- O commit `c42d10e` registra a entrega com `Spec-Ref: SPEC-009` e
+  `Task-Ref: TASK-009-02`; a referência de commit desta TASK-009-01 é registrada
+  no commit de fechamento de rastreabilidade subsequente.
 - A revisão independente desta evidência ainda não foi realizada.
 - Os links para a documentação upstream foram verificados por leitura, mas o
   projeto upstream pode mudar de caminho entre releases.

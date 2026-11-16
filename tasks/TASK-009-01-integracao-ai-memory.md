@@ -65,6 +65,8 @@ alterar configurações globais nesta máquina.
 - [x] Registrar evidência de QA e executar a verificação de formatação.
 - [x] Instalar e ligar o ai-memory localmente — executado na TASK-009-02 após
       autorização humana em 2026-11-15.
+- [x] Registrar o commit de implementação (`c42d10e`) e o fechamento de
+      rastreabilidade com `Spec-Ref: SPEC-009` e `Task-Ref: TASK-009-01`.
 - [ ] Revisão independente do artefato.
 
 ## Validação
@@ -103,6 +105,8 @@ alterar configurações globais nesta máquina.
     bloco versionado, salvo a normalização de formatação do Prettier.
   - `python3 scripts/generate_traceability.py` e `pnpm exec prettier --check`
     nos arquivos alterados.
+  - Commit de implementação `c42d10e` com `Spec-Ref: SPEC-009` e
+    `Task-Ref: TASK-009-02`; commit de fechamento com `Task-Ref: TASK-009-01`.
   - Detalhes em `reviews/qa-evidence/QA-EVIDENCE-TASK-009-01.md`.
 - Desvios: a instalação ficou fora desta TASK por decisão explícita do
   solicitante e foi executada depois na
