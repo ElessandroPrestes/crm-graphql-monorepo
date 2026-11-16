@@ -16,7 +16,7 @@
   "devDependencies": {
     "@graphql-codegen/cli": "8.0.0",
     "@graphql-codegen/typed-document-node": "^8.0.0",
-    "@graphql-codegen/typescript": "7.0.0",
+    "@graphql-codegen/typescript": "7.0.1",
     "@graphql-codegen/typescript-operations": "^7.0.1",
     "@nexo/tsconfig": "workspace:*",
     "@types/node": "26.6.6",
