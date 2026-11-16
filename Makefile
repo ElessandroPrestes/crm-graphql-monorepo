@@ -120,6 +120,7 @@ db-deploy: ## Aplica migrations pendentes (produção)
 bootstrap: ## Prepara e valida a execução local a partir de um clone
 	pnpm install --frozen-lockfile
 	$(COMPOSE) -f $(COMPOSE_FILE) up -d --wait postgres redis rabbitmq
+	pnpm --filter @nexo/api db:generate
 	pnpm --filter @nexo/api db:deploy
 	pnpm --filter @nexo/api db:seed
 	$(COMPOSE) -f $(COMPOSE_FILE) --profile $(PROFILE) up -d --build --wait
