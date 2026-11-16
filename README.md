@@ -3,8 +3,8 @@
 > **Status:** Fases 0 a 5 implementadas em `develop` — fundação, domínio,
 > autenticação, funil, WhatsApp, worker idempotente, front-end React,
 > endurecimento GraphQL, E2E/axe, benchmark k6, SBOM e guia de deploy. Release
-> `0.3.0-alpha` e Gate 4 humano pendentes. Fase 6 em planejamento com a
-> SPEC-008 em revisão.
+> `0.3.0-alpha` com Gate 4 aprovado por instrução humana em 2026-11-16. Fase 6 em
+> planejamento com a SPEC-008 em revisão.
 > **Governança:** Universal SDD (Spec-Driven Development).
 > **Stack:** Node.js 26 LTS · pnpm · Turborepo · NestJS · React · Vite ·
 > TypeScript · Tailwind CSS.
@@ -34,7 +34,7 @@ Fluxos de webhook, upload e pagamento permanecem em REST, conforme
 | 1    | Domínio e API núcleo: Prisma, auth, RBAC, GraphQL, DataLoader    | Concluída                                   |
 | 2    | Funil e dashboard: negócios, concorrência, subscriptions, cache  | Concluída                                   |
 | 3    | WhatsApp e eventos: provider, HMAC, RabbitMQ, worker, DLQ, LGPD  | Concluída                                   |
-| 4    | Front-end: login, contatos, visão 360°, kanban, inbox, dashboard | Implementada; Gate 4 pendente               |
+| 4    | Front-end: login, contatos, visão 360°, kanban, inbox, dashboard | Implementada; Gate 4 aprovado em 2026-11-16 |
 | 5    | Endurecimento: persisted queries, k6, e2e, STRIDE e deploy       | Implementada em `develop`; release pendente |
 | 6    | Produção e operação: deploy, SLOs, outbox, LGPD e performance    | Planejada; SPEC-008 em revisão              |
 

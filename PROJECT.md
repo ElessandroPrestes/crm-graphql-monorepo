@@ -2,16 +2,16 @@
 
 ## Metadados
 
-| Campo                   | Valor                                                                                                                                                                                                                        |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Nome do Projeto         | Nexo CRM (`crm-graphql-monorepo`)                                                                                                                                                                                            |
-| Organização             | Portfólio pessoal                                                                                                                                                                                                            |
-| Responsável             | Engenharia (a designar por área)                                                                                                                                                                                             |
-| Estado                  | Ativo — Fases 0 a 5 implementadas tecnicamente; Gate 4 humano pendente; Fase 6 com discovery aprovada e SPEC-008 em revisão; memória de agentes integrada, instalada e com captura OpenCode validada (SPEC-009, TASK-009-02) |
-| Versão ou release       | `0.3.0-alpha`                                                                                                                                                                                                                |
-| Última revisão          | 2026-11-15                                                                                                                                                                                                                   |
-| Revisores               | Produto / Engenharia / QA / Segurança                                                                                                                                                                                        |
-| Framework de Governança | Universal SDD (Spec-Driven Development)                                                                                                                                                                                      |
+| Campo                   | Valor                                                                                                                                                                                                                                                    |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nome do Projeto         | Nexo CRM (`crm-graphql-monorepo`)                                                                                                                                                                                                                        |
+| Organização             | Portfólio pessoal                                                                                                                                                                                                                                        |
+| Responsável             | Engenharia (a designar por área)                                                                                                                                                                                                                         |
+| Estado                  | Ativo — Fases 0 a 5 implementadas tecnicamente; Gate 4 aprovado por instrução humana em 2026-11-16; Fase 6 com discovery aprovada e SPEC-008 em revisão; memória de agentes integrada, instalada e com captura OpenCode validada (SPEC-009, TASK-009-02) |
+| Versão ou release       | `0.3.0-alpha`                                                                                                                                                                                                                                            |
+| Última revisão          | 2026-11-15                                                                                                                                                                                                                                               |
+| Revisores               | Produto / Engenharia / QA / Segurança                                                                                                                                                                                                                    |
+| Framework de Governança | Universal SDD (Spec-Driven Development)                                                                                                                                                                                                                  |
 
 ---
 
@@ -213,21 +213,21 @@ Versões e justificativas de compatibilidade: [ADR-003](adr/ADR-003-versoes-e-co
 
 ## 12. Limitações e riscos conhecidos
 
-| Item                                                  | Impacto | Mitigação                                                                                     | Responsável          |
-| ----------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------- | -------------------- |
-| Gate 4 humano e a11y manual pendentes                 | Alto    | Aprovação de QA/design/a11y ou exceção autorizada                                             | QA/A11y              |
-| Sem deploy de referência, staging ou CD               | Alto    | Fase 6: staging, pipeline de CD, smoke tests e rollback                                       | Engenharia/Operações |
-| Health checks não verificam dependências              | Alto    | Fase 6: readiness real de PostgreSQL, Redis e RabbitMQ                                        | Engenharia           |
-| Sem métricas, tracing, dashboards, alertas ou SLOs    | Alto    | Fase 6: observabilidade e SLOs medidos no ambiente alvo                                       | Engenharia/Operações |
-| Sem outbox transacional; eventos best-effort          | Alto    | Fase 6: outbox e replay de DLQ testado                                                        | Engenharia           |
-| Retenção e base legal LGPD ainda não aprovadas        | Alto    | Aprovação humana e jobs de purge na Fase 6; sem dados reais até lá                            | Produto/Jurídico     |
-| Bootstrap do primeiro `ADMIN` ausente                 | Alto    | Fase 6: comando seguro e auditável, sem seed em produção                                      | Segurança/Operações  |
-| Rate limit de janela fixa permite rajadas na borda    | Médio   | Revisar estratégia na Fase 6                                                                  | Segurança            |
-| Bundle inicial de ~694 kB sem code splitting por rota | Médio   | Fase 6: rotas lazy, orçamento de bundle e cache headers                                       | Engenharia           |
-| Sem assinatura de imagem nem SBOM validado            | Médio   | Fase 6: gate de supply chain, se aprovado                                                     | Segurança            |
-| Mídia e webhooks de status do WhatsApp ausentes       | Baixo   | Fora do escopo atual; reavaliar após a Fase 6                                                 | Produto              |
-| Memória de agentes depende de instalação local        | Médio   | Instalada em 2026-11-15; captura OpenCode validada; Codex exige confiança/exportação de token | Engenharia/Segurança |
-| Cobertura de testes ainda inicial                     | Médio   | Ampliar pirâmide por fase e definir thresholds                                                | QA                   |
+| Item                                                   | Impacto | Mitigação                                                                                       | Responsável          |
+| ------------------------------------------------------ | ------- | ----------------------------------------------------------------------------------------------- | -------------------- |
+| A11y manual (NVDA/VoiceOver e zoom 200%) não executada | Médio   | Gate 4 aprovado por instrução humana em 2026-11-16; risco residual registrado em `docs/a11y.md` | QA/A11y              |
+| Sem deploy de referência, staging ou CD                | Alto    | Fase 6: staging, pipeline de CD, smoke tests e rollback                                         | Engenharia/Operações |
+| Health checks não verificam dependências               | Alto    | Fase 6: readiness real de PostgreSQL, Redis e RabbitMQ                                          | Engenharia           |
+| Sem métricas, tracing, dashboards, alertas ou SLOs     | Alto    | Fase 6: observabilidade e SLOs medidos no ambiente alvo                                         | Engenharia/Operações |
+| Sem outbox transacional; eventos best-effort           | Alto    | Fase 6: outbox e replay de DLQ testado                                                          | Engenharia           |
+| Retenção e base legal LGPD ainda não aprovadas         | Alto    | Aprovação humana e jobs de purge na Fase 6; sem dados reais até lá                              | Produto/Jurídico     |
+| Bootstrap do primeiro `ADMIN` ausente                  | Alto    | Fase 6: comando seguro e auditável, sem seed em produção                                        | Segurança/Operações  |
+| Rate limit de janela fixa permite rajadas na borda     | Médio   | Revisar estratégia na Fase 6                                                                    | Segurança            |
+| Bundle inicial de ~694 kB sem code splitting por rota  | Médio   | Fase 6: rotas lazy, orçamento de bundle e cache headers                                         | Engenharia           |
+| Sem assinatura de imagem nem SBOM validado             | Médio   | Fase 6: gate de supply chain, se aprovado                                                       | Segurança            |
+| Mídia e webhooks de status do WhatsApp ausentes        | Baixo   | Fora do escopo atual; reavaliar após a Fase 6                                                   | Produto              |
+| Memória de agentes depende de instalação local         | Médio   | Instalada em 2026-11-15; captura OpenCode validada; Codex exige confiança/exportação de token   | Engenharia/Segurança |
+| Cobertura de testes ainda inicial                      | Médio   | Ampliar pirâmide por fase e definir thresholds                                                  | QA                   |
 
 ## 13. Tecnologias e abordagens intencionalmente não usadas
 

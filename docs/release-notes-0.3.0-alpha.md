@@ -41,7 +41,8 @@ Consulte [performance.md](performance.md).
 
 ## Riscos e pendências
 
-- Gate 4 da Fase 4: revisão manual com NVDA/VoiceOver e zoom 200% pendente.
+- Gate 4 da Fase 4: aprovado por instrução humana em 2026-11-16; revisão manual
+  com NVDA/VoiceOver e zoom 200% não executada e mantida como risco residual.
 - GIF de demonstração do README ainda não foi gravado; nenhum binário é
   versionado.
 - Deploy real e escolha do provedor não executados.
@@ -53,7 +54,7 @@ Consulte [performance.md](performance.md).
 
 ## Próximos passos
 
-1. Concluir o Gate 4 humano e registrar aprovações ou exceções.
-2. Decidir provedor e executar um deploy de referência com TLS e backup.
-3. Aprovar retenção/base legal LGPD e o bootstrap de administrador.
-4. Definir SLOs com medição no ambiente alvo.
+1. Decidir provedor e executar um deploy de referência com TLS e backup.
+2. Aprovar retenção/base legal LGPD e o bootstrap de administrador.
+3. Definir SLOs com medição no ambiente alvo.
+4. Aprovar a SPEC-008 e iniciar a Fase 6.

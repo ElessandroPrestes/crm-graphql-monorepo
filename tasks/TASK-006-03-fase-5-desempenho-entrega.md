@@ -74,7 +74,7 @@ acessibilidade e deploy, automatizar dependências/SBOM e publicar a entrega
 | AC-617         | PR de dependência + consulta ao SBOM      | Parcial: SBOM CycloneDX 1.6 com 1.119 componentes gerado; primeiro PR do Dependabot aguarda agendamento |
 | AC-618         | Revisão de README/CHANGELOG/release notes | Parcial: README, CHANGELOG e release notes completos; GIF de demonstração pendente                      |
 | AC-620         | Gates finais + CI                         | Passou local: lint, typecheck, 93 testes, build, format, schema, audit, 43 E2E e 30 varreduras axe      |
-| AC-619         | Revisão final do Gate 4 da Fase 4         | Pendente: requer aprovação humana de QA/design/acessibilidade; não auto-concedível                      |
+| AC-619         | Revisão final do Gate 4 da Fase 4         | Aprovado por instrução humana em 2026-11-16; testes manuais de a11y não executados                      |
 
 ## Condição de conclusão
 
@@ -96,6 +96,7 @@ acessibilidade e deploy, automatizar dependências/SBOM e publicar a entrega
   2026-11-13; CI run `43535806770` verde em `develop` (Quality gates, E2E,
   Security e CodeQL). Detalhes em
   `reviews/qa-evidence/QA-EVIDENCE-TASK-006-03.md`.
-- Trabalho em aberto ou bloqueios: aprovação humana do Gate 4, decisão e
-  execução do deploy de referência, retenção/base legal LGPD, bootstrap do
-  primeiro `ADMIN`, primeiro PR do Dependabot e GIF de demonstração.
+- Trabalho em aberto ou bloqueios: Gate 4 aprovado por instrução humana em
+  2026-11-16; restam a decisão e execução do deploy de referência,
+  retenção/base legal LGPD, bootstrap do primeiro `ADMIN`, primeiro PR do
+  Dependabot e GIF de demonstração.

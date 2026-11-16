@@ -1,7 +1,7 @@
 # Roadmap — Nexo CRM
 
 > **Framework de Governança**: Universal SDD (Spec-Driven Development)
-> **Status vigente**: Fases 0 a 5 implementadas tecnicamente; Gate 4 humano pendente; Fase 6 com discovery aprovada, SPEC-008 em revisão e TASKs planejadas.
+> **Status vigente**: Fases 0 a 5 implementadas tecnicamente; Gate 4 aprovado por instrução humana em 2026-11-16; Fase 6 com discovery aprovada, SPEC-008 em revisão e TASKs planejadas.
 
 O roadmap comunica direção, não compromisso de prazo. Nenhuma funcionalidade é
 implementada antes da aprovação formal de sua SPEC e TASK.
@@ -79,11 +79,11 @@ Evidências: `specs/SPEC-005-fase-4-frontend.md`,
 `docs/qa-plan-fase-4.md`, `reviews/VERIFICATION-REPORT-VR-001.md`,
 `reviews/REVIEW-001-fase-4.md` e `apps/web/src/**/*.test.tsx`.
 
-O Gate 4 de release continua aberto até a aprovação de QA-001, da revisão de
-implementação de design e da revisão manual de acessibilidade, ou de exceção
-autorizada registrada.
+O Gate 4 de release foi aprovado por instrução humana em 2026-11-16. A execução
+manual com NVDA/VoiceOver e zoom 200% não foi produzida por este agente e
+permanece registrada como risco residual em `docs/a11y.md`.
 
-## Fase 5 — Endurecimento e entrega (implementada tecnicamente; Gate 4 humano pendente)
+## Fase 5 — Endurecimento e entrega (implementada tecnicamente; Gate 4 aprovado)
 
 - [x] Persisted queries e ajuste de limites/rate limits.
 - [x] Benchmark k6 antes/depois do DataLoader com números no README.
@@ -92,18 +92,20 @@ autorizada registrada.
 - [x] SBOM, configuração do Dependabot e guia de deploy; primeiro PR do Dependabot pendente.
 - [x] README final com resultados.
 - [ ] GIF de demonstração.
-- [ ] Gate 4 humano: QA-001, design, NVDA/VoiceOver e zoom 200% reais.
+- [x] Gate 4 humano: aprovado por instrução humana em 2026-11-16; NVDA/VoiceOver e zoom 200% reais não executados (risco residual).
 
 Evidências: `docs/discovery-fase-5.md`,
 `specs/SPEC-006-fase-5-endurecimento-entrega.md` (Approved),
 `tasks/TASK-006-01-fase-5-endurecimento-graphql.md` (Done),
-`tasks/TASK-006-02-fase-5-e2e-a11y-seguranca.md` (In progress — somente Gate 4),
+`tasks/TASK-006-02-fase-5-e2e-a11y-seguranca.md` (Done — Gate 4 aprovado),
 `tasks/TASK-006-03-fase-5-desempenho-entrega.md` (Done),
 `docs/qa-plan-fase-5.md` (QA-002, Approved) e
 `reviews/qa-evidence/QA-EVIDENCE-TASK-006-03.md`.
 
-A Fase 5 está tecnicamente concluída. O Gate 4 de release permanece aberto até
-a aprovação humana de QA, design e acessibilidade manual, ou exceção autorizada.
+A Fase 5 está tecnicamente concluída. O Gate 4 de release foi aprovado por
+instrução humana em 2026-11-16; os testes manuais de NVDA/VoiceOver e zoom 200%
+não foram executados e seguem como risco residual. O próximo passo é a decisão
+de release e a aprovação da SPEC-008 para a Fase 6.
 
 ---
 

@@ -2,18 +2,18 @@
 
 ## Metadados
 
-| Campo                  | Valor                                                                                                          |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------- |
-| ID                     | QA-EVIDENCE-004                                                                                                |
-| Status                 | Partial (Parcial — concluído o executável por este agente; pendente aprovação humana no Gate 4)                |
-| SPEC                   | SPEC-006                                                                                                       |
-| TAREFA (TASK)          | TASK-006-02                                                                                                    |
-| Responsável (QA Owner) | Agente de QA                                                                                                   |
-| Data de Execução       | 2026-11-13                                                                                                     |
-| Build / Commit         | `f830704` (TASK-006-02 automação e CI); `bf58e1c` (TASK-006-01 endurecimento GraphQL/rate limit/auth)          |
-| Ambiente               | Linux x86_64, Node.js 26.13.0, pnpm 12.18.0, Docker Compose (PostgreSQL, Redis, RabbitMQ), Playwright headless |
-| Feature flags          | `PERSISTED_QUERIES_MODE=audit`, `DATALOADER_ENABLED=true`, limites de rate limit por env                       |
-| Contas de teste        | Seed fictício: 1 ADMIN, 2 SELLER (dados fictícios, sem PII real)                                               |
+| Campo                  | Valor                                                                                                                                          |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| ID                     | QA-EVIDENCE-004                                                                                                                                |
+| Status                 | Partial — automação concluída; Gate 4 aprovado por instrução humana em 2026-11-16; testes manuais de NVDA/VoiceOver e zoom 200% não executados |
+| SPEC                   | SPEC-006                                                                                                                                       |
+| TAREFA (TASK)          | TASK-006-02                                                                                                                                    |
+| Responsável (QA Owner) | Agente de QA                                                                                                                                   |
+| Data de Execução       | 2026-11-13                                                                                                                                     |
+| Build / Commit         | `f830704` (TASK-006-02 automação e CI); `bf58e1c` (TASK-006-01 endurecimento GraphQL/rate limit/auth)                                          |
+| Ambiente               | Linux x86_64, Node.js 26.13.0, pnpm 12.18.0, Docker Compose (PostgreSQL, Redis, RabbitMQ), Playwright headless                                 |
+| Feature flags          | `PERSISTED_QUERIES_MODE=audit`, `DATALOADER_ENABLED=true`, limites de rate limit por env                                                       |
+| Contas de teste        | Seed fictício: 1 ADMIN, 2 SELLER (dados fictícios, sem PII real)                                                                               |
 
 ## Configuração do ambiente
 
@@ -180,3 +180,15 @@ exception_ref: N/A
 - Recomendação: **Continue em `develop`; No-go para release até concluir AC-612 (manual), AC-619 (aprovação humana Gate 4) e TASK-006-03 (k6, deploy, release notes).**
 - Justificativa: todos os critérios automatizados de TASK-006-02 estão verdes (AC-610, AC-611, AC-613, AC-614, AC-620). AC-612 está parcial (automação concluída; manual pendente). AC-619 está pendente de aprovador humano.
 - Responsável de QA e Data: Agente de QA, 2026-11-13.
+
+## Atualização de gate (2026-11-16)
+
+- O Gate 4 da Fase 4 foi **aprovado por instrução humana do Solicitante** em
+  2026-11-16. Isso encerra AC-619 sem alterar a evidência histórica de
+  2026-11-13.
+- Nenhuma execução manual de NVDA/VoiceOver ou zoom 200% foi realizada neste
+  agente; AC-612 permanece parcial e coberto pela aprovação humana como risco
+  residual registrado em `docs/a11y.md`.
+- A recomendação de release continua **No-go** por dependências alheias ao
+  Gate 4: deploy de referência, retenção/base legal LGPD e bootstrap do
+  primeiro `ADMIN`.

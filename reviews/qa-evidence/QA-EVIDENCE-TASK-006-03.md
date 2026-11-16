@@ -5,7 +5,7 @@
 | Campo                  | Valor                                                                                                                     |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | ID                     | QA-EVIDENCE-005                                                                                                           |
-| Status                 | Partial (Parcial — executável concluído; aprovação humana e release pendentes)                                            |
+| Status                 | Partial — executável concluído; Gate 4 aprovado por instrução humana em 2026-11-16; release pendente                      |
 | SPEC                   | SPEC-006                                                                                                                  |
 | TAREFA (TASK)          | TASK-006-03                                                                                                               |
 | Responsável (QA Owner) | Agente de QA                                                                                                              |
@@ -158,3 +158,12 @@ exception_ref: Requer exceção autorizada ou aprovação humana antes do releas
 - Recomendação: **Continue em `develop`; No-go para release até aprovação humana do Gate 4, deploy de referência, retenção/base legal LGPD, bootstrap de administrador, primeiro PR do Dependabot e GIF de demonstração.**
 - Justificativa: os critérios automatizados de desempenho, documentação e gates estão verdes; os itens parciais/pendentes não são concedíveis por este agente ou dependem de terceiros.
 - Responsável de QA e Data: Agente de QA, 2026-11-13.
+
+## Atualização de gate (2026-11-16)
+
+- O Gate 4 da Fase 4 foi **aprovado por instrução humana do Solicitante** em
+  2026-11-16. Isso encerra AC-619 sem alterar a evidência histórica de
+  2026-11-13.
+- A recomendação de release continua **No-go** por deploy de referência,
+  retenção/base legal LGPD, bootstrap do primeiro `ADMIN`, primeiro PR do
+  Dependabot e GIF de demonstração.
