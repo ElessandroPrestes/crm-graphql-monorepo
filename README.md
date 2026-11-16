@@ -4,7 +4,7 @@
 > autenticação, funil, WhatsApp, worker idempotente, front-end React,
 > endurecimento GraphQL, E2E/axe, benchmark k6, SBOM e guia de deploy. Release
 > `0.3.0-alpha` com Gate 4 aprovado por instrução humana em 2026-11-16. Fase 6 em
-> planejamento com a SPEC-008 em revisão.
+> andamento no escopo local: `make bootstrap` e `make smoke` validados; deploy hospedado cancelado.
 > **Governança:** Universal SDD (Spec-Driven Development).
 > **Stack:** Node.js 26 LTS · pnpm · Turborepo · NestJS · React · Vite ·
 > TypeScript · Tailwind CSS.
@@ -36,7 +36,7 @@ Fluxos de webhook, upload e pagamento permanecem em REST, conforme
 | 3    | WhatsApp e eventos: provider, HMAC, RabbitMQ, worker, DLQ, LGPD  | Concluída                                   |
 | 4    | Front-end: login, contatos, visão 360°, kanban, inbox, dashboard | Implementada; Gate 4 aprovado em 2026-11-16 |
 | 5    | Endurecimento: persisted queries, k6, e2e, STRIDE e deploy       | Implementada em `develop`; release pendente |
-| 6    | Produção e operação: deploy, SLOs, outbox, LGPD e performance    | Planejada; SPEC-008 em revisão              |
+| 6    | Produção e operação: deploy, SLOs, outbox, LGPD e performance    | Reescopo local; deploy hospedado cancelado  |
 
 ---
 
@@ -54,12 +54,24 @@ npm install -g pnpm@12.18.0
 
 ---
 
-## Como rodar
+## Início rápido (a partir de um clone)
+
+```sh
+git clone https://github.com/ElessandroPrestes/crm-graphql-monorepo.git
+cd crm-graphql-monorepo
+make bootstrap
+```
+
+`make bootstrap` instala dependências, sobe Postgres, Redis e RabbitMQ, aplica
+migrations, popula dados fictícios, constrói a stack em containers e valida API,
+web, login e GraphQL com `make smoke`.
+
+### Fluxo de desenvolvimento
 
 ```sh
 pnpm install --frozen-lockfile
 pnpm infra:up
-pnpm --filter @nexo/api db:migrate
+pnpm --filter @nexo/api db:deploy
 pnpm --filter @nexo/api db:seed
 pnpm dev
 ```
@@ -86,6 +98,7 @@ Credenciais locais do RabbitMQ: `nexo` / `nexo`. Não use em produção.
 ```sh
 make up
 make health
+make smoke
 ```
 
 `make up` constrói as imagens, sobe a stack e aguarda os health checks. O

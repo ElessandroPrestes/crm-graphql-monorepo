@@ -2,17 +2,20 @@
 
 ## Metadados
 
-| Campo        | Valor                                                                                         |
-| ------------ | --------------------------------------------------------------------------------------------- |
-| ID           | TASK-008-01                                                                                   |
-| Status       | Planned — aguardando aprovação da SPEC-008, do ADR-010 e das decisões humanas                 |
-| Responsável  | Operações/Engenharia                                                                          |
-| SPEC         | SPEC-008                                                                                      |
-| Critérios    | AC-801, AC-802, AC-803                                                                        |
-| Dependências | SPEC-008 aprovada; ADR-010 aceito; Gate 4 ou exceção; provedor/domínio/TLS/segredos definidos |
-| ADRs         | ADR-010 (topologia, proposta)                                                                 |
+| Campo        | Valor                                                                                                            |
+| ------------ | ---------------------------------------------------------------------------------------------------------------- |
+| ID           | TASK-008-01                                                                                                      |
+| Status       | Cancelled — 2026-11-16; premissa de deploy hospedado invalidada pela distribuição apenas via git clone (ADR-013) |
+| Responsável  | Operações/Engenharia                                                                                             |
+| SPEC         | SPEC-008                                                                                                         |
+| Critérios    | AC-801, AC-802, AC-803                                                                                           |
+| Dependências | — (cancelada em 2026-11-16)                                                                                      |
+| ADRs         | ADR-013 (distribuição local, aceito em 2026-11-16; substitui o ADR-010)                                          |
 
 ## Objetivo
+
+> **Tarefa cancelada em 2026-11-16.** O escopo abaixo permanece como registro
+> histórico; a distribuição oficial é apenas por git clone (`ADR-013`).
 
 Entregar um ambiente de staging reproduzível e um pipeline de CD que publique
 imagens imutáveis por SHA, aplique migrations, execute smoke tests, permita
@@ -61,7 +64,9 @@ seguro e auditável.
 ## Passos
 
 - [ ] Aceitar ADR-010 e registrar provedor, região, domínio, TLS e política de
-      branch/tag.
+      branch/tag. — ADR-010 e Lote 1 aprovados em 2026-11-16; provedor, região e
+      domínio concretos ainda pendentes.
+- [ ] Promover QA-003 de `Draft` para `Ready`.
 - [ ] Provisionar staging e configurar DNS, TLS, rede e segredos.
 - [ ] Configurar registry e pipeline de CD com imagens por SHA.
 - [ ] Adicionar job de migrations e smoke tests.
@@ -90,6 +95,7 @@ seguro e auditável.
 
 ## Resultado
 
-- Mudanças realizadas:
-- Evidências:
-- Pendências ou bloqueios:
+- Mudanças realizadas: nenhuma; a tarefa foi cancelada antes da implementação.
+- Evidências: instrução humana de 2026-11-16 e `ADR-013` (distribuição via git clone).
+- Pendências ou bloqueios: substituir por uma tarefa de instalação e validação
+  local (clone, dependências, infraestrutura, migrations, `ADMIN` e smoke tests).

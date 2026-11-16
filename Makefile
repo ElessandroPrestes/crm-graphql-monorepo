@@ -11,7 +11,7 @@ CONFIRM ?=
 export DOCKER_BUILDKIT ?= 1
 export BUILDKIT_PROGRESS ?= auto
 
-.PHONY: help doctor config build build-api build-worker build-web up up-infra start down stop restart ps health logs images benchmark cache cache-prune clean lint typecheck test format format-check e2e sbom db-migrate db-seed db-deploy shell-api shell-worker
+.PHONY: help doctor config build build-api build-worker build-web up up-infra start down stop restart ps health logs images benchmark cache cache-prune clean lint typecheck test format format-check e2e sbom db-migrate db-seed db-deploy smoke bootstrap shell-api shell-worker
 
 help: ## Mostra os comandos disponíveis
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUso: make <alvo>\n\n"} /^[a-zA-Z0-9_-]+:.*##/ {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -116,6 +116,17 @@ db-seed: ## Popula o banco com dados fictícios
 
 db-deploy: ## Aplica migrations pendentes (produção)
 	pnpm --filter @nexo/api db:deploy
+
+bootstrap: ## Prepara e valida a execução local a partir de um clone
+	pnpm install --frozen-lockfile
+	$(COMPOSE) -f $(COMPOSE_FILE) up -d --wait postgres redis rabbitmq
+	pnpm --filter @nexo/api db:deploy
+	pnpm --filter @nexo/api db:seed
+	$(COMPOSE) -f $(COMPOSE_FILE) --profile $(PROFILE) up -d --build --wait
+	node scripts/smoke-local.mjs
+
+smoke: ## Valida API, web, login e GraphQL no ambiente local
+	node scripts/smoke-local.mjs
 
 shell-api: ## Abre um shell no container da API
 	$(COMPOSE) -f $(COMPOSE_FILE) exec api sh

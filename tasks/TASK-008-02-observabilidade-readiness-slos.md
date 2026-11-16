@@ -2,15 +2,15 @@
 
 ## Metadados
 
-| Campo        | Valor                                                                               |
-| ------------ | ----------------------------------------------------------------------------------- |
-| ID           | TASK-008-02                                                                         |
-| Status       | Planned — aguardando aprovação da SPEC-008 e decisões de observabilidade/SLOs       |
-| Responsável  | Engenharia/Operações                                                                |
-| SPEC         | SPEC-008                                                                            |
-| Critérios    | AC-804, AC-805, AC-806                                                              |
-| Dependências | SPEC-008 aprovada; ADR-010 aceito; TASK-008-01 em staging; backend e SLOs definidos |
-| ADRs         | ADR-010 (topologia, proposta)                                                       |
+| Campo        | Valor                                                                                           |
+| ------------ | ----------------------------------------------------------------------------------------------- |
+| ID           | TASK-008-02                                                                                     |
+| Status       | Planned — SPEC-008 aprovada; aguardando decisões de observabilidade/SLOs e aprovação desta TASK |
+| Responsável  | Engenharia/Operações                                                                            |
+| SPEC         | SPEC-008                                                                                        |
+| Critérios    | AC-804, AC-805, AC-806                                                                          |
+| Dependências | SPEC-008 revisada para distribuição local; escopo de observabilidade confirmado                 |
+| ADRs         | ADR-013 (distribuição local, aceito em 2026-11-16)                                              |
 
 ## Objetivo
 
@@ -31,7 +31,7 @@ tracing, dashboards, alertas e SLOs medidos no ambiente alvo.
   memória e saturação.
 - Dashboards e alertas para os sinais definidos na SPEC-008.
 - Documento de SLOs com baseline, error budget, janelas e responsáveis.
-- Testes de integração e ensaio de dependência indisponível em staging.
+- Testes de integração e ensaio de dependência indisponível no ambiente local.
 
 ### Não incluído
 
@@ -66,7 +66,7 @@ tracing, dashboards, alertas e SLOs medidos no ambiente alvo.
 - [ ] Criar métricas e dashboards acordados.
 - [ ] Configurar alertas e testar disparo.
 - [ ] Medir baseline e registrar SLOs/error budget.
-- [ ] Testar dependências indisponíveis em staging.
+- [ ] Testar dependências indisponíveis no ambiente local.
 - [ ] Atualizar documentação e evidências.
 
 ## Validação

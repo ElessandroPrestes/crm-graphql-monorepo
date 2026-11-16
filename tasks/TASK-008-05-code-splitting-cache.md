@@ -2,15 +2,15 @@
 
 ## Metadados
 
-| Campo        | Valor                                                                               |
-| ------------ | ----------------------------------------------------------------------------------- |
-| ID           | TASK-008-05                                                                         |
-| Status       | Planned — aguardando aprovação da SPEC-008 e do orçamento de bundle                 |
-| Responsável  | Engenharia/A11y                                                                     |
-| SPEC         | SPEC-008                                                                            |
-| Critérios    | AC-809                                                                              |
-| Dependências | SPEC-008 aprovada; baseline e orçamento de bundle aprovados; TASK-008-01 para cache |
-| ADRs         | ADR-008 (frontend/Apollo), ADR-010 (topologia)                                      |
+| Campo        | Valor                                                                              |
+| ------------ | ---------------------------------------------------------------------------------- |
+| ID           | TASK-008-05                                                                        |
+| Status       | Planned — SPEC-008 aprovada; aguardando orçamento de bundle e aprovação desta TASK |
+| Responsável  | Engenharia/A11y                                                                    |
+| SPEC         | SPEC-008                                                                           |
+| Critérios    | AC-809                                                                             |
+| Dependências | SPEC-008 revisada; baseline e orçamento de bundle aprovados                        |
+| ADRs         | ADR-008 (frontend/Apollo), ADR-013 (distribuição local)                            |
 
 ## Objetivo
 

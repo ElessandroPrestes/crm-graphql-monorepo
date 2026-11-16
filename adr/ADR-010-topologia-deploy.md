@@ -2,15 +2,20 @@
 
 ## Metadados
 
-| Campo                     | Valor                           |
-| ------------------------- | ------------------------------- |
-| Status                    | Proposed                        |
-| Data                      | 2026-11-14                      |
-| Responsáveis              | Engenharia, Operações e Produto |
-| SPEC relacionada          | SPEC-008                        |
-| Substitui/substituída por | —                               |
+| Campo                     | Valor                                                |
+| ------------------------- | ---------------------------------------------------- |
+| Status                    | Superseded — substituído pelo ADR-013 em 2026-11-16  |
+| Data                      | 2026-11-14                                           |
+| Responsáveis              | Engenharia, Operações e Produto                      |
+| SPEC relacionada          | SPEC-008                                             |
+| Substitui/substituída por | Substituído por ADR-013 (distribuição via git clone) |
 
 ## Contexto
+
+> **Substituído em 2026-11-16 pelo ADR-013.** A premissa de deploy hospedado foi
+> invalidada: o projeto é distribuído apenas por git clone e executado
+> localmente, sem provedor, domínio, TLS público ou teto de custo. Este
+> documento permanece como registro histórico.
 
 O Nexo CRM tem imagens Docker funcionais e um guia de deploy provider-neutral,
 mas nunca foi implantado em um ambiente real. Não há staging, pipeline de CD,
@@ -21,8 +26,9 @@ a SPEC-008 está em revisão.
 A equipe é pequena e o orçamento é limitado. A topologia precisa ser
 reproduzível, barata, fácil de operar e compatível com o `infra/Dockerfile` e o
 Compose local, sem transformar o Compose de demonstração em manifesto de
-produção. A escolha do provedor, região, domínio e serviços gerenciados continua
-sendo uma decisão humana; este ADR registra uma recomendação para aprovação.
+produção. A topologia foi aceita em 2026-11-16; a escolha do provedor, região,
+domínio e teto de custo continua sendo uma decisão humana a registrar antes do
+provisionamento.
 
 ## Drivers da decisão
 
@@ -60,16 +66,20 @@ sendo uma decisão humana; este ADR registra uma recomendação para aprovação
 ## Decisão
 
 Recomendar a **Alternativa A** para staging e produção inicial: uma VM Linux por
-ambiente, Docker Compose para `api`, `worker` e `web`, proxy reverso com TLS e
-PostgreSQL, Redis e RabbitMQ gerenciados quando o provedor oferecer. Se serviços
-gerenciados não estiverem disponíveis, os containers de dados podem ser usados
-com persistência, backup e restauração testados.
+ambiente, Docker Compose para `api`, `worker` e `web`, proxy reverso com TLS,
+PostgreSQL e Redis gerenciados quando o provedor oferecer e RabbitMQ em container
+com volume persistente. Se serviços gerenciados não estiverem disponíveis, os
+containers de dados podem ser usados com persistência, backup e restauração
+testados.
 
 A decisão final de provedor, região, domínio, TLS, serviços gerenciados e
-política de branch/tag permanece humana. Este ADR está `Proposed`; nenhuma
-infraestrutura é provisionada antes da aceitação e da aprovação da SPEC-008.
+política de branch/tag permanece humana. O ADR foi **aceito em 2026-11-16**
+junto com o Lote 1 de decisões: Alternativa A, serviços de dados híbridos,
+TLS via proxy/Let's Encrypt e política de branch/tag proposta. Provedor, região,
+teto de custo e domínio concretos ainda devem ser registrados antes de
+provisionar; nenhuma infraestrutura é criada antes disso.
 
-Proposta operacional:
+Política operacional aprovada:
 
 - Staging a partir de `develop`; produção a partir de tag `v*` assinada, com
   aprovação manual.
@@ -104,7 +114,7 @@ Proposta operacional:
 
 - **Compatibilidade:** os três processos continuam stateless; o `infra/Dockerfile`
   e as variáveis de ambiente existentes são reutilizados.
-- **Etapas:** aceitar este ADR; provisionar staging; configurar DNS/TLS e
+- **Etapas:** ADR aceito; provisionar staging; configurar DNS/TLS e
   segredos; publicar imagens por SHA; aplicar migrations; subir a stack; rodar
   smoke tests; configurar backup; repetir para produção após aprovações.
 - **Rollback:** reverter imagens para o SHA anterior; manter migrations
@@ -114,7 +124,8 @@ Proposta operacional:
 
 ## Evidências e validação
 
-- Aceitação humana registrada neste ADR e na SPEC-008.
+- Aceitação humana registrada neste ADR em 2026-11-16 e na SPEC-008.
+- Provedor, região, teto de custo e domínio concretos ainda pendentes.
 - Staging com TLS, smoke tests e rollback ensaiado (AC-801/AC-802).
 - Backup e restore testados (AC-810).
 - Readiness e observabilidade verificados (AC-804/AC-805).

@@ -2,14 +2,14 @@
 
 ## Metadados
 
-| Campo                   | Valor                                                |
-| ----------------------- | ---------------------------------------------------- |
-| ID                      | QA-003                                               |
-| Status                  | Draft — aguardando aprovação da SPEC-008 e das TASKs |
-| Responsável (QA owner)  | QA/Operações                                         |
-| Build/commit            | A definir após aprovação da SPEC-008                 |
-| SPEC/design relacionado | SPEC-008; Design N/A (sem nova tela)                 |
-| Janela de teste         | Fase 6                                               |
+| Campo                   | Valor                                                                                    |
+| ----------------------- | ---------------------------------------------------------------------------------------- |
+| ID                      | QA-003                                                                                   |
+| Status                  | Draft — reescopo local necessário; premissa de staging/produção invalidada em 2026-11-16 |
+| Responsável (QA owner)  | QA/Operações                                                                             |
+| Build/commit            | A definir após aprovação da SPEC-008                                                     |
+| SPEC/design relacionado | SPEC-008; Design N/A (sem nova tela)                                                     |
+| Janela de teste         | Fase 6                                                                                   |
 
 ## Escopo e objetivo de qualidade
 
@@ -45,6 +45,7 @@
 | R-607 | Observabilidade com custo/cardinalidade excessivos | Médio   | Média         | Revisão de labels, sampling e orçamento               | Operações      |
 | R-608 | Restore não atende ao RPO/RTO                      | Alto    | Média         | Drill cronometrado com backup real de staging         | Operações      |
 | R-609 | Gate 4 aberto bloqueia go-live                     | Alto    | Alta          | Checklist de aprovações e exceções antes da promoção  | QA/Design/A11y |
+| R-610 | Clone local não sobe ou smoke não valida o fluxo   | Alto    | Média         | `make bootstrap` e `make smoke` em clone limpo        | Engenharia/QA  |
 
 ## Abordagem de teste
 
@@ -63,18 +64,19 @@
 
 ## Rastreabilidade dos critérios de aceitação
 
-| Critério | Risco       | ID/caminho do teste                        | Caso manual                               | Evidência/resultado | Defeito/exceção |
-| -------- | ----------- | ------------------------------------------ | ----------------------------------------- | ------------------- | --------------- |
-| AC-801   | R-601       | Pipeline de staging + smoke tests          | Deploy e rollback em staging              | Planned             | —               |
-| AC-802   | R-601       | Pipeline de CD + simulação de falha        | Aprovação manual e rollback               | Planned             | —               |
-| AC-803   | R-601       | Teste de bootstrap e repetição             | Criar primeiro ADMIN e tentar repetir     | Planned             | —               |
-| AC-804   | R-602       | Teste de readiness com dependências caídas | Derrubar cada dependência                 | Planned             | —               |
-| AC-805   | R-607       | Teste de métricas/tracing e alertas        | Gerar 5xx, login, fila e DLQ              | Planned             | —               |
-| AC-806   | R-607       | Revisão de SLO e baseline                  | Comparar janela e error budget            | Planned             | —               |
-| AC-807   | R-603       | Teste de falha da outbox e replay          | Falhar publicação e reiniciar worker      | Planned             | —               |
-| AC-808   | R-604       | Teste de dry-run e purge                   | Dados fictícios com idades variadas       | Planned             | —               |
-| AC-809   | R-605       | Build + E2E + axe + medição de bundle      | Navegar por todas as rotas                | Planned             | —               |
-| AC-810   | R-606/R-608 | Drill de restore + SBOM + assinatura       | Restore cronometrado e admissão de imagem | Planned             | —               |
+| Critério | Risco       | ID/caminho do teste                        | Caso manual                               | Evidência/resultado      | Defeito/exceção |
+| -------- | ----------- | ------------------------------------------ | ----------------------------------------- | ------------------------ | --------------- |
+| AC-801   | R-601       | Pipeline de staging + smoke tests          | Deploy e rollback em staging              | Planned                  | —               |
+| AC-802   | R-601       | Pipeline de CD + simulação de falha        | Aprovação manual e rollback               | Planned                  | —               |
+| AC-803   | R-601       | Teste de bootstrap e repetição             | Criar primeiro ADMIN e tentar repetir     | Planned                  | —               |
+| AC-804   | R-602       | Teste de readiness com dependências caídas | Derrubar cada dependência                 | Planned                  | —               |
+| AC-805   | R-607       | Teste de métricas/tracing e alertas        | Gerar 5xx, login, fila e DLQ              | Planned                  | —               |
+| AC-806   | R-607       | Revisão de SLO e baseline                  | Comparar janela e error budget            | Planned                  | —               |
+| AC-807   | R-603       | Teste de falha da outbox e replay          | Falhar publicação e reiniciar worker      | Planned                  | —               |
+| AC-808   | R-604       | Teste de dry-run e purge                   | Dados fictícios com idades variadas       | Planned                  | —               |
+| AC-809   | R-605       | Build + E2E + axe + medição de bundle      | Navegar por todas as rotas                | Planned                  | —               |
+| AC-811   | R-610       | `make bootstrap` + `make smoke`            | Clone limpo e stack local                 | Partial — checkout atual | —               |
+| AC-810   | R-606/R-608 | Drill de restore + SBOM + assinatura       | Restore cronometrado e admissão de imagem | Planned                  | —               |
 
 ## Ambiente e dados
 
@@ -95,7 +97,7 @@
 
 - [x] Discovery da Fase 6 aprovada em 2026-11-14.
 - [ ] SPEC-008 aprovada por humano.
-- [ ] ADR-010 aceito e topologia/domínio/TLS definidos.
+- [ ] ADR-013 aceito e distribuição local validada.
 - [ ] TASKs TASK-008-01..06 aprovadas e atribuídas.
 - [ ] Gate 4 da Fase 5 concluído ou com exceção autorizada.
 - [ ] Base legal/retenção LGPD definida para produção; staging com fictícios.
@@ -103,7 +105,7 @@
 
 ## Critérios de saída
 
-- [ ] AC-801..AC-810 com evidência reproduzível.
+- [ ] AC-803..AC-811 com evidência reproduzível; AC-801 e AC-802 estão cancelados.
 - [ ] Deploy, rollback, restore e replay de DLQ ensaiados.
 - [ ] Readiness, métricas, tracing, dashboards e alertas verdes.
 - [ ] Nenhum defeito S1/S2 aberto; S3/S4 com disposição.
@@ -125,5 +127,8 @@
 ## Resumo do teste e recomendação
 
 Plano em Draft. Nenhum teste de Fase 6 foi executado e nenhum critério possui
-evidência. A recomendação permanece **No-go** até a aprovação da SPEC-008, do
-ADR-010, das TASKs, do Gate 4 e das decisões de LGPD, SLOs e topologia.
+evidência. Em 2026-11-16 a premissa de staging/produção hospedados foi
+invalidada: a distribuição é apenas por git clone e execução local. O plano
+precisa ser reescrito para validar clone, instalação, infraestrutura local,
+migrations, bootstrap de `ADMIN`, smoke tests e backup/restore locais. A
+recomendação permanece **No-go** até essa revisão.

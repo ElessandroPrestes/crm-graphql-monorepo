@@ -1,7 +1,7 @@
 # Roadmap — Nexo CRM
 
 > **Framework de Governança**: Universal SDD (Spec-Driven Development)
-> **Status vigente**: Fases 0 a 5 implementadas tecnicamente; Gate 4 aprovado por instrução humana em 2026-11-16; Fase 6 com discovery aprovada, SPEC-008 em revisão e TASKs planejadas.
+> **Status vigente**: Fases 0 a 5 implementadas tecnicamente; Gate 4 aprovado por instrução humana em 2026-11-16; Fase 6 em andamento no escopo local via git clone, com deploy hospedado cancelado em 2026-11-16.
 
 O roadmap comunica direção, não compromisso de prazo. Nenhuma funcionalidade é
 implementada antes da aprovação formal de sua SPEC e TASK.
@@ -109,9 +109,13 @@ de release e a aprovação da SPEC-008 para a Fase 6.
 
 ---
 
-## Fase 6 — Produção e operação (discovery aprovada; SPEC-008 em revisão)
+## Fase 6 — Distribuição local e operação (em andamento)
 
-- [ ] Deploy de referência, staging e pipeline de CD com rollback.
+- [ ] Deploy de referência, staging e pipeline de CD com rollback. — **Cancelado
+      em 2026-11-16**: distribuição apenas por git clone.
+- [ ] Instalação e validação local via git clone: dependências, infraestrutura,
+      migrations, `ADMIN` e smoke tests. — Bootstrap e smoke validados no
+      checkout em 2026-11-16; clone limpo pendente de commit.
 - [ ] Bootstrap seguro do primeiro `ADMIN` e gerenciamento de segredos.
 - [ ] Readiness de PostgreSQL/Redis/RabbitMQ, métricas, tracing, alertas e SLOs.
 - [ ] Outbox transacional e replay de DLQ testado.
@@ -120,12 +124,15 @@ de release e a aprovação da SPEC-008 para a Fase 6.
 - [ ] Runbooks, backup/restore, SBOM validado e assinatura de imagens.
 
 Evidências: `docs/discovery-fase-6.md` (Approved),
-`specs/SPEC-008-producao-operacao.md` (In review),
-`adr/ADR-010-topologia-deploy.md` (Proposed),
-`docs/qa-plan-fase-6.md` (QA-003, Draft) e TASKs `TASK-008-01..06` (Planned).
+`specs/SPEC-008-producao-operacao.md` (Approved — reescopo em andamento),
+`adr/ADR-010-topologia-deploy.md` (Superseded),
+`adr/ADR-013-distribuicao-local-git-clone.md` (Accepted),
+`docs/qa-plan-fase-6.md` (QA-003, Draft) e TASKs `TASK-008-01` (Cancelled) e
+`TASK-008-02..06` (Planned).
 
-Nenhum item da Fase 6 é implementado antes da aprovação da SPEC-008, do ADR-010
-e das TASKs; o Gate 2 permanece pendente.
+Nenhum item da Fase 6 é implementado antes da revisão da SPEC-008, do QA-003 e
+das TASKs sob o modelo de distribuição local; os itens 4 a 8 serão revalidados
+nesse reescopo.
 
 ---
 

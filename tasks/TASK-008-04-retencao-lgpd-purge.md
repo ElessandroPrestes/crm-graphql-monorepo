@@ -2,15 +2,15 @@
 
 ## Metadados
 
-| Campo        | Valor                                                                    |
-| ------------ | ------------------------------------------------------------------------ |
-| ID           | TASK-008-04                                                              |
-| Status       | Planned — aguardando aprovação da SPEC-008 e da política de retenção     |
-| Responsável  | Engenharia/Jurídico/QA                                                   |
-| SPEC         | SPEC-008                                                                 |
-| Critérios    | AC-808                                                                   |
-| Dependências | SPEC-008 aprovada; base legal e prazos aprovados; TASK-008-01 em staging |
-| ADRs         | ADR-007 (LGPD/exportação/exclusão)                                       |
+| Campo        | Valor                                                                               |
+| ------------ | ----------------------------------------------------------------------------------- |
+| ID           | TASK-008-04                                                                         |
+| Status       | Planned — SPEC-008 aprovada; aguardando política de retenção e aprovação desta TASK |
+| Responsável  | Engenharia/Jurídico/QA                                                              |
+| SPEC         | SPEC-008                                                                            |
+| Critérios    | AC-808                                                                              |
+| Dependências | SPEC-008 revisada; base legal e prazos aprovados                                    |
+| ADRs         | ADR-007 (LGPD/exportação/exclusão)                                                  |
 
 ## Objetivo
 

@@ -2,90 +2,110 @@
 
 ## Metadados
 
-| Campo             | Valor                                                                                                          |
-| ----------------- | -------------------------------------------------------------------------------------------------------------- |
-| ID                | SPEC-008                                                                                                       |
-| Status            | In review — discovery aprovada; SPEC aguardando aprovação humana e decisões de topologia, SLOs e LGPD          |
-| Responsável       | Engenharia, Operações, QA e Segurança                                                                          |
-| Revisores         | Produto / Engenharia / QA / Segurança / Operações / Jurídico                                                   |
-| Criado            | 2026-11-14                                                                                                     |
-| Atualizado        | 2026-11-14                                                                                                     |
-| Lançamento alvo   | Fase 6 (release a definir após aprovação)                                                                      |
-| Discovery         | `docs/discovery-fase-6.md` (aprovada em 2026-11-14)                                                            |
-| Plano de QA       | `docs/qa-plan-fase-6.md` (QA-003, Draft)                                                                       |
-| ADRs relacionadas | ADR-010 (topologia, proposta); ADR-011 (outbox, a criar); ADR-009 (rate limit e persisted queries)             |
-| Refs              | Discovery: `docs/discovery-fase-6.md`; Design: N/A — sem nova tela; TASK: TASK-008-01..TASK-008-06; QA: QA-003 |
+| Campo             | Valor                                                                                                                                        |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| ID                | SPEC-008                                                                                                                                     |
+| Status            | Approved — reescopo local; TASK-008-07 em andamento com bootstrap/smoke validados no checkout e clone limpo pendente de commit               |
+| Responsável       | Engenharia, Operações, QA e Segurança                                                                                                        |
+| Revisores         | Produto / Engenharia / QA / Segurança / Operações / Jurídico                                                                                 |
+| Criado            | 2026-11-14                                                                                                                                   |
+| Atualizado        | 2026-11-16                                                                                                                                   |
+| Lançamento alvo   | Fase 6 (release a definir após aprovação)                                                                                                    |
+| Discovery         | `docs/discovery-fase-6.md` (aprovada em 2026-11-14)                                                                                          |
+| Plano de QA       | `docs/qa-plan-fase-6.md` (QA-003, Draft)                                                                                                     |
+| ADRs relacionadas | ADR-013 (distribuição local, aceito em 2026-11-16; substitui o ADR-010); ADR-011 (outbox, a criar); ADR-009 (rate limit e persisted queries) |
+| Refs              | Discovery: `docs/discovery-fase-6.md`; Design: N/A — sem nova tela; TASK: TASK-008-01..TASK-008-07; QA: QA-003                               |
+
+## Mudança de escopo (2026-11-16)
+
+Instrução humana: o projeto é distribuído **apenas por git clone** e executado
+localmente. Não existe provedor, região, domínio, TLS público, teto de custo,
+staging ou produção hospedados.
+
+- **Cancelados:** provedor/região/custos, staging e produção hospedados, DNS/TLS,
+  pipeline de CD para servidor, aprovação manual de produção, rollback por SHA
+  em servidor e SLOs de produção. `AC-801` e `AC-802` ficam cancelados.
+- **Reescopados:** `AC-803` passa a validar o bootstrap do primeiro `ADMIN` no
+  ambiente local.
+- **Mantidos para revisão:** instalação local, migrations, backup/restore local,
+  outbox, retenção LGPD, performance/code splitting e SBOM.
+- **Artefatos:** `ADR-010` foi substituído pelo `ADR-013`; a `TASK-008-01` foi
+  cancelada. A implementação permanece bloqueada até a revisão dos critérios de
+  aceitação, do QA-003 e das TASKs.
 
 ## Problema e resultado
 
-As Fases 0 a 5 entregaram o produto e o endurecimento técnico, mas o Nexo CRM
-ainda não é operável em produção. Não existe deploy de referência, staging,
-pipeline de CD, bootstrap seguro do primeiro `ADMIN`, readiness real de
-dependências, métricas, tracing, SLOs, outbox transacional, retenção LGPD
-aprovada ou code splitting por rota. O Gate 4 humano da Fase 5 também permanece
-aberto.
+As Fases 0 a 5 entregaram o produto e o endurecimento técnico, mas um clone
+limpo ainda não tem um caminho único e validado de instalação local, e faltam
+itens de robustez que não dependem de hospedagem: outbox transacional, retenção
+LGPD aprovada e code splitting por rota. O projeto é um portfólio pessoal; a
+avaliação acontece por `git clone` e execução local.
 
-Resultado esperado: um ambiente de staging reproduzível e um caminho aprovado
-para produção, com deploy e rollback por SHA, observabilidade acionável,
-entrega de eventos sem perda entre commit e publicação, retenção de dados
-definida, front-end com carregamento inicial controlado e runbooks testados.
-Nenhuma funcionalidade de produto das Fases 1 a 5 é reaberta.
+Resultado esperado: um clone limpo sobe com `make bootstrap`, aplica migrations,
+popula dados fictícios e passa `make smoke` cobrindo API, web, login e GraphQL,
+além dos itens de robustez aplicáveis. Não há staging, produção, provedor,
+domínio ou TLS público. Nenhuma funcionalidade de produto das Fases 1 a 5 é
+reaberta.
 
-O sucesso é medido pelos critérios AC-801..AC-810, pela aprovação do Gate 2
-(SPEC, ADR-010, TASKs e QA-003) e, ao final, pelos Gates 3 e 4. A discovery foi
-aprovada por instrução humana em 2026-11-14; a implementação continua bloqueada
-até a aprovação explícita desta SPEC, do ADR-010 e das TASKs.
+O sucesso é medido pelos critérios aplicáveis AC-803..AC-811 (AC-801 e AC-802
+estão cancelados), pela aprovação do Gate 2 (SPEC, ADR-013, TASKs e QA-003) e,
+ao final, pelos Gates 3 e 4. A discovery foi aprovada por instrução humana em
+2026-11-14; a SPEC-008 foi aprovada em 2026-11-16 e reescopada no mesmo dia para
+distribuição local. A TASK-008-07 foi autorizada por instrução humana em
+2026-11-16; as demais TASKs seguem pendentes de revisão.
 
 ## Escopo
 
 ### No escopo
 
-- ADR de topologia, ambientes staging/produção, TLS, domínios e segredos.
-- Pipeline de CD com imagens por SHA, migrations, deploy, smoke tests,
-  aprovação manual e rollback.
-- Bootstrap seguro e auditável do primeiro `ADMIN`, sem seed em produção.
-- Readiness real de PostgreSQL, Redis e RabbitMQ para API e worker.
-- Métricas, tracing, dashboards, alertas e SLOs acordados no ambiente alvo.
+- Instalação local via `git clone`, comando de bootstrap, migrations, seed e
+  smoke test de API, web, login e GraphQL.
+- Bootstrap seguro e auditável do primeiro `ADMIN` no ambiente local.
+- Readiness local de PostgreSQL, Redis e RabbitMQ para API e worker.
+- Logs estruturados, health checks e diagnóstico local; SLOs de produção ficam
+  fora.
 - Outbox transacional para eventos de webhook e subscriptions, com replay de
   DLQ testado e garantia at-least-once com idempotência.
 - Política de retenção LGPD aprovada e jobs de purge de refresh tokens,
   mensagens, logs e auditoria.
 - Code splitting por rota, orçamento de bundle e cache headers para assets.
-- Runbooks de incidente, rollback, restore, replay de DLQ e rotação de
-  segredos; drill de backup/restore.
-- Validação do SBOM contra o schema CycloneDX e assinatura de imagens, se
-  aprovada; caso contrário, exceção registrada.
+- Runbooks locais de instalação, upgrade, backup/restore, replay de DLQ e
+  rotação de segredos.
+- Validação do SBOM contra o schema CycloneDX; assinatura de imagens fica fora
+  enquanto não houver publicação de imagens.
 - Revisão documentada do rate limit de janela fixa, sem alterar o algoritmo
   nesta SPEC.
 
 ### Fora do escopo
 
+- Provedor de nuvem, região, domínio, TLS público, staging, produção e pipeline
+  de CD para servidor.
 - Mídia, templates, status de entrega/leitura e presença no WhatsApp.
 - Analytics, telemetria de produto ou rastreamento de usuários.
 - Multi-tenant, times, aplicativo móvel ou reabertura funcional das Fases 1 a 5.
 - Garantia exactly-once; a outbox mantém at-least-once com idempotência.
 - Uso de dados reais antes da aprovação de base legal, minimização e retenção.
-- HA multi-região ou multi-provedor além da topologia aprovada no ADR-010.
+- HA multi-região ou multi-provedor.
 - Mudança do algoritmo de rate limit; a revisão pode recomendar uma SPEC nova.
 - Execução de campanhas, integrações comerciais ou novas telas de produto.
-- Fechamento do Gate 4 da Fase 5; ele é dependência de entrada, não entrega
-  desta SPEC.
+- Fechamento do Gate 4 da Fase 5; ele foi aprovado por instrução humana em
+  2026-11-16 e é dependência de entrada satisfeita, não entrega desta SPEC.
 
 ## Experiência do usuário
 
 ### Usuário principal e contexto
 
-- Grupo de usuários: operadores, engenharia, QA, segurança e pessoas de plantão.
-- Objetivo: implantar, observar, recuperar e evoluir o CRM com evidência e
-  rollback seguro.
-- Contexto e restrições: equipe pequena, orçamento limitado, dados fictícios em
-  staging e nenhum dado real antes da aprovação LGPD.
+- Grupo de usuários: pessoas que avaliam o portfólio, engenharia e QA.
+- Objetivo: clonar o repositório, subir a stack local e validar o fluxo
+  principal com um comando, sem contratar infraestrutura.
+- Contexto e restrições: dados fictícios, Docker local, nenhum provedor,
+  domínio, TLS público ou dado real.
 
 ### Fluxo do usuário
 
-O fluxo operacional está descrito em `docs/discovery-fase-6.md` e será
-detalhado nos runbooks da TASK-008-06: decidir/provisionar, entregar, observar,
-garantir eventos, cumprir LGPD e acelerar o front-end.
+O fluxo principal é: `git clone`, `make bootstrap`, `make smoke` e acesso à web
+em `http://localhost:5217`. Os detalhes operacionais ficam nos runbooks locais da
+TASK-008-06.
 
 ### Estados de interface
 
@@ -123,16 +143,21 @@ sem rastreamento de usuário e com retenção aprovada.
 
 ## Comportamento funcional
 
-### Deploy, staging e CD
+### Instalação local
 
-- Staging e produção são ambientes separados, com segredos, banco e domínio
-  próprios; staging usa dados fictícios e WhatsApp mock.
-- O pipeline publica `api`, `worker` e `web` com tag imutável por SHA, aplica
-  migrations, executa smoke tests e exige aprovação manual para produção.
-- A política de branch/tag é definida no ADR-010; a proposta inicial é staging a
-  partir de `develop` e produção a partir de tag `v*` assinada.
-- O rollback usa as imagens anteriores por SHA e só reverte schema quando a
-  migration for aditiva e compatível; caso contrário, usa restore do banco.
+- A distribuição oficial é `git clone`; não há pacote npm, tarball, imagem
+  publicada, staging ou produção.
+- `make bootstrap` instala dependências, sobe a infraestrutura, aplica
+  migrations, popula dados fictícios, constrói a stack e valida o ambiente.
+- `make smoke` verifica API, web, login e GraphQL usando as credenciais do seed
+  local.
+- Tags marcam versões e não disparam deploy.
+
+### Deploy hospedado (cancelado)
+
+- Provedor, região, domínio, TLS público, staging, produção, CD e aprovação
+  manual de produção estão cancelados pelo ADR-013.
+- O histórico do ADR-010 permanece apenas como referência.
 
 ### Bootstrap do primeiro ADMIN
 
@@ -140,7 +165,7 @@ sem rastreamento de usuário e com retenção aprovada.
   credencial de uso único ou segredo injetado no runtime.
 - O comando não usa `db:seed`, não aceita senha em argumento de linha de comando,
   registra auditoria sem senha e falha se já existir um `ADMIN`.
-- A criação é permitida apenas em ambiente explicitamente autorizado.
+- A criação é permitida no ambiente local explicitamente autorizado.
 
 ### Readiness e dependências
 
@@ -228,6 +253,9 @@ sem rastreamento de usuário e com retenção aprovada.
 
 ### AC-801
 
+**Cancelado em 2026-11-16** — a premissa de deploy hospedado foi invalidada pelo
+ADR-013.
+
 ```yaml
 id: AC-801
 title: Deploy de referência em staging com TLS, migrations, smoke tests e rollback
@@ -240,6 +268,9 @@ evidence_type: automated+manual
 ```
 
 ### AC-802
+
+**Cancelado em 2026-11-16** — não há pipeline de CD para servidor nem produção
+hospedada (ADR-013).
 
 ```yaml
 id: AC-802
@@ -258,7 +289,7 @@ evidence_type: automated+manual
 id: AC-803
 title: Primeiro ADMIN é criado por comando seguro e auditável
 preconditions:
-  - Banco de produção ou staging sem ADMIN
+  - Banco local sem ADMIN
   - Segredo de bootstrap disponível no runtime
 action: Executar o comando de bootstrap e repetir a execução
 expected_result: O primeiro ADMIN é criado, a repetição falha sem duplicar, a senha não aparece em logs/argv e a auditoria é registrada
@@ -353,18 +384,28 @@ expected_result: Restore atende ao RPO/RTO aprovados, runbooks são executáveis
 evidence_type: manual+automated
 ```
 
+### AC-811
+
+```yaml
+id: AC-811
+title: Clone local sobe e passa smoke test com um comando
+preconditions:
+  - Clone limpo do repositório
+  - Node, pnpm e Docker disponíveis
+action: Executar make bootstrap e make smoke
+expected_result: Stack sobe, migrations e seed são aplicados, API, web, login e GraphQL respondem e o smoke termina com sucesso
+evidence_type: automated
+```
+
 ## Abordagem técnica
 
-- **Topologia:** ADR-010 propõe uma VM Linux por ambiente com Docker Compose,
-  proxy reverso e serviços de dados gerenciados quando disponíveis. A escolha
-  final do provedor, região, domínio e TLS permanece humana; nenhum manifesto
-  específico de provedor é criado antes da aceitação.
-- **Build e release:** reutilizar `infra/Dockerfile` e os targets `api`, `worker`
-  e `web`; publicar imagens imutáveis por SHA; migrations executadas por job
-  separado; smoke tests e rollback por SHA.
-- **Observabilidade:** instrumentação OpenTelemetry vendor-neutral, exportação
-  OTLP ou endpoint Prometheus conforme decisão humana; logs JSON existentes
-  continuam sendo a fonte de correlação.
+- **Distribuição:** ADR-013 define git clone e execução local com Docker
+  Compose; não há provedor, domínio, TLS público, staging ou CD.
+- **Build local:** reutilizar `infra/Dockerfile` e os targets `api`, `worker` e
+  `web`; `make bootstrap` aplica migrations e seed antes de subir a stack;
+  `make smoke` valida o fluxo real.
+- **Diagnóstico:** health checks e logs estruturados locais; SLOs de produção
+  ficam fora do escopo.
 - **Outbox:** nova tabela Prisma `OutboxEvent` com payload, tipo, tentativas,
   próxima tentativa e estado; publisher no worker com `FOR UPDATE SKIP LOCKED`
   ou equivalente; consumidores idempotentes. ADR-011 registra a decisão antes da
@@ -382,7 +423,8 @@ evidence_type: manual+automated
 ## Entrega e operações
 
 - **Plano de implantação:** staging primeiro, com dados fictícios; produção
-  somente após Gate 4, LGPD, SLOs e aprovação humana da release.
+  somente após LGPD, SLOs e aprovação humana da release (Gate 4 aprovado em
+  2026-11-16).
 - **Plano de migração:** migrations aditivas para outbox e índices; backup antes
   de qualquer mudança destrutiva; sem backfill de dados reais nesta SPEC.
 - **Plano de reversão:** imagens anteriores por SHA; flag para desabilitar o
@@ -394,41 +436,42 @@ evidence_type: manual+automated
 
 ## Riscos e dependências
 
-| Risco ou dependência                                 | Impacto | Probabilidade | Mitigação                                                   | Responsável        |
-| ---------------------------------------------------- | ------- | ------------- | ----------------------------------------------------------- | ------------------ |
-| Provedor/topologia e custos não decididos            | Alto    | Alta          | ADR-010 proposto; decisão humana antes de provisionar       | Produto/Engenharia |
-| Gate 4 da Fase 5 aberto                              | Alto    | Alta          | Concluir aprovações ou registrar exceção antes do go-live   | QA/A11y/Design     |
-| Base legal e retenção LGPD não aprovadas             | Alto    | Alta          | Nenhum dado real até aprovação; jobs só após política       | Produto/Jurídico   |
-| Outbox introduzir duplicatas ou atraso               | Alto    | Média         | Idempotência, testes de falha, métricas de backlog e replay | Engenharia         |
-| Observabilidade gerar custo/cardinalidade excessivos | Médio   | Média         | Limites de cardinalidade, sampling e revisão de custo       | Operações          |
-| Code splitting quebrar foco/rotas                    | Médio   | Média         | Fallback acessível, E2E/axe e revisão de design se visível  | Engenharia/A11y    |
-| Assinatura de imagem sem gestão de chaves            | Médio   | Média         | KMS/keyless, rotação e verificação no deploy                | Segurança          |
-| Restore não atender ao RPO/RTO                       | Alto    | Média         | Drill, backup imutável e registro de evidência              | Operações          |
-| Rate limit de janela fixa permitir rajadas           | Médio   | Média         | Revisão documentada; mudança de algoritmo em SPEC própria   | Segurança          |
+| Risco ou dependência                                 | Impacto | Probabilidade | Mitigação                                                                        | Responsável        |
+| ---------------------------------------------------- | ------- | ------------- | -------------------------------------------------------------------------------- | ------------------ |
+| Provedor/topologia e custos não decididos            | Baixo   | Baixa         | Cancelado: sem deploy hospedado; distribuição apenas por git clone (ADR-013)     | Produto/Engenharia |
+| Gate 4 da Fase 5 encerrado em 2026-11-16             | Baixo   | Baixa         | Aprovado por instrução humana; testes manuais de a11y seguem como risco residual | QA/A11y            |
+| Base legal e retenção LGPD não aprovadas             | Alto    | Alta          | Nenhum dado real até aprovação; jobs só após política                            | Produto/Jurídico   |
+| Outbox introduzir duplicatas ou atraso               | Alto    | Média         | Idempotência, testes de falha, métricas de backlog e replay                      | Engenharia         |
+| Observabilidade gerar custo/cardinalidade excessivos | Médio   | Média         | Limites de cardinalidade, sampling e revisão de custo                            | Operações          |
+| Code splitting quebrar foco/rotas                    | Médio   | Média         | Fallback acessível, E2E/axe e revisão de design se visível                       | Engenharia/A11y    |
+| Assinatura de imagem sem gestão de chaves            | Médio   | Média         | KMS/keyless, rotação e verificação no deploy                                     | Segurança          |
+| Restore não atender ao RPO/RTO                       | Alto    | Média         | Drill, backup imutável e registro de evidência                                   | Operações          |
+| Rate limit de janela fixa permitir rajadas           | Médio   | Média         | Revisão documentada; mudança de algoritmo em SPEC própria                        | Segurança          |
 
 ## Questões abertas
 
-| Questão                                            | Responsável          | Data limite          | Resolução |
-| -------------------------------------------------- | -------------------- | -------------------- | --------- |
-| Provedor, região, topologia e custos               | Produto/Engenharia   | Antes da TASK-008-01 | Pendente  |
-| Domínios, TLS e política de branch/tag             | Engenharia/Operações | Antes da TASK-008-01 | Pendente  |
-| Backend de observabilidade, retenção e orçamento   | Engenharia/Operações | Antes da TASK-008-02 | Pendente  |
-| SLOs, error budget e janelas de alerta             | Produto/QA/Operações | Antes da TASK-008-02 | Pendente  |
-| Base legal, minimização e prazos de retenção       | Produto/Jurídico     | Antes da TASK-008-04 | Pendente  |
-| Outbox versus confirms + retry e desenho da tabela | Engenharia/Segurança | Antes da TASK-008-03 | Pendente  |
-| Orçamento de bundle e estratégia de chunks         | Engenharia/Produto   | Antes da TASK-008-05 | Pendente  |
-| Método de bootstrap do primeiro `ADMIN`            | Segurança/Operações  | Antes da TASK-008-01 | Pendente  |
-| Assinatura de imagens e gate de SBOM               | Segurança            | Antes da TASK-008-06 | Pendente  |
-| Serviços gerenciados versus autogerenciados        | Engenharia/Operações | Antes da TASK-008-01 | Pendente  |
-| RPO/RTO e periodicidade de restore                 | Operações/Produto    | Antes da TASK-008-06 | Pendente  |
+| Questão                                            | Responsável          | Data limite          | Resolução                                                                                             |
+| -------------------------------------------------- | -------------------- | -------------------- | ----------------------------------------------------------------------------------------------------- |
+| Provedor, região, topologia e custos               | Produto/Engenharia   | Antes da TASK-008-01 | Cancelada: distribuição apenas por git clone (ADR-013); sem provedor, região ou custo                 |
+| Domínios, TLS e política de branch/tag             | Engenharia/Operações | Antes da TASK-008-01 | Cancelada: sem domínio ou TLS público; distribuição apenas por git clone (ADR-013)                    |
+| Backend de observabilidade, retenção e orçamento   | Engenharia/Operações | Antes da TASK-008-02 | Pendente                                                                                              |
+| SLOs, error budget e janelas de alerta             | Produto/QA/Operações | Antes da TASK-008-02 | Pendente                                                                                              |
+| Base legal, minimização e prazos de retenção       | Produto/Jurídico     | Antes da TASK-008-04 | Pendente                                                                                              |
+| Outbox versus confirms + retry e desenho da tabela | Engenharia/Segurança | Antes da TASK-008-03 | Pendente                                                                                              |
+| Orçamento de bundle e estratégia de chunks         | Engenharia/Produto   | Antes da TASK-008-05 | Pendente                                                                                              |
+| Método de bootstrap do primeiro `ADMIN`            | Segurança/Operações  | Antes da TASK-008-01 | Aprovado: comando CLI idempotente, segredo em runtime, sem senha em `argv`, auditoria sem senha       |
+| Assinatura de imagens e gate de SBOM               | Segurança            | Antes da TASK-008-06 | Pendente                                                                                              |
+| Serviços gerenciados versus autogerenciados        | Engenharia/Operações | Antes da TASK-008-01 | Aprovado: híbrido — PostgreSQL/Redis gerenciados quando disponíveis; RabbitMQ em container com volume |
+| RPO/RTO e periodicidade de restore                 | Operações/Produto    | Antes da TASK-008-06 | Pendente                                                                                              |
 
 ## Aprovação
 
-| Papel              | Nome | Decisão            | Data       | Notas                                      |
-| ------------------ | ---- | ------------------ | ---------- | ------------------------------------------ |
-| Produto            | —    | Pendente           | —          | —                                          |
-| Engenharia         | —    | Pendente           | —          | —                                          |
-| QA                 | —    | Not ready          | —          | QA-003 em Draft                            |
-| Segurança          | —    | Pendente           | —          | —                                          |
-| Operações          | —    | Pendente           | —          | —                                          |
-| Solicitante humano | —    | Discovery aprovada | 2026-11-14 | Aprovação do escopo; SPEC ainda em revisão |
+| Papel              | Nome | Decisão            | Data       | Notas                                                                                         |
+| ------------------ | ---- | ------------------ | ---------- | --------------------------------------------------------------------------------------------- |
+| Produto            | —    | Pendente           | —          | —                                                                                             |
+| Engenharia         | —    | Pendente           | —          | —                                                                                             |
+| QA                 | —    | Not ready          | —          | QA-003 em Draft                                                                               |
+| Segurança          | —    | Pendente           | —          | —                                                                                             |
+| Operações          | —    | Pendente           | —          | —                                                                                             |
+| Solicitante humano | —    | Discovery aprovada | 2026-11-14 | Aprovação do escopo; SPEC ainda em revisão                                                    |
+| Solicitante humano | —    | Approved           | 2026-11-16 | SPEC-008 aprovada; ADR-010 e TASK-008-01 aprovados; QA-003 Draft e TASKs 008-02..06 pendentes |

@@ -1,11 +1,11 @@
 # Guia de deploy
 
-Status: **referência operacional da Fase 5**. O deploy real não foi executado e
-o provedor de infraestrutura permanece em aberto. A topologia, o pipeline de CD
-e os runbooks são propostos na `SPEC-008` e no `ADR-010` (em revisão); este guia
-continua provider-neutral. Este documento define o
-mínimo exigido para uma implantação do Nexo CRM sem tratar o Compose local como
-ambiente de produção.
+Status: **referência histórica/opcional**. O caminho oficial é git clone seguido
+do fluxo local do `README.md`; não há deploy hospedado, provedor, domínio ou TLS
+público. Em 2026-11-16 o `ADR-010` foi substituído pelo
+`ADR-013` (distribuição via git clone) e a premissa de produção hospedada foi
+cancelada. Este documento permanece apenas como referência de self-hosting e
+não define o caminho oficial; o fluxo local do `README.md` é o suportado.
 
 ## Decisão de referência
 

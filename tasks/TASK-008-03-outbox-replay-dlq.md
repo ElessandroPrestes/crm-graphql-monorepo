@@ -2,15 +2,15 @@
 
 ## Metadados
 
-| Campo        | Valor                                                                 |
-| ------------ | --------------------------------------------------------------------- |
-| ID           | TASK-008-03                                                           |
-| Status       | Planned — aguardando aprovação da SPEC-008 e do ADR de outbox         |
-| Responsável  | Engenharia/Segurança                                                  |
-| SPEC         | SPEC-008                                                              |
-| Critérios    | AC-807                                                                |
-| Dependências | SPEC-008 aprovada; ADR-011 (outbox) aceito; TASK-008-01/02 em staging |
-| ADRs         | ADR-006 (RabbitMQ/idempotência), ADR-011 (outbox, a criar)            |
+| Campo        | Valor                                                                            |
+| ------------ | -------------------------------------------------------------------------------- |
+| ID           | TASK-008-03                                                                      |
+| Status       | Planned — SPEC-008 aprovada; aguardando ADR-011 de outbox e aprovação desta TASK |
+| Responsável  | Engenharia/Segurança                                                             |
+| SPEC         | SPEC-008                                                                         |
+| Critérios    | AC-807                                                                           |
+| Dependências | SPEC-008 revisada; ADR-011 (outbox) aceito                                       |
+| ADRs         | ADR-006 (RabbitMQ/idempotência), ADR-011 (outbox, a criar)                       |
 
 ## Objetivo
 

@@ -1,7 +1,9 @@
 # Arquitetura
 
-Status: Fases 0 a 5 implementadas tecnicamente; Gate 4 humano pendente; Fase 6
-com discovery aprovada e SPEC-008 em revisão. A Fase 3 adicionou webhook de
+Status: Fases 0 a 5 implementadas tecnicamente; Gate 4 aprovado em 2026-11-16;
+Fase 6 em andamento no escopo local: distribuição via git clone (ADR-013), sem
+provedor, domínio ou TLS público; TASK-008-07 com bootstrap e smoke validados.
+A Fase 3 adicionou webhook de
 WhatsApp, fila durável com retry/DLQ, worker idempotente, conversas/mensagens,
 subscription
 `messageReceived` e exportação/exclusão LGPD. A Fase 4 entregou a SPA React com

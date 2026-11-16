@@ -2,15 +2,15 @@
 
 ## Metadados
 
-| Campo        | Valor                                                                                |
-| ------------ | ------------------------------------------------------------------------------------ |
-| ID           | TASK-008-06                                                                          |
-| Status       | Planned — aguardando aprovação da SPEC-008 e das decisões de supply chain            |
-| Responsável  | Operações/Segurança/QA                                                               |
-| SPEC         | SPEC-008                                                                             |
-| Critérios    | AC-810                                                                               |
-| Dependências | SPEC-008 aprovada; ADR-010 aceito; TASK-008-01..05 concluídas; decisão de assinatura |
-| ADRs         | ADR-010 (topologia), ADR-011 (outbox)                                                |
+| Campo        | Valor                                                                                           |
+| ------------ | ----------------------------------------------------------------------------------------------- |
+| ID           | TASK-008-06                                                                                     |
+| Status       | Planned — SPEC-008 aprovada; aguardando decisões de supply chain/restore e aprovação desta TASK |
+| Responsável  | Operações/Segurança/QA                                                                          |
+| SPEC         | SPEC-008                                                                                        |
+| Critérios    | AC-810                                                                                          |
+| Dependências | SPEC-008 revisada para distribuição local; TASK-008-01..05 concluídas; decisão de assinatura    |
+| ADRs         | ADR-013 (distribuição local), ADR-011 (outbox)                                                  |
 
 ## Objetivo
 
@@ -63,12 +63,12 @@ ou exceção aprovada, e revisão documentada do rate limit de janela fixa.
 
 ## Validação
 
-| Critério/risco | Teste, comando ou revisão                                | Evidência esperada                                    |
-| -------------- | -------------------------------------------------------- | ----------------------------------------------------- |
-| AC-810         | Drill de restore, revisão de runbooks, SBOM e assinatura | Restore no RPO/RTO, runbooks executáveis, SBOM válido |
-| Supply chain   | Admissão com imagem assinada e não assinada              | Assinatura verificada ou exceção registrada           |
-| Operação       | Executar replay de DLQ e rotação de segredo em staging   | Comandos funcionam e são auditados                    |
-| Documentação   | Revisão de docs/deploy, security e architecture          | Conteúdo consistente e links válidos                  |
+| Critério/risco | Teste, comando ou revisão                                     | Evidência esperada                                    |
+| -------------- | ------------------------------------------------------------- | ----------------------------------------------------- |
+| AC-810         | Drill de restore, revisão de runbooks, SBOM e assinatura      | Restore no RPO/RTO, runbooks executáveis, SBOM válido |
+| Supply chain   | Admissão com imagem assinada e não assinada                   | Assinatura verificada ou exceção registrada           |
+| Operação       | Executar replay de DLQ e rotação de segredo no ambiente local | Comandos funcionam e são auditados                    |
+| Documentação   | Revisão de docs/deploy, security e architecture               | Conteúdo consistente e links válidos                  |
 
 ## Condição de conclusão
 
