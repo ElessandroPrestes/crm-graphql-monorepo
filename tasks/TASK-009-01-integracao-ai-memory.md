@@ -108,6 +108,8 @@ alterar configurações globais nesta máquina.
   - Commit de implementação `c42d10e` com `Spec-Ref: SPEC-009` e
     `Task-Ref: TASK-009-02`; commit de fechamento com `Task-Ref: TASK-009-01`.
   - Detalhes em `reviews/qa-evidence/QA-EVIDENCE-TASK-009-01.md`.
+  - QA-Verifier `Passed` em `reviews/VERIFICATION-REPORT-VR-002.md`
+    (2026-11-16), sem descobertas em aberto para AC-901..AC-905.
 - Desvios: a instalação ficou fora desta TASK por decisão explícita do
   solicitante e foi executada depois na
   [TASK-009-02](TASK-009-02-instalacao-local-ai-memory.md), mantendo a separação

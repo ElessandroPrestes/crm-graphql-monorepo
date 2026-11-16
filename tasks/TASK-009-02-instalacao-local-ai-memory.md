@@ -105,6 +105,8 @@ escopo do repositório sem versionar segredos.
     `✓ Every harness that ran in this project recently is captured` após uma
     sessão nova do OpenCode.
   - Detalhes em `reviews/qa-evidence/QA-EVIDENCE-TASK-009-02.md`.
+  - QA-Verifier `Passed` em `reviews/VERIFICATION-REPORT-VR-002.md`
+    (2026-11-16), sem descobertas em aberto para AC-901, AC-903 e AC-904.
 - Desvios: o `setup` detectou nove agentes, mas apenas os três usados foram
   ligados por decisão de menor impacto.
 - Trabalho em aberto ou bloqueios: confiar nos hooks do Codex, exportar

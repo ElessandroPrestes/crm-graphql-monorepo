@@ -2,16 +2,16 @@
 
 ## Metadados
 
-| Campo          | Valor                                                                                                                                                                                                                                                                   |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ID             | SPEC-009                                                                                                                                                                                                                                                                |
-| Status         | Approved — integração versionada; instalação local executada como passo operacional autorizado em 2026-11-15 (TASK-009-02)                                                                                                                                              |
-| Responsável    | Engenharia                                                                                                                                                                                                                                                              |
-| Revisores      | Engenharia / QA / Segurança                                                                                                                                                                                                                                             |
-| Criado         | 2026-11-15                                                                                                                                                                                                                                                              |
-| Atualizado     | 2026-11-15                                                                                                                                                                                                                                                              |
-| Liberação Alvo | Melhoria de tooling pós-`0.3.0-alpha`; sem release de produto                                                                                                                                                                                                           |
-| Refs:          | Discovery: N/A — solicitação operacional direta, sem mudança de produto; Design: N/A — sem interface de usuário; ADRs: ADR-012; TASKs: TASK-009-01, TASK-009-02; QA: `reviews/qa-evidence/QA-EVIDENCE-TASK-009-01.md`, `reviews/qa-evidence/QA-EVIDENCE-TASK-009-02.md` |
+| Campo          | Valor                                                                                                                                                                                                                                                                                                                         |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ID             | SPEC-009                                                                                                                                                                                                                                                                                                                      |
+| Status         | Approved — integração versionada; instalação local executada como passo operacional autorizado em 2026-11-15 (TASK-009-02)                                                                                                                                                                                                    |
+| Responsável    | Engenharia                                                                                                                                                                                                                                                                                                                    |
+| Revisores      | Engenharia / QA / Segurança                                                                                                                                                                                                                                                                                                   |
+| Criado         | 2026-11-15                                                                                                                                                                                                                                                                                                                    |
+| Atualizado     | 2026-11-15                                                                                                                                                                                                                                                                                                                    |
+| Liberação Alvo | Melhoria de tooling pós-`0.3.0-alpha`; sem release de produto                                                                                                                                                                                                                                                                 |
+| Refs:          | Discovery: N/A — solicitação operacional direta, sem mudança de produto; Design: N/A — sem interface de usuário; ADRs: ADR-012; TASKs: TASK-009-01, TASK-009-02; QA: `reviews/qa-evidence/QA-EVIDENCE-TASK-009-01.md`, `reviews/qa-evidence/QA-EVIDENCE-TASK-009-02.md`; Verificação: `reviews/VERIFICATION-REPORT-VR-002.md` |
 
 ## Problema e resultado
 
@@ -221,10 +221,10 @@ evidence_type: automated
 
 ## Aprovação
 
-| Papel      | Nome               | Decisão  | Data       | Notas                                                         |
-| ---------- | ------------------ | -------- | ---------- | ------------------------------------------------------------- |
-| Produto    | Solicitante humano | Approved | 2026-11-15 | Integração no repositório, sem instalação global              |
-| Operação   | Solicitante humano | Approved | 2026-11-15 | Instalação local autorizada e executada (TASK-009-02)         |
-| Design     | —                  | N/A      | 2026-11-15 | Sem interface de usuário                                      |
-| Engenharia | Engenharia         | Approved | 2026-11-15 | Implementação e validação local                               |
-| QA         | Engenharia         | Ready    | 2026-11-15 | Evidência em `reviews/qa-evidence/QA-EVIDENCE-TASK-009-01.md` |
+| Papel      | Nome               | Decisão  | Data       | Notas                                                                                                                                                                      |
+| ---------- | ------------------ | -------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Produto    | Solicitante humano | Approved | 2026-11-15 | Integração no repositório, sem instalação global                                                                                                                           |
+| Operação   | Solicitante humano | Approved | 2026-11-15 | Instalação local autorizada e executada (TASK-009-02)                                                                                                                      |
+| Design     | —                  | N/A      | 2026-11-15 | Sem interface de usuário                                                                                                                                                   |
+| Engenharia | Engenharia         | Approved | 2026-11-15 | Implementação e validação local                                                                                                                                            |
+| QA         | Engenharia         | Ready    | 2026-11-15 | Evidência em `reviews/qa-evidence/QA-EVIDENCE-TASK-009-01.md`; QA-Verifier `Passed` em `reviews/VERIFICATION-REPORT-VR-002.md` (2026-11-16); revisão independente pendente |
